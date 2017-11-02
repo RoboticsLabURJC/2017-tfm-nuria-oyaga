@@ -1,5 +1,7 @@
 """
-LSTM_example.py: Ejemplo de predicción con LSTM
+LSTM_example.py: LSTM prediction example
+
+Code from tutorial: https://machinelearningmastery.com/time-series-forecasting-long-short-term-memory-network-python/
 
 """
 __author__ = "Nuria Oyaga"
