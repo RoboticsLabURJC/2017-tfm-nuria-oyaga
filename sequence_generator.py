@@ -1,6 +1,6 @@
 
 """
-sequence_generator.py: Generador de secuencias de frames o numeros
+sequence_generator.py: Numbers or frames sequence generator
 
 """
 __author__ = "Nuria Oyaga"
@@ -10,6 +10,8 @@ import cv2
 import numpy as np
 import os
 import shutil
+import matplotlib.pyplot as plt
+import math
 
 toGenerate = 'n'  # Choose type to generate: frame('f') or number('n')
 
@@ -26,11 +28,21 @@ def create_frame(x, size):
     return frame
 
 
-def get_numbers(x0, u_x):
-    numbers = ['%.1f' % get_position(x0, t, u_x) for t in range(4)]
+def get_numbers(func):
+    numbers = [func(x) for x in range(4)]
     # Create number 10
-    numbers.append('%.1f' % get_position(x0, 10, u_x))
+    numbers.append(func(10))
     return numbers
+
+
+def to_file(ftype, data):
+    f = open('numbers.txt', 'w')
+    if ftype == 'l':
+        f.write('[m, n]:[x=0, x=1, x=2, x=3, x=10] \n')
+    elif ftype == 'q':
+        f.write('[a, b, c]:[x=0, x=1, x=2, x=3, x=10] \n')
+    for seq_key in data.keys():
+        f.write(seq_key + ':' + str(data[seq_key]) + '\n')
 
 
 if __name__ == '__main__':
@@ -57,10 +69,41 @@ if __name__ == '__main__':
                         create_frame(get_position(10, 10, u_x),imSize))
 
     elif toGenerate == 'n':  # Generate a list with 4+1 arrays for each speed
-        # numbers =[getNumbers(0,u_x) for u_x in np.arange(0.1, 5.0, 0.1)]
-        f = open('numbers.txt','w')
-        for u_x in np.arange(0.1, 5.0, 0.1):
-            f.write(str(get_numbers(0,u_x))+ '\n')
+        sequences = {}
+
+        func_type = 'l'  # Choose type of function: linear(l), quadratic(q) or sinusoidal(s)
+
+        if func_type == 'l':
+            rect = lambda x: m*x + n
+
+            for m in np.arange(-5.0, 5.0):
+                for n in np.arange(-5.0, 5.0):
+                    num = get_numbers(rect)
+                    sequences[str([m,n])] = num
+
+        elif func_type == 'q':
+            parab = lambda x: a*(x**2) + b*x + c
+
+            for a in np.arange(-5.0, 5.0):
+                if a != 0:
+                    for b in np.arange(-5.0,5.0):
+                        for c in np.arange(-5.0,5.0):
+                            num = get_numbers(parab)
+                            sequences[str([a,b,c])] = num
+
+        elif func_type == 's':
+            sen = lambda x: A * np.sin((2 * np.pi * frec * x) + math.radians(theta))
+            x = (np.linspace(-10, 10, 200))
+            frec = 0.1
+            theta = 0
+            A = 1
+            plt.plot(x,sen(x))
+            plt.show()
+
+        else:
+            print('Choose a correct function to generate (linear,quadratic or sinusoidal) ')
+
+        to_file(func_type, sequences)
 
     else:
         print('Choose a correct type to generate (frame or number) ')
