@@ -1,0 +1,23 @@
+# Function type
+func_type: linear
+
+# Number of samples
+n_samples: 50000
+
+# Number of know points (x values)
+n_points: 20
+
+# Gap between last know and to predict samples
+gap: 10
+
+# Noise
+noise:
+ flag: False #True to add noise to the samples
+ mean: 0
+ stand_deviation: 50
+
+
+
+ 
+
+
