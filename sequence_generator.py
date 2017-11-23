@@ -27,12 +27,30 @@ gap = int(conf['gap'])  # Separation between last sample and sample to predict
 noise_flag = conf['noise']['flag'] # Introduce noise to the samples
 
 
+
 def get_position(x0, t, u_x):
+    """
+    Function to get the position of an object in a frame
+
+    :param x0: Initial position
+    :param t: Time instant
+    :param u_x: Speed
+    :return: Final position
+    """
+
     x = x0 + (t * u_x)  # URM
     return x
 
 
 def create_frame(x, size):
+    """
+    Draw a frame with a ball and a occlusion element
+
+    :param x: Ball position
+    :param size: Frame size
+    :return: Frame created
+    """
+
     frame = np.zeros(size)
     cv2.circle(frame, (int(x), 128), 10, (0, 255, 0), -1)
     cv2.rectangle(frame, (100, 0), (170, size[0]), (255, 0, 0), -1)
@@ -40,6 +58,13 @@ def create_frame(x, size):
 
 
 def get_numbers(func):
+    """
+    Function to get a number sequence following a function
+
+    :param func: Function
+    :return: The sequence
+    """
+
     # Get first samples
     numbers = [func(x) for x in range(n_points)]
     # Create number to predict
@@ -48,7 +73,15 @@ def get_numbers(func):
 
 
 def to_file(seq, n_param, file):
-    for i,element in enumerate(seq):
+    """
+    Save the sequence created in a dataset
+
+    :param seq: Sequence to save
+    :param n_param: Number of parameters to save
+    :param file: File where save the sequence
+    """
+
+    for i, element in enumerate(seq):
         if i == 0:
             file.write('[ ')
 
@@ -92,12 +125,12 @@ if __name__ == '__main__':
             cv2.imwrite('frames/frame_' + str(u_x) + '_' + str(10) + '.png',
                         create_frame(get_position(10, 10, u_x),imSize))
 
-    elif toGenerate == 'n':  # Generate a list with 4+1 arrays for each speed
+    elif toGenerate == 'n':  # Generate a sequence of numbers
         sequences = []
 
-        func_type = conf['func_type']  # Choose type of function: linear, quadratic or sinusoidal
+        func_type = conf['func_type']  # Type of function: linear, quadratic, sinusoidal
 
-        # Create samples
+        # Create samples of the function
         for i in range(n_samples):
             a = random.uniform(-100, 100)
             b = random.uniform(-100, 100)
@@ -110,43 +143,42 @@ if __name__ == '__main__':
             elif func_type == 'quadratic':
                 while a == 0:
                     a = random.uniform(-100, 100)
-
+                # Set function: ax² + by + c = 0 with a != 0
                 f = lambda x: a * (x ** 2) + b * x + c
 
             else:
                 print('Choose a correct function to generate (linear,quadratic or sinusoidal) ')
                 break
 
-            parameters = [a, b, c, gap, func_type]
+            parameters = [a, b, c, gap, func_type]  # Parameters used to create the sample
 
-            num = get_numbers(f)
+            sample = get_numbers(f)  # Get the sample
 
             if not noise_flag:
-                noise_par = [None]
+                noise_parameters = [None]
             else:
                 mean = int(conf['noise']['mean'])
                 stand_deviation = int(conf['noise']['stand_deviation'])
 
-                noise_par= [mean, stand_deviation]
+                noise_parameters = [mean, stand_deviation]
 
-                noise = np.random.normal(mean, stand_deviation, len(num))  # Different noise for each sample
+                noise = np.random.normal(mean, stand_deviation, len(sample))  # Different noise for each sample
 
-                num = list(num + noise)
+                sample = list(sample + noise)
 
-            for param in noise_par:
+            for param in noise_parameters:  # Add noise parameters to all parameters
                 parameters.append(param)
 
-            for p in parameters[::-1]:
-                num.insert(0, p)
+            for p in parameters[::-1]:  # Add parameters to save in file
+                sample.insert(0, p)
 
-            sequences.append(num)
+            sequences.append(sample)  # Add the sample to the list of sequences created
             print(i)
 
-
+        # Separate train, test and validation
         fraction_test = 0.1
         fraction_validation = 0.1
 
-        # Separate train, test and validation
         test_set_size = int(len(sequences) * fraction_test)
         validation_set_size = int(len(sequences) * fraction_validation)
 
@@ -157,15 +189,15 @@ if __name__ == '__main__':
         print(len(train_set) + len(test_set) + len(validation_set) == len(sequences))  # Check the separation
 
         # Init files
-        file_train = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_par) + '_train.txt', 'w')
+        file_train = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_train.txt', 'w')
         file_train.write(
             '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
             str(n_points + gap - 1) + ' ]\n')
-        file_test = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_par) + '_test.txt', 'w')
+        file_test = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_test.txt', 'w')
         file_test.write(
             '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
             str(n_points + gap - 1) + ' ]\n')
-        file_val = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_par) + '_val.txt', 'w')
+        file_val = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_val.txt', 'w')
         file_val.write('[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
                        str(n_points + gap - 1) + ' ]\n')
 
