@@ -1,4 +1,3 @@
-
 """
 sequence_generator.py: Numbers or frames sequence generator
 
@@ -11,9 +10,21 @@ import numpy as np
 import os
 import shutil
 import matplotlib.pyplot as plt
-import math
+import data_utils
+import random
+import yaml
+
 
 toGenerate = 'n'  # Choose type to generate: frame('f') or number('n')
+
+
+# Load the configuration file
+conf = yaml.load(open('sequence_generator_config.yml', 'r'))
+
+n_samples = int(conf['n_samples']) # Number of samples to save in dataset (aproximated)
+n_points = int(conf['n_points'])  # Number of points used to make prediction
+gap = int(conf['gap'])  # Separation between last sample and sample to predict
+noise_flag = conf['noise']['flag'] # Introduce noise to the samples
 
 
 def get_position(x0, t, u_x):
@@ -29,24 +40,37 @@ def create_frame(x, size):
 
 
 def get_numbers(func):
-    numbers = [func(x) for x in range(4)]
-    # Create number 10
-    numbers.append(func(10))
+    # Get first samples
+    numbers = [func(x) for x in range(n_points)]
+    # Create number to predict
+    numbers.append(func(n_points+gap-1))
     return numbers
 
 
-def to_file(ftype, data):
-    f = open('numbers.txt', 'w')
-    if ftype == 'l':
-        f.write('[m, n]:[x=0, x=1, x=2, x=3, x=10] \n')
-    elif ftype == 'q':
-        f.write('[a, b, c]:[x=0, x=1, x=2, x=3, x=10] \n')
-    for seq_key in data.keys():
-        f.write(seq_key + ':' + str(data[seq_key]) + '\n')
+def to_file(seq, n_param, file):
+    for i,element in enumerate(seq):
+        if i == 0:
+            file.write('[ ')
+
+        if i == 4:
+            file.write(element + ' ')
+
+        elif i == n_param and n_param == 5:
+            file.write(str(element) + ' ')
+            file.write('][ ')
+
+        elif i == n_param:
+            file.write("{0:.4f}".format(element) + ' ')
+            file.write('][ ')
+
+        else:
+            file.write("{0:.4f}".format(element) + ' ')
+
+        if i == len(seq) - 1:
+            file.write('] \n')
 
 
 if __name__ == '__main__':
-
     if toGenerate == 'f':  # Generate a directory with 4+1 frames for each speed
         # Create directory
         if os.path.exists('frames'):
@@ -69,41 +93,105 @@ if __name__ == '__main__':
                         create_frame(get_position(10, 10, u_x),imSize))
 
     elif toGenerate == 'n':  # Generate a list with 4+1 arrays for each speed
-        sequences = {}
+        sequences = []
 
-        func_type = 'l'  # Choose type of function: linear(l), quadratic(q) or sinusoidal(s)
+        func_type = conf['func_type']  # Choose type of function: linear, quadratic or sinusoidal
 
-        if func_type == 'l':
-            rect = lambda x: m*x + n
+        # Create samples
+        for i in range(n_samples):
+            a = random.uniform(-100, 100)
+            b = random.uniform(-100, 100)
+            c = random.uniform(-100, 100)
 
-            for m in np.arange(-5.0, 5.0):
-                for n in np.arange(-5.0, 5.0):
-                    num = get_numbers(rect)
-                    sequences[str([m,n])] = num
+            if func_type == 'linear':
+                # Set function: ax + by + c = 0
+                f = lambda x: (a * x + c) / -b
 
-        elif func_type == 'q':
-            parab = lambda x: a*(x**2) + b*x + c
+            elif func_type == 'quadratic':
+                while a == 0:
+                    a = random.uniform(-100, 100)
 
-            for a in np.arange(-5.0, 5.0):
-                if a != 0:
-                    for b in np.arange(-5.0,5.0):
-                        for c in np.arange(-5.0,5.0):
-                            num = get_numbers(parab)
-                            sequences[str([a,b,c])] = num
+                f = lambda x: a * (x ** 2) + b * x + c
 
-        elif func_type == 's':
-            sen = lambda x: A * np.sin((2 * np.pi * frec * x) + math.radians(theta))
-            x = (np.linspace(-10, 10, 200))
-            frec = 0.1
-            theta = 0
-            A = 1
-            plt.plot(x,sen(x))
-            plt.show()
+            else:
+                print('Choose a correct function to generate (linear,quadratic or sinusoidal) ')
+                break
 
-        else:
-            print('Choose a correct function to generate (linear,quadratic or sinusoidal) ')
+            parameters = [a, b, c, gap, func_type]
 
-        to_file(func_type, sequences)
+            num = get_numbers(f)
+
+            if not noise_flag:
+                noise_par = [None]
+            else:
+                mean = int(conf['noise']['mean'])
+                stand_deviation = int(conf['noise']['stand_deviation'])
+
+                noise_par= [mean, stand_deviation]
+
+                noise = np.random.normal(mean, stand_deviation, len(num))  # Different noise for each sample
+
+                num = list(num + noise)
+
+            for param in noise_par:
+                parameters.append(param)
+
+            for p in parameters[::-1]:
+                num.insert(0, p)
+
+            sequences.append(num)
+            print(i)
+
+
+        fraction_test = 0.1
+        fraction_validation = 0.1
+
+        # Separate train, test and validation
+        test_set_size = int(len(sequences) * fraction_test)
+        validation_set_size = int(len(sequences) * fraction_validation)
+
+        train_set = sequences[:-(test_set_size + validation_set_size)]
+        test_set = sequences[len(sequences) - (test_set_size + validation_set_size):-validation_set_size]
+        validation_set = sequences[-validation_set_size:]
+
+        print(len(train_set) + len(test_set) + len(validation_set) == len(sequences))  # Check the separation
+
+        # Init files
+        file_train = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_par) + '_train.txt', 'w')
+        file_train.write(
+            '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
+            str(n_points + gap - 1) + ' ]\n')
+        file_test = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_par) + '_test.txt', 'w')
+        file_test.write(
+            '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
+            str(n_points + gap - 1) + ' ]\n')
+        file_val = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_par) + '_val.txt', 'w')
+        file_val.write('[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
+                       str(n_points + gap - 1) + ' ]\n')
+
+        # Write files
+        # Train
+        for element in train_set:
+            to_file(element, len(parameters)-1, file_train)
+
+        # Test
+        for element in test_set:
+            to_file(element, len(parameters)-1, file_test)
+
+        # Validation
+        for element in validation_set:
+            to_file(element, len(parameters)-1, file_val)
+
+
+        # Draw an example
+        index = random.randrange(0, len(sequences))
+
+        x = sequences[index][6:n_points + 6]
+        y = sequences[index][-1:]
+        data_utils.draw_data(plt, [x, y], gap)
+        plt.title(str(index))
+
+        plt.show()
 
     else:
         print('Choose a correct type to generate (frame or number) ')
