@@ -11,24 +11,16 @@ import numpy as np
 
 def read_data(file):
 
-    type = file.split('/')[1].split('_')[0]
-
-    if type == 'linear':
-        parameters = 2
-    elif type == 'quadratic':
-        parameters = 3
-
     f = open(file)
     data = f.readlines()
     data = data[1:]
-    i = 0
 
-    for element in data:
-        element = element.split('\n')[0].split(']')[0].split('[')[1].split(',')
-        data[i] = np.array(element[parameters:], 'int')
-        i = i+1
+    parameters = [data[i].split('][')[0].split(' ')[1:-1] for i in range(len(data))]
 
-    return data
+    samples = [np.array(element.split('][')[1].split(' ')[1:-2], dtype=np.float32) for element in data]
+
+    print(samples[0].size)
+    return parameters, samples
 
 
 def reshape_data(data):
@@ -44,4 +36,14 @@ def reshape_data(data):
             dataX = np.vstack([dataX, points[0:-1]])
             dataY = np.append(dataY, points[points.size - 1])
 
+    print(dataX.shape)
+
     return dataX,dataY
+
+
+def draw_data(fig, data, gap):
+    last_know = len(data[0])
+    x = list(range(last_know))
+
+    fig.scatter(x, data[0], 5, color='green')
+    fig.scatter(last_know - 1 + gap, data[1], 5, color='green')
