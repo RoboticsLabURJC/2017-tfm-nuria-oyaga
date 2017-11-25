@@ -157,9 +157,8 @@ if __name__ == '__main__':
             if not noise_flag:
                 noise_parameters = [None]
             else:
-                mean = int(conf['noise']['mean'])
-                stand_deviation = int(conf['noise']['stand_deviation'])
-
+                mean = float(conf['noise']['mean'])
+                stand_deviation = float(conf['noise']['stand_deviation'])
                 noise_parameters = [mean, stand_deviation]
 
                 noise = np.random.normal(mean, stand_deviation, len(sample))  # Different noise for each sample
@@ -198,8 +197,9 @@ if __name__ == '__main__':
             '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
             str(n_points + gap - 1) + ' ]\n')
         file_val = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_val.txt', 'w')
-        file_val.write('[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
-                       str(n_points + gap - 1) + ' ]\n')
+        file_val.write(
+            '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
+            str(n_points + gap - 1) + ' ]\n')
 
         # Write files
         # Train
@@ -218,7 +218,7 @@ if __name__ == '__main__':
         # Draw an example
         index = random.randrange(0, len(sequences))
 
-        x = sequences[index][6:n_points + 6]
+        x = sequences[index][len(parameters):n_points + len(parameters)]
         y = sequences[index][-1:]
         data_utils.draw_data(plt, [x, y], gap)
         plt.title(str(index))
