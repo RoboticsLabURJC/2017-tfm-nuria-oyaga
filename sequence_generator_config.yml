@@ -12,9 +12,15 @@ gap: 10
 
 # Noise
 noise:
- flag: False #True to add noise to the samples
- mean: 0
- stand_deviation: 50
+  flag: False #True to add noise to the samples
+  mean: 0
+  stand_deviation: 50
+
+# Separate train, test and validation
+split:
+  flag: True #True to separate
+  fraction_test: 0.1
+  fraction_validation: 0.1
 
 
 
