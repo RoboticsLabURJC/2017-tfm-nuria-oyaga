@@ -21,13 +21,12 @@ if __name__ == '__main__':
     batch_size = 2
 
     # Load data
-    train_set = data_utils.read_data('functions_dataset/quadratic_train.txt')
-    test_set = data_utils.read_data('functions_dataset/quadratic_test.txt')
+    parameters, train_set = data_utils.read_data('functions_dataset/linear_10_[None]_train.txt')
+    _, test_set = data_utils.read_data('functions_dataset/linear_10_[None]_val.txt')
 
     # Put the train data into the right shape
     print('Puting the train data into the right shape...')
     trainX, trainY = data_utils.reshape_data(train_set)
-    print(trainX.shape)
 
     # Put the test data into the right shape
     print('Puting the test data into the right shape...')
@@ -45,7 +44,9 @@ if __name__ == '__main__':
               batch_size=batch_size,
               verbose=2)
 
-    model.save('Models/QuadraticPredictorMultilayerPerceptron' + str(n_epochs) + '.h5')
+
+    model.save('Models/' + parameters[0][4] + '_' + parameters[0][3] + '_' + parameters[0][5]
+               + '_PredictorMultilayerPerceptron' + str(n_epochs) + '.h5')
 
     # Estimate model performance
     trainScore = model.evaluate(trainX, trainY, verbose=0)
