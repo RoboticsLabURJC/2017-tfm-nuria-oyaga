@@ -88,6 +88,9 @@ def to_file(seq, n_param, file):
         if i == 4:
             file.write(element + ' ')
 
+        elif i == 3:
+            file.write(str(element) + ' ')
+
         elif i == n_param and n_param == 5:
             file.write(str(element) + ' ')
             file.write('][ ')
@@ -131,10 +134,11 @@ if __name__ == '__main__':
         func_type = conf['func_type']  # Type of function: linear, quadratic, sinusoidal
 
         # Create samples of the function
+        limit = n_samples/2
         for i in range(n_samples):
-            a = random.uniform(-100, 100)
-            b = random.uniform(-100, 100)
-            c = random.uniform(-100, 100)
+            a = random.uniform(-limit, limit)
+            b = random.uniform(-limit, limit)
+            c = random.uniform(-limit, limit)
 
             if func_type == 'linear':
                 # Set function: ax + by + c = 0
@@ -142,7 +146,7 @@ if __name__ == '__main__':
 
             elif func_type == 'quadratic':
                 while a == 0:
-                    a = random.uniform(-100, 100)
+                    a = random.uniform(-limit, )
                 # Set function: ax² + by + c = 0 with a != 0
                 f = lambda x: a * (x ** 2) + b * x + c
 
@@ -175,45 +179,57 @@ if __name__ == '__main__':
             print(i)
 
         # Separate train, test and validation
-        fraction_test = 0.1
-        fraction_validation = 0.1
+        if conf['split']['flag']:
+            fraction_test = conf['split']['fraction_test']
+            fraction_validation = conf['split']['fraction_validation']
 
-        test_set_size = int(len(sequences) * fraction_test)
-        validation_set_size = int(len(sequences) * fraction_validation)
+            test_set_size = int(len(sequences) * fraction_test)
+            validation_set_size = int(len(sequences) * fraction_validation)
 
-        train_set = sequences[:-(test_set_size + validation_set_size)]
-        test_set = sequences[len(sequences) - (test_set_size + validation_set_size):-validation_set_size]
-        validation_set = sequences[-validation_set_size:]
+            train_set = sequences[:-(test_set_size + validation_set_size)]
+            test_set = sequences[len(sequences) - (test_set_size + validation_set_size):-validation_set_size]
+            validation_set = sequences[-validation_set_size:]
 
-        print(len(train_set) + len(test_set) + len(validation_set) == len(sequences))  # Check the separation
+            print(len(train_set) + len(test_set) + len(validation_set) == len(sequences))  # Check the separation
 
-        # Init files
-        file_train = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_train.txt', 'w')
-        file_train.write(
-            '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
-            str(n_points + gap - 1) + ' ]\n')
-        file_test = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_test.txt', 'w')
-        file_test.write(
-            '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
-            str(n_points + gap - 1) + ' ]\n')
-        file_val = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_val.txt', 'w')
-        file_val.write(
-            '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
-            str(n_points + gap - 1) + ' ]\n')
+            # Init files
+            file_train = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_train.txt', 'w')
+            file_train.write(
+                '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
+                str(n_points + gap - 1) + ' ]\n')
+            file_test = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_test.txt', 'w')
+            file_test.write(
+                '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
+                str(n_points + gap - 1) + ' ]\n')
+            file_val = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_val.txt', 'w')
+            file_val.write(
+                '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
+                str(n_points + gap - 1) + ' ]\n')
 
-        # Write files
-        # Train
-        for element in train_set:
-            to_file(element, len(parameters)-1, file_train)
+            # Write files
+            # Train
+            for element in train_set:
+                to_file(element, len(parameters)-1, file_train)
 
-        # Test
-        for element in test_set:
-            to_file(element, len(parameters)-1, file_test)
+            # Test
+            for element in test_set:
+                to_file(element, len(parameters)-1, file_test)
 
-        # Validation
-        for element in validation_set:
-            to_file(element, len(parameters)-1, file_val)
+            # Validation
+            for element in validation_set:
+                to_file(element, len(parameters)-1, file_val)
 
+        else:
+            # Init file
+            file = open(
+                'functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_dataset.txt', 'w')
+            file.write(
+                '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
+                str(n_points + gap - 1) + ' ]\n')
+
+            # Write file
+            for element in sequences:
+                to_file(element, len(parameters) - 1, file)
 
         # Draw an example
         index = random.randrange(0, len(sequences))
