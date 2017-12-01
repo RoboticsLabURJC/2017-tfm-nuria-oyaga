@@ -23,7 +23,7 @@ def read_data(file):
 
     parameters = [data[i].split('][')[0].split(' ')[1:-1] for i in range(len(data))]
 
-    samples = [np.array(element.split('][')[1].split(' ')[1:-2], dtype=np.float32) for element in data]
+    samples = [np.array(data[i].split('][')[1].split(' ')[1:-2], dtype=np.float32) for i in range(len(data))]
 
     return parameters, samples
 
