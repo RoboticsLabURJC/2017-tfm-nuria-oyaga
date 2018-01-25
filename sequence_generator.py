@@ -7,12 +7,11 @@ __date__ = "2017/10/06"
 
 import cv2
 import numpy as np
-import os
-import shutil
 import matplotlib.pyplot as plt
 import data_utils
 import random
 import yaml
+import math
 
 
 toGenerate = 'n'  # Choose type to generate: frame('f') or number('n')
@@ -25,7 +24,6 @@ n_samples = int(conf['n_samples']) # Number of samples to save in dataset (aprox
 n_points = int(conf['n_points'])  # Number of points used to make prediction
 gap = int(conf['gap'])  # Separation between last sample and sample to predict
 noise_flag = conf['noise']['flag'] # Introduce noise to the samples
-
 
 
 def get_position(x0, t, u_x):
@@ -109,11 +107,7 @@ def to_file(seq, n_param, file):
 if __name__ == '__main__':
     if toGenerate == 'f':  # Generate a directory with 4+1 frames for each speed
         # Create directory
-        if os.path.exists('frames'):
-            shutil.rmtree('frames')
-            os.mkdir('frames')
-        else:
-            os.mkdir('frames')
+        data_utils.create_dir('frames')
 
         # Set frame size
         imSize = (256, 256, 3)  # (h,w,chanels)
@@ -129,26 +123,52 @@ if __name__ == '__main__':
                         create_frame(get_position(10, 10, u_x),imSize))
 
     elif toGenerate == 'n':  # Generate a sequence of numbers
-        sequences = []
-
         func_type = conf['func_type']  # Type of function: linear, quadratic, sinusoidal
 
+        # Create directory
+        dir = 'functions_dataset/' + func_type
+        data_utils.check_dir(dir)
+
+        sequences = []
+
         # Create samples of the function
-        limit = n_samples/2
+        limit = 500
         for i in range(n_samples):
             a = random.uniform(-limit, limit)
             b = random.uniform(-limit, limit)
             c = random.uniform(-limit, limit)
 
             if func_type == 'linear':
-                # Set function: ax + by + c = 0
+                # Set function: ax + by + c = 0 with inclination < 60º
                 f = lambda x: (a * x + c) / -b
 
+                while (1):
+                    alpha = math.atan(a/b)
+                    ang = round(math.degrees(alpha), 2)
+                    if abs(ang) < 60:
+                        break
+                    else:
+                        a = random.uniform(-limit, limit)
+                        b = random.uniform(-limit, limit)
+
             elif func_type == 'quadratic':
-                while a == 0:
-                    a = random.uniform(-limit, )
-                # Set function: ax² + by + c = 0 with a != 0
+                # Set function: ax² + by + c = 0 with a != 0 and inclination < 60º
                 f = lambda x: a * (x ** 2) + b * x + c
+                while (1):
+                    '''y1 = f(10)
+                    y2 = f(11)
+                    alpha = math.atan(y2 - y1)
+                    ang = round(math.degrees(alpha), 2)
+                    if abs(ang) > 75 and abs(a) > 1:
+                        break'''
+                    if abs(a) > 1:
+                        break
+                    else:
+                        a = random.uniform(-limit, limit)
+                    '''else:
+                        a = random.uniform(-limit, limit)
+                        b = random.uniform(-limit, limit)
+                        c = random.uniform(-limit, limit)'''
 
             else:
                 print('Choose a correct function to generate (linear,quadratic or sinusoidal) ')
@@ -193,15 +213,15 @@ if __name__ == '__main__':
             print(len(train_set) + len(test_set) + len(validation_set) == len(sequences))  # Check the separation
 
             # Init files
-            file_train = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_train.txt', 'w')
+            file_train = open(dir + '/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_train.txt', 'w')
             file_train.write(
                 '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
                 str(n_points + gap - 1) + ' ]\n')
-            file_test = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_test.txt', 'w')
+            file_test = open(dir + '/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_test.txt', 'w')
             file_test.write(
                 '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
                 str(n_points + gap - 1) + ' ]\n')
-            file_val = open('functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_val.txt', 'w')
+            file_val = open(dir + '/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_val.txt', 'w')
             file_val.write(
                 '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
                 str(n_points + gap - 1) + ' ]\n')
@@ -221,8 +241,7 @@ if __name__ == '__main__':
 
         else:
             # Init file
-            file = open(
-                'functions_dataset/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_dataset.txt', 'w')
+            file = open(dir + '/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_dataset.txt', 'w')
             file.write(
                 '[ a b c gap ftype noise(mean, standard deviation) ][ x=0:' + str(n_points - 1) + ' x=' +
                 str(n_points + gap - 1) + ' ]\n')
@@ -232,13 +251,12 @@ if __name__ == '__main__':
                 to_file(element, len(parameters) - 1, file)
 
         # Draw an example
-        index = random.randrange(0, len(sequences))
-
-        x = sequences[index][len(parameters):n_points + len(parameters)]
-        y = sequences[index][-1:]
-        data_utils.draw_data(plt, [x, y], gap)
-        plt.title(str(index))
-
+        plt.figure()
+        x = range(20)
+        for i, seq in enumerate(sequences):
+            print(i)
+            y = seq[:-1]
+            plt.plot(x, y)
         plt.show()
 
     else:
