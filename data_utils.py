@@ -7,6 +7,13 @@ __date__ = "2017/11/02"
 
 
 import numpy as np
+import os
+import shutil
+
+
+def check_dir(dir):
+    if not os.path.exists(dir):
+        os.mkdir(dir)
 
 
 def read_data(file):
