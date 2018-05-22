@@ -1,3 +1,5 @@
+# Root to save
+root: /home/nuria/Documents/MOVA/TFM/functions_dataset/
 # Type of element to generate
 to_generate: n  #frame('f'), vector('v') or number('n')
 
@@ -5,7 +7,7 @@ to_generate: n  #frame('f'), vector('v') or number('n')
 motion_type: URM #URM
 
 # If toGenerate = 'n'; Function type
-func_type: linear  #linear, quadratic, sinusoidal, poly3, poly4
+func_type: quadratic  #linear, quadratic, sinusoidal, poly3, poly4
 
 # Number of samples
 n_samples: 50000

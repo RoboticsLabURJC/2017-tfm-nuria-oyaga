@@ -6,15 +6,13 @@ TFM - main.py - Description
 __author__ = "Nuria Oyaga"
 __date__ = "23/04/2018"
 
-from utils import write_header, check_dirs
+from utils import write_header, check_dirs, get_config_file
 import functions
-
-import yaml
 
 
 if __name__ == '__main__':
-    # Load the configuration file
-    conf = yaml.load(open('sequence_generator_config.yml', 'r'))
+
+    conf = get_config_file()
 
     n_samples = int(conf['n_samples'])  # Number of samples to save in the data set
     n_points = int(conf['n_points'])  # Number of points used to make prediction
@@ -34,8 +32,8 @@ if __name__ == '__main__':
         func_type = conf['func_type']  # Type of function
 
         # Create directory
-        data_dir = '/home/nuria/Documents/MOVA/TFM/functions_dataset/' + func_type
-
+        data_dir = conf['root'] + func_type
+        check_dirs(data_dir)
 
         for i in range(n_samples):
             if i % 100 == 0 or i == n_samples - 1:
@@ -120,7 +118,8 @@ if __name__ == '__main__':
 
             else:
                 if i == 0:
-                    filename = data_dir + '/' + func_type + '_' + str(gap) + '_' + str(noise_parameters) + '_dataset.txt'
+                    filename = data_dir + '/' + func_type + '_' + str(gap) + '_' + \
+                               str(noise_parameters) + '_dataset.txt'
                     write_header(filename, header)
 
                 func.write(filename)
