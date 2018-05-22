@@ -30,6 +30,8 @@ class Net(object):
         else:
             self.model = Sequential()
             self.dropout = kwargs['dropout']
+            if self.dropout:
+                self.drop_percentage = kwargs['drop_percentage']
             self.loss = kwargs['loss']
             self.activation = kwargs['activation']
             self.input_dim = kwargs['input_dim']
@@ -126,8 +128,7 @@ class Mlp(Net):
                 self.model.add(Dense(n, activation=self.activation))
 
         if self.dropout:
-            d = 0.2
-            self.model.add(Dropout(d))
+            self.model.add(Dropout(self.drop_percentage))
 
         self.model.add(Dense(1))
         self.model.compile(loss=self.loss, optimizer='adam')

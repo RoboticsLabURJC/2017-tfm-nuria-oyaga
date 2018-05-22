@@ -1,0 +1,31 @@
+# Root to save the model
+root: /home/nuria/Documents/MOVA/TFM/Models/
+
+# Type of the net to train (MLP, LSTM)
+net_type: mlp
+
+# Neurons distribution
+n_neurons: [10]
+
+# Activation function
+activation: relu
+
+# Loss function
+loss: mean_squared_error
+
+# Dropout options
+dropout:
+  flag: False
+  percentage: 0.2
+
+# Epochs
+n_epochs: 300
+
+# Batch size
+batch_size: 15
+
+# Patience
+patience: 10
+
+# Data directory
+data_dir: /home/nuria/Documents/MOVA/TFM/functions_dataset/linear/linear_10_[None]_
