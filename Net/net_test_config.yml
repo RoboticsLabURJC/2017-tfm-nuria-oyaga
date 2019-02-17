@@ -1,5 +1,0 @@
-# Test dataset path
-data_path: /home/nuria/Documents/MOVA/TFM/functions_dataset/linear/linear_10_[None]_test.txt
-
-# Model path
-model_path: /home/nuria/Documents/MOVA/TFM/Models/MLP/linear/LINEAR_10_None_Predictor_15_False_relu_mean_squared_error.h5
