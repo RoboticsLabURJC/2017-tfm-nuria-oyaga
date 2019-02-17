@@ -1,0 +1,43 @@
+# Root to save
+root: /home/nuria/Documents/TFM/Frames_dataset/
+
+# Type of element to generate
+to_generate: f  #frame('f'), vector('v') or number('n')
+
+# If toGenerate = 'n'; Function type
+func_type: poly3 #linear, quadratic, sinusoidal, poly3, poly4
+
+# If toGenerate = 'v'; Motion type, sample size
+motion_type: URM #URM
+vector_len: 320
+
+# If toGenerate = 'f'; Motion type, height, width, object
+height: 80
+width: 120
+object: point # point, circle
+obj_color: 255 # For b/w: 255; For color: [0, 255, 0]
+
+circle_parameters:
+  radius: 5
+
+
+# Number of samples
+n_samples: 500
+
+# Number of know points (x values)
+n_points: 20
+
+# Gap between last know and to predict samples
+gap: 10
+
+# Noise
+noise:
+  flag: False #True to add noise to the samples
+  mean: 0
+  stand_deviation: 50
+
+# Separate train, test and validation
+split:
+  flag: True #True to separate
+  fraction_test: 0.1
+  fraction_validation: 0.1
