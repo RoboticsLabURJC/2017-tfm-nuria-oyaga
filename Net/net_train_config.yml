@@ -1,0 +1,36 @@
+# Version
+version: 1
+
+# Root to save the model
+root: /home/nuria/Documents/TFM/Models/
+
+# Type of the net to train (NoRec, Rec)
+net_type: NoRec
+
+# Neurons distribution
+#n_neurons: [10]
+n_neurons: Conv1D
+
+# Activation function
+activation: relu
+
+# Loss function
+loss: mean_squared_error
+
+# Dropout options
+dropout:
+  flag: False
+  percentage: 0.2
+
+# Epochs
+n_epochs: 300
+
+# Batch size
+batch_size: 15
+
+# Patience
+patience: 10
+
+# Data
+data_dir: /home/nuria/Documents/TFM/Vectors_dataset/URM/URM_10_[None]_
+#data_dir: /home/nuria/Documents/MOVA/TFM/Functions_dataset/linear/linear_10_[None]_

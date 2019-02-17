@@ -1,0 +1,5 @@
+# Test dataset path
+data_path: /home/nuria/Documents/MOVA/TFM/Functions_dataset/sinusoidal/sinusoidal_10_[None]_test.txt
+
+# Model path
+model_path: /home/nuria/Documents/MOVA/TFM/Models/MLP/sinusoidal/SINUSOIDAL_10_None_Predictor_15_False_relu_mean_squared_error_10.h5
