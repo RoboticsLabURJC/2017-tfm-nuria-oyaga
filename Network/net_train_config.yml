@@ -9,13 +9,14 @@ net_type: NoRec
 
 # Neurons distribution
 #n_neurons: [10]
-n_neurons: Conv1D
+n_neurons: [15]
 
 # Activation function
 activation: relu
 
 # Loss function
-loss: mean_squared_error
+func_loss: mean_squared_error
+vect_loss: categorical_crossentropy
 
 # Dropout options
 dropout:
@@ -33,4 +34,4 @@ patience: 10
 
 # Data
 data_dir: /home/nuria/Documents/TFM/Vectors_dataset/URM/URM_10_[None]_
-#data_dir: /home/nuria/Documents/MOVA/TFM/Functions_dataset/linear/linear_10_[None]_
+#data_dir: /home/nuria/Documents/TFM/Functions_dataset/linear/linear_10_[None]_

@@ -1,0 +1,6 @@
+# Test dataset path
+data_path: /home/nuria/Documents/TFM/Vectors_dataset/URM/URM_10_[None]_test/samples
+#data_path: /home/nuria/Documents/TFM/Functions_dataset/linear/linear_10_[None]_test.txt
+# Model path
+model_path: /home/nuria/Documents/TFM/Models/NOREC/Vectors_dataset/URM/15_False_relu_categorical_crossentropy_10.h5
+#model_path: /home/nuria/Documents/TFM/Models/NOREC/Functions_dataset/linear/LINEAR_10_None_Predictor/15_False_relu_mean_squared_error_10.h5
