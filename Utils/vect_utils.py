@@ -1,6 +1,34 @@
+from Utils import utils
+
 import numpy as np
-from matplotlib import pyplot as plt
+import pandas as pd
 import cv2
+
+
+def read_vector_data(path):
+    parameters_path = path.replace('samples', 'parameters.txt')
+    images_paths = utils.read_images(path)
+
+    parameters = pd.read_csv(parameters_path, sep=' ')
+    images = [cv2.imread(img_path, 0) for img_path in images_paths]
+
+    return parameters, images
+
+
+def reshape_vector_data(data):
+    dataX = []
+    dataY = []
+    for i, sample in enumerate(data):
+        if i % 5000 == 0:
+            print(i)
+
+        dataX.append(sample[:][0:-1])
+        dataY.append(sample[:][-1])
+
+    dataX = np.array(dataX, dtype="float") / 255
+    dataY = np.array(dataY, dtype="float") / 255
+
+    return dataX, dataY
 
 
 def get_positions(predictions, real):
@@ -8,20 +36,22 @@ def get_positions(predictions, real):
     real_pos = []
     maximum = []
     for i, p in enumerate(predictions):
-        predict_pos.append(np.where(np.round(p[0]) == 1)[0][0])
-        real_pos.append(np.where(real[i][0] == 1)[0][0])
-        maximum.append(len(p[0]))
+        predict_pos.append(np.where(np.round(p) == 1)[0][0])
+        real_pos.append(np.where(real[i] == 1)[0][0])
+        maximum.append(len(p))
 
     return np.array(predict_pos), np.array(real_pos), np.array(maximum)
 
 
 def draw_vector(fig, real_data, pred_data, gap):
-    gap_image = np.zeros((gap-1, real_data[0].shape[1]))
-    bw_image = np.concatenate((real_data[0], gap_image, real_data[1]))
+    gap_image = np.zeros((gap - 1, real_data[0].shape[1]))
+    bw_image = np.concatenate((real_data[0], gap_image, real_data[1].reshape(1, real_data[0].shape[1])))
     bw_image = bw_image.astype(np.uint8) * 255
-    color_image = np.dstack([bw_image, bw_image, bw_image])
 
-    color_image[bw_image.shape[0] - 1][pred_data][-1] = 255
+    pred_pos = np.where(pred_data == 1)[0]
+    bw_image_with_pred = bw_image.copy()
+    bw_image_with_pred[-1][pred_pos] = 255
+    color_image = np.dstack([bw_image_with_pred, bw_image, bw_image])
 
     fig.imshow(color_image)
 

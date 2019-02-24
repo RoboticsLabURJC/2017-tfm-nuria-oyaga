@@ -1,6 +1,7 @@
-import numpy as np
+from Utils import func_utils, vect_utils, frame_utils
+
 from matplotlib import pyplot as plt
-from Utils import func_utils, vect_utils
+import numpy as np
 
 
 def calculate_error(real, prediction, maximum):
@@ -79,12 +80,18 @@ def draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_
         func_utils.draw_function(s2, [test_x[rel_error_stats[1][0]], test_y[rel_error_stats[1][0]]],
                                  predict[rel_error_stats[1][0]], gap)
         s2.set_xlim([0, 40])
-    else:  # data_type == "Vectors_dataset"
+    elif data_type == "Vectors_dataset":
         f, (s1, s2) = plt.subplots(2, 1, sharey='all', sharex='all')
         vect_utils.draw_vector(s1, [test_x[error_stats[1][0]], test_y[error_stats[1][0]]],
-                               predict[error_stats[1][0]], gap)
+                               np.round(predict[error_stats[1][0]]), gap)
         vect_utils.draw_vector(s2, [test_x[rel_error_stats[1][0]], test_y[rel_error_stats[1][0]]],
-                               predict[rel_error_stats[1][0]], gap)
+                               np.round(predict[rel_error_stats[1][0]]), gap)
+
+    else:  # data_type == "Frames_dataset"
+        f, (s1, s2) = plt.subplots(1, 2, sharey='all', sharex='all')
+        frame_dim = (test_x.shape[2], test_x.shape[3])
+        frame_utils.draw_frame(s1, test_y[error_stats[1][0]], np.round(predict[error_stats[1][0]]), frame_dim)
+        frame_utils.draw_frame(s2, test_y[rel_error_stats[1][0]], np.round(predict[rel_error_stats[1][0]]), frame_dim)
 
     s1.set_title(
         'Sample ' + str(error_stats[1][0]) + '\n' + 'Max. absolute error = ' + str(error_stats[1][1]) + '\n' +
