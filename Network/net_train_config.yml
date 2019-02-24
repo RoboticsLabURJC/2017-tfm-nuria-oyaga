@@ -5,11 +5,7 @@ version: 1
 root: /home/nuria/Documents/TFM/Models/
 
 # Type of the net to train (NoRec, Rec)
-net_type: NoRec
-
-# Neurons distribution
-#n_neurons: [10]
-n_neurons: [15]
+net_type: Rec
 
 # Activation function
 activation: relu
@@ -33,5 +29,6 @@ batch_size: 15
 patience: 10
 
 # Data
-data_dir: /home/nuria/Documents/TFM/Vectors_dataset/URM/URM_10_[None]_
 #data_dir: /home/nuria/Documents/TFM/Functions_dataset/linear/linear_10_[None]_
+#data_dir: /home/nuria/Documents/TFM/Vectors_dataset/URM/URM_10_[None]_
+data_dir: /home/nuria/Documents/TFM/Frames_dataset/URM_point_255/URM_10_[None]_

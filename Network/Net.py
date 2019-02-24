@@ -6,17 +6,16 @@ TFM - Network.py - Description
 __author__ = "Nuria Oyaga"
 __date__ = "21/05/2018"
 
-from Utils import utils, func_utils, vect_utils, test_utils
+from Utils import utils, vect_utils, test_utils
 
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Conv1D, MaxPooling1D
+from keras.layers import Dense, Dropout, Conv1D, MaxPooling1D, Conv2D, MaxPooling2D, Flatten, LSTM, ConvLSTM2D, TimeDistributed
 from keras.utils import vis_utils
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.models import load_model
 
 import numpy as np
 from time import time
-from matplotlib import pyplot as plt
 
 
 class Net(object):
@@ -34,7 +33,6 @@ class Net(object):
             self.activation = kwargs['activation']
             self.input_shape = kwargs['input_shape']
             self.output_shape = kwargs['output_shape']
-            self.neurons = kwargs['n_neurons']
 
     def train(self, n_epochs, batch_size, patience, root, data_train, data_val):
         utils.check_dirs(root)
@@ -82,7 +80,7 @@ class Net(object):
             maximum = [np.max(np.abs(np.append(test_x[i], test_y[i]))) for i in range(len(test_x))]
             predict_values = predict
             real_values = test_y
-        else:
+        else:  # data_type == "Vectors_dataset" or "Frames_dataset"
             predict_values, real_values, maximum = vect_utils.get_positions(predict, test_y)
 
         error, relative_error = test_utils.calculate_error(real_values, predict_values, maximum)
@@ -94,7 +92,7 @@ class Net(object):
         test_utils.error_histogram(relative_error)
 
         # Draw the max errors points
-        test_utils.draw_max_error_samples(test_x, test_y, predict_values, gap, error_stats, rel_error_stats, data_type)
+        test_utils.draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_stats, data_type)
 
 
 class Mlp(Net):
@@ -106,10 +104,7 @@ class Mlp(Net):
 
     def create_model(self):
         print("Creating MLP model")
-        self.model.add(Dense(self.neurons[0], input_shape=self.input_shape, activation=self.activation))
-        if len(self.neurons) > 1:
-            for n in self.neurons[1:]:
-                self.model.add(Dense(n, activation=self.activation))
+        self.model.add(Dense(15, input_shape=self.input_shape, activation=self.activation))
 
         if self.dropout:
             self.model.add(Dropout(self.drop_percentage))
@@ -131,6 +126,67 @@ class Convolution1D(Net):
         self.model.add(Conv1D(64, 3, activation=self.activation))
 
         self.model.add(MaxPooling1D(16))
+
+        if self.dropout:
+            self.model.add(Dropout(self.drop_percentage))
+
+        self.model.add(Flatten())
+
+        self.model.add(Dense(self.output_shape, activation="softmax"))
+        self.model.compile(loss=self.loss, optimizer='adam')
+
+
+class Convolution2D(Net):
+
+    def __init__(self, **kwargs):
+        Net.__init__(self, "Conv2D", **kwargs)
+        if 'model_file' not in kwargs.keys():
+            self.create_model()
+
+    def create_model(self):
+        print("Creating 2D convolutional model")
+        self.model.add(Conv2D(32, (3, 3), activation=self.activation, input_shape=self.input_shape))
+        self.model.add(Conv2D(32, (3, 3), activation=self.activation))
+
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
+
+        if self.dropout:
+            self.model.add(Dropout(self.drop_percentage))
+
+        self.model.add(Flatten())
+        self.model.add(Dense(self.output_shape, activation="softmax"))
+        self.model.compile(loss=self.loss, optimizer='adam')
+
+
+class Lstm(Net):
+    def __init__(self, **kwargs):
+        Net.__init__(self, "lstm", **kwargs)
+        if 'model_file' not in kwargs.keys():
+            self.create_model()
+
+    def create_model(self):
+        print("Creating LSTM model")
+        self.model.add(LSTM(25, input_shape=self.input_shape))
+
+        if self.dropout:
+            self.model.add(Dropout(self.drop_percentage))
+
+        self.model.add(Dense(self.output_shape, activation="softmax"))
+        self.model.compile(loss=self.loss, optimizer='adam')
+
+
+class ConvolutionLstm(Net):
+    def __init__(self, **kwargs):
+        Net.__init__(self, "lstm", **kwargs)
+        if 'model_file' not in kwargs.keys():
+            self.create_model()
+
+    def create_model(self):
+        print("Creating convolution LSTM model")
+        self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation), input_shape=self.input_shape))
+        self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
+        self.model.add(TimeDistributed(Flatten()))
+        self.model.add(LSTM(25))
 
         if self.dropout:
             self.model.add(Dropout(self.drop_percentage))

@@ -6,15 +6,16 @@ TFM - main_train.py - Description
 __author__ = "Nuria Oyaga"
 __date__ = "22/05/2018"
 
-from Utils import utils
+from Utils import utils, func_utils, vect_utils, frame_utils
 from Network import Net
+
+import numpy as np
 
 
 if __name__ == '__main__':
     conf = utils.get_config_file()
 
     net_type = conf['net_type']
-    n_neurons = conf['n_neurons']
     activation = conf['activation']
     dropout = conf['dropout']['flag']
     drop_percentage = float(conf['dropout']['percentage'])
@@ -36,10 +37,8 @@ if __name__ == '__main__':
         print('Training with functions')
         loss = conf['func_loss']
         # Load data
-        parameters, train_set = utils.read_function_data(data_dir + 'train.txt')
-        _, val_set = utils.read_function_data(data_dir + 'val.txt')
-        in_dim = (20,)
-        out_dim = 1
+        parameters, train_set = func_utils.read_function_data(data_dir + 'train.txt')
+        _, val_set = func_utils.read_function_data(data_dir + 'val.txt')
 
         if func_type == 'sinusoidal':
             filename = root + '/' + parameters[0][5] + '_' + parameters[0][4] + '_' + parameters[0][6] + '_Predictor'
@@ -47,35 +46,70 @@ if __name__ == '__main__':
             filename = root + '/' + parameters[0][4] + '_' + parameters[0][3] + '_' + parameters[0][5] + '_Predictor'
 
         # Put the train data into the right shape
-        trainX, trainY = utils.reshape_function_data(train_set)
+        trainX, trainY = func_utils.reshape_function_data(train_set)
 
         # Put the validation data into the right shape
-        valX, valY = utils.reshape_function_data(val_set)
+        valX, valY = func_utils.reshape_function_data(val_set)
 
         # Model settings
-        to_train_net = Net.Mlp(n_neurons=n_neurons, activation=activation, loss=loss, dropout=dropout,
+        in_dim = trainX.shape[1:]
+        out_dim = 1
+        to_train_net = Net.Mlp(activation=activation, loss=loss, dropout=dropout,
                                drop_percentage=drop_percentage, input_shape=trainX[0].shape, output_shape=out_dim)
 
     elif data_type == 'Vectors_dataset':
         print('Training with vectors')
         loss = conf['vect_loss']
         # Load data
-        _, train_set = utils.read_vector_data(data_dir + 'train/samples')
-        _, val_set = utils.read_vector_data(data_dir + 'val/samples')
-        in_dim = (20, 320)
-        out_dim = 320
+        _, train_set = vect_utils.read_vector_data(data_dir + 'train/samples')
+        _, val_set = vect_utils.read_vector_data(data_dir + 'val/samples')
         filename = root
 
         # Put the train data into the right shape
-        trainX, trainY = utils.reshape_vector_data(train_set)
+        trainX, trainY = vect_utils.reshape_vector_data(train_set)
 
         # Put the validation data into the right shape
-        valX, valY = utils.reshape_vector_data(val_set)
+        valX, valY = vect_utils.reshape_vector_data(val_set)
 
         # Model settings
-        to_train_net = Net.Convolution1D(n_neurons=n_neurons, activation=activation, loss=loss, dropout=dropout,
-                                         drop_percentage=drop_percentage, input_shape=in_dim,
-                                         output_shape=out_dim)
+        in_dim = trainX.shape[1:]
+        out_dim = np.prod(in_dim[1:])
+        if net_type == "NoRec":
+            to_train_net = Net.Convolution1D(activation=activation, loss=loss, dropout=dropout,
+                                             drop_percentage=drop_percentage, input_shape=in_dim,
+                                             output_shape=out_dim)
+        else:  # net_type == "Rec"
+            to_train_net = Net.Lstm(activation=activation, loss=loss, dropout=dropout,
+                                    drop_percentage=drop_percentage, input_shape=in_dim,
+                                    output_shape=out_dim)
+
+    else:  # data_type == 'Frames_dataset':
+        print('Training with frames')
+        loss = conf['vect_loss']
+        # Load data
+        _, train_set = frame_utils.read_frame_data(data_dir + 'train/samples')
+        _, val_set = frame_utils.read_frame_data(data_dir + 'val/samples')
+        filename = root
+
+        # Put the train data into the right shape
+        channels = False
+        if net_type == "Rec":
+            channels = True
+        trainX, trainY = frame_utils.reshape_frame_data(train_set, channels)
+        # Put the validation data into the right shape
+        valX, valY = frame_utils.reshape_frame_data(val_set, channels)
+
+        # Model settings
+        in_dim = trainX.shape[1:]
+        out_dim = np.prod(in_dim[1:])
+        if net_type == "NoRec":
+            to_train_net = Net.Convolution2D(activation=activation, loss=loss, dropout=dropout,
+                                             drop_percentage=drop_percentage, input_shape=in_dim,
+                                             output_shape=out_dim)
+        else:
+            to_train_net = Net.ConvolutionLstm(activation=activation, loss=loss, dropout=dropout,
+                                               drop_percentage=drop_percentage, input_shape=in_dim,
+                                               output_shape=out_dim)
     print('Training')
 
     to_train_net.train(n_epochs, batch_size, patience, filename, [trainX, trainY], [valX, valY])

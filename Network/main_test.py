@@ -6,7 +6,7 @@ TFM - main_test.py - Description
 __author__ = "Nuria Oyaga"
 __date__ = "22/05/2018"
 
-from Utils import utils
+from Utils import utils, func_utils, vect_utils, frame_utils
 from Network import Net
 
 if __name__ == '__main__':
@@ -17,21 +17,30 @@ if __name__ == '__main__':
     print(data_type)
     # Load data
     if data_type == "Functions_dataset":
-        parameters, test_set = utils.read_function_data(conf['data_path'])
+        parameters, test_set = func_utils.read_function_data(conf['data_path'])
         gap = float(parameters[0][3])
 
         print('Puting the test data into the right shape...')
-        testX, testY = utils.reshape_function_data(test_set)
+        testX, testY = func_utils.reshape_function_data(test_set)
 
         to_test_net = Net.Mlp(model_file=conf['model_path'])
 
-    else: # data_type == "Vectors_dataset":
-        parameters, test_set = utils.read_vector_data(conf['data_path'])
+    elif data_type == "Vectors_dataset":
+        parameters, test_set = vect_utils.read_vector_data(conf['data_path'])
         gap = parameters.iloc[0]['gap']
 
         print('Puting the test data into the right shape...')
-        testX, testY = utils.reshape_vector_data(test_set)
+        testX, testY = vect_utils.reshape_vector_data(test_set)
 
         to_test_net = Net.Convolution1D(model_file=conf['model_path'])
+
+    else:  # data_type == "Frames_dataset
+        parameters, test_set = frame_utils.read_frame_data(conf['data_path'])
+        gap = parameters.iloc[0]['gap']
+
+        print('Puting the test data into the right shape...')
+        testX, testY = frame_utils.reshape_frame_data(test_set)
+
+        to_test_net = Net.Convolution2D(model_file=conf['model_path'])
 
     to_test_net.test(testX, testY, gap, data_type)
