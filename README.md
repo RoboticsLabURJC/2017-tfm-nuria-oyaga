@@ -1,6 +1,7 @@
 # 2017-tfm-nuria-oyaga
 ## Data types
 For the purpose of this TFM we will handle data of different nature that increase the degree of difficulty. The code to generate these samples can be found in https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/tree/master/Generator
+
 ### Linear Functions dataset
 It is the simplest data to handle. The input of the network is a sequence of 20 numbers that follow the function of a line and the value that the network will return to us is the corresponding value of the function at point 20 + gap.
 
@@ -25,5 +26,9 @@ The 2D image represents in each row a continuous moment of time with the excepti
 The next step to increase the complexity is to increase one more dimension. In this way, each sample will consist of 20 + 1 images (frames) in which the URM movement of an object will be represented through the time that is represented with a single pixel.
 
 In the following video you can see an example of a sample of this type of samples:
+<p align="center">
+  <a href="http://www.youtube.com/watch?feature=player_embedded&v=RCEWNrTaYi8" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/sample_0.png" 
+  alt="journal analytics demo link to youtube" width="500"/></a>
+</p>
 
-[![URM point frame]("https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Frames%20samples/White%20point/sample400_0.png")](https://www.youtube.com/watch?v=RCEWNrTaYi8)
+As in the previous case, the speed of the object is limited so that in the prediction the object is always in the image.
