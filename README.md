@@ -1,8 +1,35 @@
 # 2017-tfm-nuria-oyaga
 ## Recurrent Neural Networks - LSTM
-Once we have tested the prediction with simple networks without recurrences, we start to train, with the same data, networks that incorporate recurrence. In particular, we will focus the work on the LSTM networks helping us with the tutorials of
+Once we have tested the prediction with simple networks without recurrences, we start to train, with the same data, networks that incorporate recurrence. In particular, we will focus the work on the LSTM networks helping us with the tutorials in https://machinelearningmastery.com/category/lstm/
 
 ### Linear Functions dataset
+Due to the simplicity of this data and the good result obtained with non-recurrent networks, we have decided not to train recurrent networks with this type of data.
+
+### URM Vectors dataset
+Although the result with non-recurrent networks was perfect, we decided to use this data to start with the new networks and verify that we have understood their implementation.
+
+As in the non-recurrent case, the first thing we must do is to resize the data to ensure that the input shape is correct.nothing changes with respect to non-recurrent networks, so we must have the following shapes:
+
+```ruby
+  input_shape=(n_samples, know_points=20, vector_length=320)
+  output_shape = vector_length
+```
+For this type of data we have trained a simple LSTM network whose structure can be seen in the following figure:
+<p align="center">
+  <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_properties.png">
+</p>
+As in the previous case, the network manages to reduce and stabilize the loss function in only a few epochs, without any error.
+<p align="center">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_history.png">
+</p>
+<p align="center">
+  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_error_hist.png">
+</p>
+In the next image you can see the samples where the errors (absolute and relative) are maximum. In this case we have not obtained any error so the first sample is shown.
+<p align="center">
+  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_max_error.png">
+</p>
+
 
 ## Non-Recurrent Neural Networks
 The first step was to try to solve the problem of prediction with a classical neural network that does not use recurrence. We carry out the training of different networks with the generated data.
@@ -43,7 +70,7 @@ For this type of data we have trained 1D convolutional network whose structure c
 <p align="center">
   <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_properties.png">
 </p>
-As in the previous case, the network manages to reduce and stabilize the loss function in only a few epochs, without any error.
+Aas expected and as it happened in the non-recurring case, the network manages to reduce and stabilize the loss function in only a few epochs, without any error.
 <p align="center">
   <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_history.png">
 </p>
