@@ -1,4 +1,9 @@
 # 2017-tfm-nuria-oyaga
+## Recurrent Neural Networks - LSTM
+Once we have tested the prediction with simple networks without recurrences, we start to train, with the same data, networks that incorporate recurrence. In particular, we will focus the work on the LSTM networks helping us with the tutorials of
+
+### Linear Functions dataset
+
 ## Non-Recurrent Neural Networks
 The first step was to try to solve the problem of prediction with a classical neural network that does not use recurrence. We carry out the training of different networks with the generated data.
 
