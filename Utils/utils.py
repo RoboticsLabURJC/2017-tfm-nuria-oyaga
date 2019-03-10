@@ -12,6 +12,8 @@ import argparse
 import yaml
 import cv2
 import shutil
+import matplotlib
+matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 import pandas as pd
 
