@@ -20,10 +20,10 @@ dropout:
   percentage: 0.2
 
 # Epochs
-n_epochs: 300
+n_epochs: 50
 
 # Batch size
-batch_size: 15
+batch_size: 5
 
 # Patience
 patience: 10
