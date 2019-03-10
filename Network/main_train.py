@@ -6,10 +6,7 @@ TFM - main_train.py - Description
 __author__ = "Nuria Oyaga"
 __date__ = "22/05/2018"
 
-import os
-cwd = os.getcwd()
-
-from cwd.Utils import utils, func_utils, vect_utils, frame_utils
+from Utils import utils, func_utils, vect_utils, frame_utils
 from Network import Net
 
 import numpy as np
