@@ -6,6 +6,9 @@ TFM - main_train.py - Description
 __author__ = "Nuria Oyaga"
 __date__ = "22/05/2018"
 
+import sys
+sys.path.insert(0, '/home/docker/2017-tfm-nuria-oyaga')
+
 from Utils import utils, func_utils, vect_utils, frame_utils
 from Network import Net
 
