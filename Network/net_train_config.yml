@@ -2,7 +2,7 @@
 version: 1
 
 # Root to save the model
-root: /home/nuria/Documents/TFM/Models/
+root: /home/docker/2017-tfm-nuria-oyaga/Models/
 
 # Type of the net to train (NoRec, Rec)
 net_type: Rec
@@ -31,4 +31,4 @@ patience: 10
 # Data
 #data_dir: /home/nuria/Documents/TFM/Functions_dataset/linear/linear_10_[None]_
 #data_dir: /home/nuria/Documents/TFM/Vectors_dataset/URM/URM_10_[None]_
-data_dir: /home/nuria/Documents/TFM/Frames_dataset/URM_point_255/URM_10_[None]_
+data_dir: /home/docker/2017-tfm-nuria-oyaga/Frames_dataset/URM_point_255/URM_10_[None]_
