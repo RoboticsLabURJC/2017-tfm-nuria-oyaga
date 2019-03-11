@@ -1,8 +1,75 @@
 # 2017-tfm-nuria-oyaga
 Below are explained the different steps that are taken in the realization of my TFM. The information displayed is sorted from most recent to oldest so that the latest updates can be accessed more quickly and easily.
 
+## Recurrent Neural Networks - LSTM - With new data types
+Due to the same problem as in the case of URM frames, it is only possible to show the structure of the network, identical to the URM case and the history during the training.
+
+### Parabolic motion
+
+<p align="center">
+  <img width="500" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/64_False_relu_categorical_crossentropy_10_properties.png">
+</p>
+<p align="center">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/64_False_relu_categorical_crossentropy_10_history.png">
+  
+### Linear motion
+
+<p align="center">
+  <img width="500" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/64_False_relu_categorical_crossentropy_10_properties.png">
+</p>
+<p align="center">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/64_False_relu_categorical_crossentropy_10_history.png">
+  
+## New data types
+After making a learning with simpler data and see that the performance is good we decided to complicate things to the network. For this I have established two new types of movements in space for the white point of the frames: linear movement and parabolic movement, which will combine with the URM movement in time.
+
+The way to obtain these new frames is the same as before, we set the position in x by means of a URM movement but this time, instead of maintaining the height of the object (position y) constant, we will modify it according to a function.
+
+The problem that we can find in this type of samples is that we are modifying the height, a value that must be integer, by means of a function that accepts decimal values, which causes a rounding to be necessary. Depending on the sample, this rounding can make the movement not seem as natural as it would be because it is possible that the height does not change from one instant to the next.
+
+### Parabolic motion
+The function for this motion type is:
+```ruby
+  g = lambda y, a, b: (a * (y ** 2)) + (b * y) + y0
+```
+
+And in the next you can see a sample of this:
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=aC5IR28P5vg" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/sample_0.png" 
+  alt="journal analytics demo link to youtube" width="500"/></a>
+</p>
+
+### Linear motion
+For this motion type the function is:
+```ruby
+  g = lambda y, m: (m * y) + y0
+```
+
+And in the next you can see a sample of this:
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=6M4slvtwdr0" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/sample_0.png" 
+  alt="journal analytics demo link to youtube" width="500"/></a>
+</p>
+
 ## Recurrent Neural Networks - LSTM
 Once we have tested the prediction with simple networks without recurrences, we start to train, with the same data, networks that incorporate recurrence. In particular, we will focus the work on the LSTM networks helping us with the tutorials in https://machinelearningmastery.com/category/lstm/
+
+### URM Point Frames dataset
+For the same reason that in the case of vectors we decided to develop a recurrent network for this type of data, verifying that the implementation we made is correct.
+
+In this case we must modify the structure of the data in the following way:
+```ruby
+  input_shape=(n_samples, know_points=20, height=80, width=120, channels=1)
+  output_shape = height * width * channels
+```
+Due to the computational load involved in the training and evaluation of this network it is not yet possible to show the result of the evaluation, although its structure and evolution in training is shown.
+
+<p align="center">
+  <img width="500" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/URM_point_255/64_False_relu_categorical_crossentropy_10_properties.png">
+</p>
+<p align="center">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/URM_point_255/64_False_relu_categorical_crossentropy_10_history.png">
+
 
 ### URM Vectors dataset
 Although the result with non-recurrent networks was perfect, we decided to use this data to start with the new networks and verify that we have understood their implementation.
@@ -41,7 +108,7 @@ As in the functions case, the first thing we must do to train the network for pr
   input_shape=(n_samples, know_points=20, height=80, width=120)
   output_shape = height * width
 ```
-For this type of data we have trained "D convolutional network whose structure can be seen in the following figure:
+For this type of data we have trained 2D convolutional network whose structure can be seen in the following figure:
 <p align="center">
   <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_URM/15_False_relu_categorical_crossentropy_10_properties.png">
 </p>
@@ -113,7 +180,7 @@ The next step to increase the complexity is to increase one more dimension. In t
 
 In the following video you can see an example of a sample of this type of samples:
 <p align="center">
-  <a href="http://www.youtube.com/watch?feature=player_embedded&v=RCEWNrTaYi8" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/sample_0.png" 
+  <a href="http://www.youtube.com/watch?v=RCEWNrTaYi8" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/sample_0.png" 
   alt="journal analytics demo link to youtube" width="500"/></a>
 </p>
 
