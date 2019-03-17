@@ -38,11 +38,26 @@ def reshape_frame_data(data, channels=False):
     return dataX, dataY
 
 
+def get_positions(predictions, real, dim):
+    predict_pos = []
+    real_pos = []
+    maximum = []
+    for i, p in enumerate(predictions):
+        p = p.reshape(dim)
+        predict_pos.append(np.unravel_index(p.argmax(), p.shape))
+        r = real[i].reshape(dim)
+        real_pos.append(np.unravel_index(r.argmax(), r.shape))
+        maximum.append(len(p))
+
+    return np.array(predict_pos), np.array(real_pos), np.array(maximum)
+
+
 def draw_frame(fig, real_data, pred_data, dim):
     bw_image_real = real_data.reshape(dim)
     bw_image_real = bw_image_real.astype(np.uint8) * 255
     color_image_real = np.dstack([bw_image_real, bw_image_real, bw_image_real])
 
+    pred_data[np.argmax(pred_data)] = 1
     pred_data = np.round(pred_data)
     bw_image_pred = pred_data.reshape(dim)
     bw_image_pred = bw_image_pred.astype(np.uint8) * 255

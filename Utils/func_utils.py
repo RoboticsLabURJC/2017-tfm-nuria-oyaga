@@ -36,7 +36,8 @@ def draw_function(fig, real_data, pred_data, gap):
     fig.scatter(x, real_data[0], 5, color='green')
     # For to predict element
     fig.scatter(last_know - 1 + gap, real_data[1], 5, color='green')
-    fig.scatter(last_know - 1 + gap, pred_data, 5, color='red')
+    if pred_data is not None:
+        fig.scatter(last_know - 1 + gap, pred_data, 5, color='red')
 
 
 

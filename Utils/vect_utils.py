@@ -36,8 +36,8 @@ def get_positions(predictions, real):
     real_pos = []
     maximum = []
     for i, p in enumerate(predictions):
-        predict_pos.append(np.where(np.round(p) == 1)[0][0])
-        real_pos.append(np.where(real[i] == 1)[0][0])
+        predict_pos.append(np.argmax(p))
+        real_pos.append(np.argmax(real[i]))
         maximum.append(len(p))
 
     return np.array(predict_pos), np.array(real_pos), np.array(maximum)

@@ -6,7 +6,11 @@ import numpy as np
 
 def calculate_error(real, prediction, maximum):
     # Calculate error
-    error = np.array([abs(real[i] - prediction[i]) for i in range(real.size - 1)])
+    if len(real.shape) > 1:
+        error = np.array([np.linalg.norm(np.array(real[i]) - np.array(prediction[i]))
+                          for i in range(real.shape[0] - 1)])
+    else:
+        error = np.array([abs(real[i] - prediction[i]) for i in range(real.size - 1)])
 
     # Calculate relative error
     relative_error = np.zeros(error.size)
@@ -90,8 +94,8 @@ def draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_
     else:  # data_type == "Frames_dataset"
         f, (s1, s2) = plt.subplots(1, 2, sharey='all', sharex='all')
         frame_dim = (test_x.shape[2], test_x.shape[3])
-        frame_utils.draw_frame(s1, test_y[error_stats[1][0]], np.round(predict[error_stats[1][0]]), frame_dim)
-        frame_utils.draw_frame(s2, test_y[rel_error_stats[1][0]], np.round(predict[rel_error_stats[1][0]]), frame_dim)
+        frame_utils.draw_frame(s1, test_y[error_stats[1][0]], predict[error_stats[1][0]], frame_dim)
+        frame_utils.draw_frame(s2, test_y[rel_error_stats[1][0]], predict[rel_error_stats[1][0]], frame_dim)
 
     s1.set_title(
         'Sample ' + str(error_stats[1][0]) + '\n' + 'Max. absolute error = ' + str(error_stats[1][1]) + '\n' +
