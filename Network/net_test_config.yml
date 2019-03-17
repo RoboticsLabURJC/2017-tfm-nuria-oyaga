@@ -1,7 +1,9 @@
 # Test dataset path
 #data_path: /home/nuria/Documents/TFM/Functions_dataset/linear/linear_10_[None]_test.txt
-data_path: /home/nuria/Documents/TFM/Vectors_dataset/URM/URM_10_[None]_test/samples
+#data_path: /home/nuria/Documents/TFM/Vectors_dataset/URM/URM_10_[None]_test/samples
 #data_path: /home/nuria/Documents/TFM/Frames_dataset/URM_point_255/URM_10_[None]_test/samples
+#data_path: /home/nuria/Documents/TFM/Frames_dataset/linear_point_255/linear_10_[None]_test/samples
+data_path: /home/nuria/Documents/TFM/Frames_dataset/parabolic_point_255/parabolic_10_[None]_test/samples
 
 # Model path
 # --------------- FUNCTIONS ------------------
@@ -9,8 +11,13 @@ data_path: /home/nuria/Documents/TFM/Vectors_dataset/URM/URM_10_[None]_test/samp
 
 # ---------------VECTORS ---------------------
 #model_path: /home/nuria/Documents/TFM/Models/NOREC/Vectors_dataset/URM/15_False_relu_categorical_crossentropy_10.h5
-model_path: /home/nuria/Documents/TFM/Models/REC/Vectors_dataset/URM/15_False_relu_categorical_crossentropy_10.h5
+#model_path: /home/nuria/Documents/TFM/Models/REC/Vectors_dataset/URM/15_False_relu_categorical_crossentropy_10.h5
 
 # ----------------- FRAMES -------------------
 #model_path: /home/nuria/Documents/TFM/Models/NOREC/Frames_dataset/URM_point_255/15_False_relu_categorical_crossentropy_10.h5
+#model_path: /home/nuria/Documents/TFM/Models/NOREC/Frames_dataset/linear_point_255/2_False_relu_categorical_crossentropy_10.h5
+model_path: /home/nuria/Documents/TFM/Models/NOREC/Frames_dataset/parabolic_point_255/2_False_relu_categorical_crossentropy_10.h5
 
+#model_path: /home/nuria/Documents/TFM/Models/REC/Frames_dataset/URM_point_255/64_False_relu_categorical_crossentropy_10.h5
+#model_path: /home/nuria/Documents/TFM/Models/REC/Frames_dataset/linear_point_255/64_False_relu_categorical_crossentropy_10.h5
+#model_path: /home/nuria/Documents/TFM/Models/REC/Frames_dataset/parabolic_point_255/64_False_relu_categorical_crossentropy_10.h5

@@ -6,7 +6,7 @@ TFM - Network.py - Description
 __author__ = "Nuria Oyaga"
 __date__ = "21/05/2018"
 
-from Utils import utils, vect_utils, test_utils
+from Utils import utils, vect_utils, frame_utils, test_utils
 
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Conv1D, MaxPooling1D, Conv2D, MaxPooling2D, Flatten, LSTM, ConvLSTM2D, TimeDistributed
@@ -80,8 +80,11 @@ class Net(object):
             maximum = [np.max(np.abs(np.append(test_x[i], test_y[i]))) for i in range(len(test_x))]
             predict_values = predict
             real_values = test_y
-        else:  # data_type == "Vectors_dataset" or "Frames_dataset"
+        elif data_type == "Vectors_dataset" :
             predict_values, real_values, maximum = vect_utils.get_positions(predict, test_y)
+        else:  # data_type == "Frames_dataset"
+            predict_values, real_values, maximum = frame_utils.get_positions(predict, test_y,
+                                                                             (test_x.shape[2], test_x.shape[3]))
 
         error, relative_error = test_utils.calculate_error(real_values, predict_values, maximum)
 
