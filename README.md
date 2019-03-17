@@ -20,6 +20,8 @@ In the next image you can see target frame in the samples where the errors (abso
 <p align="center">
   <img width="800" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/2_False_relu_categorical_crossentropy_10_max_error.png">
 </p>
+
+Due to the problems that we find in these new networks, I will carry out a new training with a greater number of samples and a different structure to improve the results.
   
 ### Linear motion
 As in the URM case, I started training a 2D convolutional network whose structure can be seen in the following figure:
