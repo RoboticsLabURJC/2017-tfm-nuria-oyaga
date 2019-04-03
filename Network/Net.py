@@ -8,11 +8,11 @@ __date__ = "21/05/2018"
 
 from Utils import utils, vect_utils, frame_utils, test_utils
 
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout, Conv1D, MaxPooling1D, Conv2D, MaxPooling2D, Flatten, LSTM, ConvLSTM2D, TimeDistributed
 from keras.utils import vis_utils
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.models import load_model
+from keras.preprocessing.image import ImageDataGenerator
 
 import numpy as np
 from time import time
@@ -44,12 +44,9 @@ class Net(object):
 
         print('Training model...')
         start_time = time()
-        model_history = self.model.fit(data_train[0], data_train[1],
-                                       epochs=n_epochs,
-                                       batch_size=batch_size,
-                                       validation_data=(data_val[0], data_val[1]),
-                                       callbacks=[early_stopping, checkpoint],
-                                       verbose=2)
+        model_history = self.model.fit(data_train[0], data_train[1], batch_size=batch_size,
+                                       epochs=n_epochs, validation_data=data_val,
+                                       callbacks=[early_stopping, checkpoint], verbose=2)
         end_time = time()
 
         if len(model_history.epoch) < n_epochs:

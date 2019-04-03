@@ -6,9 +6,6 @@ TFM - main_test.py - Description
 __author__ = "Nuria Oyaga"
 __date__ = "22/05/2018"
 
-import sys
-sys.path.insert(0, '/home/docker/2017-tfm-nuria-oyaga')
-
 from Utils import utils, func_utils, vect_utils, frame_utils
 from Network import Net
 
@@ -41,16 +38,16 @@ if __name__ == '__main__':
             to_test_net = Net.Lstm(model_file=conf['model_path'])
 
     else:  # data_type == "Frames_dataset
-        parameters, test_set = frame_utils.read_frame_data(conf['data_path'])
-        gap = parameters.iloc[0]['gap']
 
         if net_type == "NOREC":
             print('Puting the test data into the right shape...')
-            testX, testY = frame_utils.reshape_frame_data(test_set)
+            parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'])
             to_test_net = Net.Convolution2D(model_file=conf['model_path'])
         else:
             print('Puting the test data into the right shape...')
-            testX, testY = frame_utils.reshape_frame_data(test_set, True)
+            parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'], True)
             to_test_net = Net.ConvolutionLstm(model_file=conf['model_path'])
+
+        gap = parameters.iloc[0]['gap']
 
     to_test_net.test(testX, testY, gap, data_type)

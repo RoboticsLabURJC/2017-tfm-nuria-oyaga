@@ -31,6 +31,6 @@ patience: 10
 # Data
 #data_dir: /home/nuria/Documents/TFM/Functions_dataset/linear/linear_10_[None]_
 #data_dir: /home/nuria/Documents/TFM/Vectors_dataset/URM/URM_10_[None]_
-# data_dir: /home/nuria/Documents/TFM/Frames_dataset/URM_point_255/URM_10_[None]_
-# data_dir: /home/nuria/Documents/TFM/Frames_dataset/linear_point_255/linear_10_[None]_
-data_dir: /home/nuria/Documents/TFM/Frames_dataset/parabolic_point_255/parabolic_10_[None]_
+data_dir: /home/nuria/Documents/TFM/Frames_dataset/URM_point_255/URM_10_[None]_
+#data_dir: /home/nuria/Documents/TFM/Frames_dataset/linear_point_255/linear_10_[None]_
+#data_dir: /home/nuria/Documents/TFM/Frames_dataset/parabolic_point_255/parabolic_10_[None]_

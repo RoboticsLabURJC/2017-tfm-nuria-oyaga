@@ -6,9 +6,6 @@ TFM - main_train.py - Description
 __author__ = "Nuria Oyaga"
 __date__ = "22/05/2018"
 
-import sys
-sys.path.insert(0, '/home/docker/2017-tfm-nuria-oyaga')
-
 from Utils import utils, func_utils, vect_utils, frame_utils
 from Network import Net
 
@@ -90,17 +87,13 @@ if __name__ == '__main__':
         print('Training with frames')
         loss = conf['vect_loss']
         # Load data
-        _, train_set = frame_utils.read_frame_data(data_dir + 'train/samples')
-        _, val_set = frame_utils.read_frame_data(data_dir + 'val/samples')
-        filename = root
-
-        # Put the train data into the right shape
         channels = False
         if net_type == "Rec":
             channels = True
-        trainX, trainY = frame_utils.reshape_frame_data(train_set, channels)
-        # Put the validation data into the right shape
-        valX, valY = frame_utils.reshape_frame_data(val_set, channels)
+
+        _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/samples', channels)
+        _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/samples', channels)
+        filename = root
 
         # Model settings
         in_dim = trainX.shape[1:]
