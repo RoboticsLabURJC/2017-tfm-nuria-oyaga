@@ -13,8 +13,6 @@ import yaml
 import cv2
 import shutil
 from matplotlib import pyplot as plt
-import matplotlib
-matplotlib.use('Agg')
 import pandas as pd
 
 
