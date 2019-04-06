@@ -2,10 +2,10 @@
 version: 1
 
 # Root to save the model
-root: /home/nuria/Documents/TFM/Models/
+root: Models/
 
 # Type of the net to train (NoRec, Rec)
-net_type: NoRec
+net_type: Rec
 
 # Activation function
 activation: relu
@@ -20,7 +20,7 @@ dropout:
   percentage: 0.2
 
 # Epochs
-n_epochs: 100
+n_epochs: 200
 
 # Batch size
 batch_size: 15
@@ -31,6 +31,6 @@ patience: 10
 # Data
 #data_dir: /home/nuria/Documents/TFM/Functions_dataset/linear/linear_10_[None]_
 #data_dir: /home/nuria/Documents/TFM/Vectors_dataset/URM/URM_10_[None]_
-data_dir: /home/nuria/Documents/TFM/Frames_dataset/URM_point_255/URM_10_[None]_
-#data_dir: /home/nuria/Documents/TFM/Frames_dataset/linear_point_255/linear_10_[None]_
-#data_dir: /home/nuria/Documents/TFM/Frames_dataset/parabolic_point_255/parabolic_10_[None]_
+#data_dir: /home/nuria/Documents/TFM/Frames_dataset/URM_point_255/URM_10_[None]_
+data_dir: Frames_dataset/linear_point_255/linear_10_[None]_
+#data_dir: Frames_dataset/parabolic_point_255/parabolic_10_[None]_

@@ -6,14 +6,17 @@ TFM - main_test.py - Description
 __author__ = "Nuria Oyaga"
 __date__ = "22/05/2018"
 
+import sys
+sys.path.insert(0, '/home/docker/2017-tfm-nuria-oyaga')
+
 from Utils import utils, func_utils, vect_utils, frame_utils
 from Network import Net
 
 if __name__ == '__main__':
     conf = utils.get_config_file()
-
-    data_type = conf['data_path'].split('/')[5]
-    net_type = conf['model_path'].split('/')[6]
+    print(conf['data_path'].split('/'))
+    data_type = conf['data_path'].split('/')[0]
+    net_type = conf['model_path'].split('/')[1]
 
     print(data_type)
     # Load data
@@ -38,7 +41,7 @@ if __name__ == '__main__':
             to_test_net = Net.Lstm(model_file=conf['model_path'])
 
     else:  # data_type == "Frames_dataset
-
+        print(net_type)
         if net_type == "NOREC":
             print('Puting the test data into the right shape...')
             parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'])

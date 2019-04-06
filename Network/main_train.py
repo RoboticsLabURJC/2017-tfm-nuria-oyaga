@@ -6,6 +6,9 @@ TFM - main_train.py - Description
 __author__ = "Nuria Oyaga"
 __date__ = "22/05/2018"
 
+import sys
+sys.path.insert(0, '/home/docker/2017-tfm-nuria-oyaga')
+
 from Utils import utils, func_utils, vect_utils, frame_utils
 from Network import Net
 
@@ -24,8 +27,8 @@ if __name__ == '__main__':
     patience = conf['patience']
 
     data_dir = conf['data_dir']
-    data_type = data_dir.split('/')[5]
-    func_type = data_dir.split('/')[6]
+    data_type = data_dir.split('/')[0]
+    func_type = data_dir.split('/')[1]
 
     root = conf['root'] + net_type.upper() + '/' + data_type + '/' + func_type
     utils.check_dirs(root)
