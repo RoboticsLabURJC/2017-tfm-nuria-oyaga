@@ -48,6 +48,30 @@ def get_errors_statistics(error, relative_error):
 
 
 def error_histogram(error):
+    hist = [sum((error >= 0) & (error < 1)),
+            sum((error >= 1) & (error < 2)),
+            sum((error >= 2) & (error < 5)),
+            sum((error >= 5) & (error < 10)),
+            sum((error >= 10) & (error < 20)),
+            sum((error >= 20) & (error < 40)),
+            sum((error >= 40) & (error < 80)),
+            sum((error >= 80))]
+
+    labels = ['[0, 1)', '[1, 2)', '[2, 5)', '[5, 10)', '[10, 20)', '[20, 40)', '[40, 80)', '>80']
+
+    plt.figure()
+    x = range(len(hist))
+    y = hist
+
+    plt.bar(x, y, color='red')
+
+    plt.xticks(x, labels)
+    plt.ylabel("Number errors")
+    plt.xlabel('Error intervals')
+    plt.title('Error histogram')
+
+
+def relative_error_histogram(error):
     hist = [sum((error >= 0) & (error < 10)),
             sum((error >= 10) & (error < 20)),
             sum((error >= 20) & (error < 30)),

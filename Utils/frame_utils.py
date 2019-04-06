@@ -37,7 +37,7 @@ def get_positions(predictions, real, dim):
         predict_pos.append(np.unravel_index(p.argmax(), p.shape))
         r = real[i].reshape(dim)
         real_pos.append(np.unravel_index(r.argmax(), r.shape))
-        maximum.append(len(p))
+        maximum.append(np.linalg.norm(np.array((0, 0)) - np.array(dim)))
 
     return np.array(predict_pos), np.array(real_pos), np.array(maximum)
 
