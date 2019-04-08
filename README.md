@@ -18,7 +18,7 @@ As the number of samples increases, the performance of the network improves and 
 </p>
 In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. As in the case with less samples, the error committed is not null, although the maximum error committed is quite small. In addition, despite the fact that the maximum error is the same, the average error has decreased with increasing number of samples.
 <p align="center">
-  <img width="800" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/5000_samples/15_False_relu_categorical_crossentropy_10_max_error.png">
+  <img width="800" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/5000_samples/15_False_relu_categorical_crossentropy_10_max_error.png">
 </p>
 
 Due to the problems that we find in these new networks, I will carry out a new training with a greater number of samples and a different structure to improve the results.
