@@ -1,6 +1,43 @@
 # 2017-tfm-nuria-oyaga
 Below are explained the different steps that are taken in the realization of my TFM. The information displayed is sorted from most recent to oldest so that the latest updates can be accessed more quickly and easily.
 
+## Non Recurrent Neural Networks - With more samples
+As we saw in the previous training the first thing we must do to increase the performance is to increase the number of samples according to the complexity of the data.
+
+### Parabolic motion
+I used 10000 samples instead of 1000 and the same structure:
+<p align="center">
+  <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/10000_samples/15_False_relu_categorical_crossentropy_10_properties.png">
+</p>
+In the same way as in the case of linear movement, as the number of samples increases, the performance of the network improves and a greater stabilization of the same is achieved in the training. Despite this, the error continues to be improvable.
+<p align="center">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/10000_samples/15_False_relu_categorical_crossentropy_10_history.png">
+</p>
+<p align="center">
+  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/10000_samples/15_False_relu_categorical_crossentropy_10_rel_error_hist.png">
+</p>
+In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. As in the case with less samples, the error committed is not null, although the maximum error committed is quite small. The improvement is considerable with the increase in the number of samples, however, as I mentioned before it is still far from having a good performance.
+<p align="center">
+  <img width="650" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/10000_samples/15_False_relu_categorical_crossentropy_10_max_error.png">
+</p>
+
+### Linear motion
+I used 5000 samples instead of 1000 and the same structure:
+<p align="center">
+  <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/5000_samples/15_False_relu_categorical_crossentropy_10_properties.png">
+</p>
+As the number of samples increases, the performance of the network improves and a greater stabilization of the same is achieved in the training.
+<p align="center">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/5000_samples/15_False_relu_categorical_crossentropy_10_history.png">
+</p>
+<p align="center">
+  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/5000_samples/15_False_relu_categorical_crossentropy_10_rel_error_hist.png">
+</p>
+In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. As in the case with less samples, the error committed is not null, although the maximum error committed is quite small. In addition, despite the fact that the maximum error is the same, the average error has decreased with increasing number of samples.
+<p align="center">
+  <img width="650" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/5000_samples/15_False_relu_categorical_crossentropy_10_max_error.png">
+</p>
+
 ## Non Recurrent Neural Networks - With new data types
 First we do the training of non-recucurrent networks with the new types of data to check the scope they give us.
 
