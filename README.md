@@ -1,6 +1,43 @@
 # 2017-tfm-nuria-oyaga
 Below are explained the different steps that are taken in the realization of my TFM. The information displayed is sorted from most recent to oldest so that the latest updates can be accessed more quickly and easily.
 
+## Recurrent Neural Networks - Parabolic and linear data
+The performance obtained with the previous networks is still improved, so we chose to include the recurrent networks to try to improve it.
+
+### Parabolic motion
+Although it seems clear that the structure of the network is not adequate to the problem, I have trained the same network with the samples of the parabolic motion:
+<p align="center">
+  <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/15_False_relu_categorical_crossentropy_10_properties.png">
+</p>
+Indeed, the results obtained are just as bad as in the previous case.
+<p align="center">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/15_False_relu_categorical_crossentropy_10_history.png">
+</p>
+<p align="center">
+  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/15_False_relu_categorical_crossentropy_10_rel_error_hist.png">
+</p>
+In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. Consequently with the above mentioned the error are too high.
+<p align="center">
+  <img width="650" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/15_False_relu_categorical_crossentropy_10_max_error.png">
+</p>
+
+### Linear motion
+I have used the following structure:
+<p align="center">
+  <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/15_False_relu_categorical_crossentropy_10_properties.png">
+</p>
+With the proposed structure the performance is not good and the error is very high.
+<p align="center">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/15_False_relu_categorical_crossentropy_10_history.png">
+</p>
+<p align="center">
+  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/15_False_relu_categorical_crossentropy_10_rel_error_hist.png">
+</p>
+In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. As I mentioned earlier, the error made with this network is excessively high.
+<p align="center">
+  <img width="650" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/15_False_relu_categorical_crossentropy_10_max_error.png">
+</p>
+
 ## Non Recurrent Neural Networks - With more samples
 As we saw in the previous training the first thing we must do to increase the performance is to increase the number of samples according to the complexity of the data.
 
