@@ -7,7 +7,7 @@ The performance obtained with the previous networks is still improved, so we cho
 ### Parabolic motion
 Although it seems clear that the structure of the network is not adequate to the problem, I have trained the same network with the samples of the parabolic motion:
 <p align="center">
-  <img width="400" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/15_False_relu_categorical_crossentropy_10_properties.png">
+  <img width="550" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/15_False_relu_categorical_crossentropy_10_properties.png">
 </p>
 Indeed, the results obtained are just as bad as in the previous case.
 <p align="center">
@@ -20,11 +20,12 @@ In the next image you can see target frame in the samples where the errors (abso
 <p align="center">
   <img width="650" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/15_False_relu_categorical_crossentropy_10_max_error.png">
 </p>
+In view of the results obtained in this section, we continue the research modifying the structure of the recurrent network to improve performance.
 
 ### Linear motion
 I have used the following structure:
 <p align="center">
-  <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/15_False_relu_categorical_crossentropy_10_properties.png">
+  <img width="550" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/15_False_relu_categorical_crossentropy_10_properties.png">
 </p>
 With the proposed structure the performance is not good and the error is very high.
 <p align="center">
