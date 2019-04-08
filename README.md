@@ -7,18 +7,18 @@ First we do the training of non-recucurrent networks with the new types of data 
 ### Parabolic motion
 I used the same 2D convolutional network structure:
 <p align="center">
-  <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/2_False_relu_categorical_crossentropy_10_properties.png">
+  <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/1000_samples/2_False_relu_categorical_crossentropy_10_properties.png">
 </p>
 In this case the movement is too complicated and the number of samples is very small so the network is not able to capture it, making it difficult to stabilize the network.
 <p align="center">
-  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/2_False_relu_categorical_crossentropy_10_history.png">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/1000_samples/2_False_relu_categorical_crossentropy_10_history.png">
 </p>
 <p align="center">
-  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/2_False_relu_categorical_crossentropy_10_error_hist.png">
+  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/1000_samples/2_False_relu_categorical_crossentropy_10_error_hist.png">
 </p>
 In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. The mistake made is very large and the predicted position is not close to the real one.
 <p align="center">
-  <img width="800" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/2_False_relu_categorical_crossentropy_10_max_error.png">
+  <img width="800" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/1000_samples/2_False_relu_categorical_crossentropy_10_max_error.png">
 </p>
 
 Due to the problems that we find in these new networks, I will carry out a new training with a greater number of samples and a different structure to improve the results.
@@ -26,18 +26,18 @@ Due to the problems that we find in these new networks, I will carry out a new t
 ### Linear motion
 As in the URM case, I started training a 2D convolutional network whose structure can be seen in the following figure:
 <p align="center">
-  <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/2_False_relu_categorical_crossentropy_10_properties.png">
+  <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/1000_samples/2_False_relu_categorical_crossentropy_10_properties.png">
 </p>
 As in the two previous cases, the network manages to reduce and stabilize the loss function in only a few epochs but, because the sequences begin to get more complicated, this network is not able to capture 100% of the different movements. 
 <p align="center">
-  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/2_False_relu_categorical_crossentropy_10_history.png">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/1000_samples/2_False_relu_categorical_crossentropy_10_history.png">
 </p>
 <p align="center">
-  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/2_False_relu_categorical_crossentropy_10_error_hist.png">
+  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/1000_samples/2_False_relu_categorical_crossentropy_10_error_hist.png">
 </p>
 In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. As we commented previously, the error committed is not null, although the maximum error committed is quite small.
 <p align="center">
-  <img width="800" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/2_False_relu_categorical_crossentropy_10_max_error.png">
+  <img width="800" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/1000_samples/2_False_relu_categorical_crossentropy_10_max_error.png">
 </p>
   
 ## New data types
