@@ -130,7 +130,7 @@ The function for this motion type is:
 
 And in the next you can see a sample of this:
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=aC5IR28P5vg" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/sample_0.png" 
+  <a href="https://www.youtube.com/watch?v=aC5IR28P5vg" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Fronts/sample_0.png" 
   alt="journal analytics demo link to youtube" width="500"/></a>
 </p>
 
@@ -142,7 +142,7 @@ For this motion type the function is:
 
 And in the next you can see a sample of this:
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=6M4slvtwdr0" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/sample_0.png" 
+  <a href="https://www.youtube.com/watch?v=6M4slvtwdr0" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Fronts/sample_0.png" 
   alt="journal analytics demo link to youtube" width="500"/></a>
 </p>
 
@@ -275,7 +275,7 @@ The next step to increase the complexity is to increase one more dimension. In t
 
 In the following video you can see an example of a sample of this type of samples:
 <p align="center">
-  <a href="http://www.youtube.com/watch?v=RCEWNrTaYi8" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/sample_0.png" 
+  <a href="http://www.youtube.com/watch?v=RCEWNrTaYi8" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Fronts/sample_0.png" 
   alt="journal analytics demo link to youtube" width="500"/></a>
 </p>
 
