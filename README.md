@@ -1,9 +1,51 @@
 # 2017-tfm-nuria-oyaga
 Below are explained the different steps that are taken in the realization of my TFM. The information displayed is sorted from most recent to oldest so that the latest updates can be accessed more quickly and easily.
 
-## New data - Adding a degree of freedom to lnear motion frames
+## New linear motion - Adding a degree of freedom
 Since we have obtained a good result with the frames that include a linear motion we proceed to increase a degree of freedom in this type of data.
 
+### Recurrent Neural Networks
+I used the same structure that in the previous training:
+<p align="center">
+  <img width="350" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_properties.png">
+</p>
+In this case we obtain a result that we could consider as expected, these networks are able to better capture the temporal relationship and obtain a better performance than in the previous case.
+<p align="center">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_history.png">
+</p>
+<p align="center">
+  <img width="350" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_error_hist.png">
+</p>
+<p align="center">
+  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_rel_error_hist.png">
+</p>
+In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. As I mentioned, this type of structure has improved the results and the error made, despite remaining high, is reduced compared to the previous structure.
+<p align="center">
+  <img width="650" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_max_error.png">
+</p>
+In order to improve the obtained results we will choose to increase the number of samples in consequence with the complexity of the problem and modify the structure of the network in the same way.
+
+### Non Recurrent Neural Networks 
+I used the same structure that in the previous training:
+<p align="center">
+  <img width="350" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_properties.png">
+</p>
+As I mentioned earlier, with this new degree of freedom the complexity of the problem increases and, as expected, the performance of the network is not good.
+<p align="center">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_history.png">
+</p>
+<p align="center">
+  <img width="350" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_error_hist.png">
+</p>
+<p align="center">
+  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_rel_error_hist.png">
+</p>
+In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. Consequently, the error made is very high.
+<p align="center">
+  <img width="650" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_max_error.png">
+</p>
+
+### New data
 Recall that the function that governs this type of data is as follows:
 ```ruby
   g = lambda y, m: (m * y) + y0
