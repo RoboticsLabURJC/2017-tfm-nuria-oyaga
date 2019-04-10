@@ -1,6 +1,49 @@
 # 2017-tfm-nuria-oyaga
 Below are explained the different steps that are taken in the realization of my TFM. The information displayed is sorted from most recent to oldest so that the latest updates can be accessed more quickly and easily.
 
+## Recurrent Neural Networks - New strtucture 
+In view of the results obtained previously I have replaced the simple LSTM layer with a ConvLSTM which computes convolutional operations in both the input and the recurrent transformations.
+
+### Parabolic motion
+The new structure is as follows:
+<p align="center">
+  <img width="550" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_properties.png">
+</p>
+With the new structure the performance of the network is improved and the results are practically the same as in the non-recurrent case that were pretty good
+<p align="center">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_history.png">
+</p>
+<p align="center">
+  <img width="350" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_error_hist.png">
+</p>
+<p align="center">
+  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_rel_error_hist.png">
+</p>
+In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. The maximum error committed coincides with the non-recurrent case and in terms of the average a very similar result is obtained.
+<p align="center">
+  <img width="650" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_max_error.png">
+</p>
+
+### Linear motion
+The new structure is as follows:
+<p align="center">
+  <img width="550" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_properties.png">
+</p>
+With the new structure the performance of the network is improved and the results are practically the same as in the non-recurrent case that were pretty good
+<p align="center">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_history.png">
+</p>
+<p align="center">
+  <img width="350" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_error_hist.png">
+</p>
+<p align="center">
+  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_rel_error_hist.png">
+</p>
+In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. The maximum error committed coincides with the non-recurrent case and in terms of the average a very similar result is obtained.
+<p align="center">
+  <img width="650" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_max_error.png">
+</p>
+
 ## Recurrent Neural Networks - Parabolic and linear data
 The performance obtained with the previous networks is still improved, so we chose to include the recurrent networks to try to improve it.
 
