@@ -1,7 +1,32 @@
 # 2017-tfm-nuria-oyaga
 Below are explained the different steps that are taken in the realization of my TFM. The information displayed is sorted from most recent to oldest so that the latest updates can be accessed more quickly and easily.
 
-## Recurrent Neural Networks - New strtucture 
+## New data - Adding a degree of freedom to lnear motion frames
+Since we have obtained a good result with the frames that include a linear motion we proceed to increase a degree of freedom in this type of data.
+
+Recall that the function that governs this type of data is as follows:
+```ruby
+  g = lambda y, m: (m * y) + y0
+```
+
+In the previous examples we kept constant the value of y0 in the middle of the frame, that is:
+```ruby
+  y0 = int(height/2)
+```
+
+In this new case we will give the position y0 a random value within the range of the frame:
+```ruby
+  y0 = y0 = random.randint(0, height - 1)
+```
+
+With this new degree of freedom we increase the variety in the samples and complicate the problem to the neural network to predict the desired value. Below you can see an example of these new samples:
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=z5rt7O1bHNw" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Fronts/frames_linear_point_y0_sample.png" 
+  alt="Frames linear point sample with random y0" width="500"/></a>
+</p>
+
+## Recurrent Neural Networks - New structure 
 In view of the results obtained previously I have replaced the simple LSTM layer with a ConvLSTM which computes convolutional operations in both the input and the recurrent transformations.
 
 ### Parabolic motion
@@ -186,7 +211,7 @@ The function for this motion type is:
 And in the next you can see a sample of this:
 <p align="center">
   <a href="https://www.youtube.com/watch?v=aC5IR28P5vg" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Fronts/sample_0.png" 
-  alt="journal analytics demo link to youtube" width="500"/></a>
+  alt="Frames parabolic point sample" width="500"/></a>
 </p>
 
 ### Linear motion
@@ -198,7 +223,7 @@ For this motion type the function is:
 And in the next you can see a sample of this:
 <p align="center">
   <a href="https://www.youtube.com/watch?v=6M4slvtwdr0" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Fronts/sample_0.png" 
-  alt="journal analytics demo link to youtube" width="500"/></a>
+  alt="Frames linear point sample" width="500"/></a>
 </p>
 
 ## Recurrent Neural Networks - LSTM
@@ -331,7 +356,7 @@ The next step to increase the complexity is to increase one more dimension. In t
 In the following video you can see an example of a sample of this type of samples:
 <p align="center">
   <a href="http://www.youtube.com/watch?v=RCEWNrTaYi8" target="_blank"><img src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Fronts/sample_0.png" 
-  alt="journal analytics demo link to youtube" width="500"/></a>
+  alt="Frames URM point sample" width="500"/></a>
 </p>
 
 As in the previous case, the speed of the object is limited so that in the prediction the object is always in the image.
