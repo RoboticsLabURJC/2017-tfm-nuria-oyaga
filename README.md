@@ -14,6 +14,9 @@ Indeed, the results obtained are just as bad as in the previous case.
   <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/LSTM/15_False_relu_categorical_crossentropy_10_history.png">
 </p>
 <p align="center">
+  <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/LSTM/15_False_relu_categorical_crossentropy_10_error_hist.png">
+</p>
+<p align="center">
   <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/parabolic_point_255/LSTM/15_False_relu_categorical_crossentropy_10_rel_error_hist.png">
 </p>
 In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. Consequently with the above mentioned the error are too high.
@@ -30,6 +33,9 @@ I have used the following structure:
 With the proposed structure the performance is not good and the error is very high.
 <p align="center">
   <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/LSTM/15_False_relu_categorical_crossentropy_10_history.png">
+</p>
+<p align="center">
+  <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/LSTM/15_False_relu_categorical_crossentropy_10_error_hist.png">
 </p>
 <p align="center">
   <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255/LSTM/15_False_relu_categorical_crossentropy_10_rel_error_hist.png">
@@ -52,6 +58,9 @@ In the same way as in the case of linear movement, as the number of samples incr
   <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/10000_samples/15_False_relu_categorical_crossentropy_10_history.png">
 </p>
 <p align="center">
+  <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/10000_samples/15_False_relu_categorical_crossentropy_10_error_hist.png">
+</p>
+<p align="center">
   <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/10000_samples/15_False_relu_categorical_crossentropy_10_rel_error_hist.png">
 </p>
 In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. As in the case with less samples, the error committed is not null, although the maximum error committed is quite small. The improvement is considerable with the increase in the number of samples, however, as I mentioned before it is still far from having a good performance.
@@ -67,6 +76,9 @@ I used 5000 samples instead of 1000 and the same structure:
 As the number of samples increases, the performance of the network improves and a greater stabilization of the same is achieved in the training.
 <p align="center">
   <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/5000_samples/15_False_relu_categorical_crossentropy_10_history.png">
+</p>
+<p align="center">
+  <img width="300" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/5000_samples/15_False_relu_categorical_crossentropy_10_error_hist.png">
 </p>
 <p align="center">
   <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_linear/5000_samples/15_False_relu_categorical_crossentropy_10_rel_error_hist.png">
@@ -88,6 +100,7 @@ In this case the movement is too complicated and the number of samples is very s
 <p align="center">
   <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/1000_samples/2_False_relu_categorical_crossentropy_10_history.png">
 </p>
+
 <p align="center">
   <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Non-Recurrent/Frame_point_parabolic/1000_samples/2_False_relu_categorical_crossentropy_10_error_hist.png">
 </p>
