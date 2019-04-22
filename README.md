@@ -7,21 +7,21 @@ Since we have obtained a good result with the frames that include a linear motio
 ### Recurrent Neural Networks
 I used the same structure that in the previous training:
 <p align="center">
-  <img width="350" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_properties.png">
+  <img width="550" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255_y0/15_False_relu_categorical_crossentropy_10_properties.png">
 </p>
 In this case we obtain a result that we could consider as expected, these networks are able to better capture the temporal relationship and obtain a better performance than in the previous case.
 <p align="center">
-  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_history.png">
+  <img width="450" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255_y0/15_False_relu_categorical_crossentropy_10_history.png">
 </p>
 <p align="center">
-  <img width="350" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_error_hist.png">
+  <img width="350" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255_y0/15_False_relu_categorical_crossentropy_10_error_hist.png">
 </p>
 <p align="center">
-  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_rel_error_hist.png">
+  <img width="600" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255_y0/15_False_relu_categorical_crossentropy_10_rel_error_hist.png">
 </p>
 In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. As I mentioned, this type of structure has improved the results and the error made, despite remaining high, is reduced compared to the previous structure.
 <p align="center">
-  <img width="650" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frame_point_linear/5000_samples_y0/15_False_relu_categorical_crossentropy_10_max_error.png">
+  <img width="650" src="https://github.com/RoboticsURJC-students/2017-tfm-nuria-oyaga/blob/master/docs/Models/Recurrent/Frames/linear_point_255_y0/15_False_relu_categorical_crossentropy_10_max_error.png">
 </p>
 In order to improve the obtained results we will choose to increase the number of samples in consequence with the complexity of the problem and modify the structure of the network in the same way.
 
