@@ -21,6 +21,6 @@ _________________________________________________________________
 
 Patience: 10
 Epochs: 12
-Train score: 0.04
-Test score: 8.84
-Execution time: 291.21
+Train score: 0.05
+Test score: 7.46
+Execution time: 570.2
