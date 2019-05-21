@@ -27,8 +27,8 @@ if __name__ == '__main__':
     patience = conf['patience']
 
     data_dir = conf['data_dir']
-    data_type = data_dir.split('/')[5]
-    func_type = data_dir.split('/')[6]
+    data_type = data_dir.split('/')[4]
+    func_type = data_dir.split('/')[5]
 
     root = conf['root'] + net_type.upper() + '/' + data_type + '/' + func_type
     utils.check_dirs(root)
