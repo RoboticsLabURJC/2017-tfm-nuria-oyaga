@@ -1,6 +1,9 @@
 # Version
 version: 1
 
+# Complexity
+complexity: simple
+
 # Root to save the model
 root: Models/
 

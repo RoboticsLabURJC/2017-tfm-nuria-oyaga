@@ -27,8 +27,8 @@ if __name__ == '__main__':
     patience = conf['patience']
 
     data_dir = conf['data_dir']
-    data_type = data_dir.split('/')[0]
-    func_type = data_dir.split('/')[1]
+    data_type = data_dir.split('/')[5]
+    func_type = data_dir.split('/')[6]
 
     root = conf['root'] + net_type.upper() + '/' + data_type + '/' + func_type
     utils.check_dirs(root)
@@ -89,6 +89,7 @@ if __name__ == '__main__':
     else:  # data_type == 'Frames_dataset':
         print('Training with frames')
         loss = conf['vect_loss']
+        complexity = conf['complexity']
         # Load data
         channels = False
         if net_type == "Rec":
@@ -104,11 +105,11 @@ if __name__ == '__main__':
         if net_type == "NoRec":
             to_train_net = Net.Convolution2D(activation=activation, loss=loss, dropout=dropout,
                                              drop_percentage=drop_percentage, input_shape=in_dim,
-                                             output_shape=out_dim)
+                                             output_shape=out_dim, complexity=complexity)
         else:
             to_train_net = Net.ConvolutionLstm(activation=activation, loss=loss, dropout=dropout,
                                                drop_percentage=drop_percentage, input_shape=in_dim,
-                                               output_shape=out_dim)
+                                               output_shape=out_dim, complexity=complexity)
     print('Training')
 
     to_train_net.train(n_epochs, batch_size, patience, filename, [trainX, trainY], [valX, valY])

@@ -9,10 +9,9 @@ __date__ = "21/05/2018"
 from Utils import utils, vect_utils, frame_utils, test_utils
 
 from keras.models import Sequential, load_model
-from keras.layers import Dense, Dropout, Conv1D, MaxPooling1D, Conv2D, MaxPooling2D, Flatten, LSTM, ConvLSTM2D, TimeDistributed, BatchNormalization
+from keras.layers import Dense, Dropout, Conv1D, MaxPooling1D, Conv2D, MaxPooling2D, Flatten, LSTM, ConvLSTM2D, TimeDistributed
 from keras.utils import vis_utils
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.preprocessing.image import ImageDataGenerator
 
 import numpy as np
 from time import time
@@ -46,7 +45,7 @@ class Net(object):
         start_time = time()
         model_history = self.model.fit(data_train[0], data_train[1], batch_size=batch_size,
                                        epochs=n_epochs, validation_data=data_val,
-                                       callbacks=[checkpoint], verbose=2)
+                                       callbacks=[early_stopping, checkpoint], verbose=2)
         end_time = time()
 
         if len(model_history.epoch) < n_epochs:
@@ -89,8 +88,7 @@ class Net(object):
         error_stats, rel_error_stats = test_utils.get_errors_statistics(error, relative_error)
 
         # Draw error percentage
-        test_utils.error_histogram(error)
-        test_utils.relative_error_histogram(relative_error)
+        test_utils.error_histogram(relative_error)
 
         # Draw the max errors points
         test_utils.draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_stats, data_type)
@@ -142,9 +140,26 @@ class Convolution2D(Net):
     def __init__(self, **kwargs):
         Net.__init__(self, "Conv2D", **kwargs)
         if 'model_file' not in kwargs.keys():
-            self.create_model()
+            if kwargs['complexity'] == "simple":
+                self.create_simple_model()
+            else:
+                self.create_complex_model()
 
-    def create_model(self):
+    def create_simple_model(self):
+        print("Creating 2D convolutional model")
+        self.model.add(Conv2D(32, (3, 3), activation=self.activation, input_shape=self.input_shape))
+        self.model.add(Conv2D(32, (3, 3), activation=self.activation))
+
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
+
+        if self.dropout:
+            self.model.add(Dropout(self.drop_percentage))
+
+        self.model.add(Flatten())
+        self.model.add(Dense(self.output_shape, activation="softmax"))
+        self.model.compile(loss=self.loss, optimizer='adam')
+
+    def create_complex_model(self):
         print("Creating 2D convolutional model")
         self.model.add(Conv2D(32, (3, 3), activation=self.activation, input_shape=self.input_shape))
         self.model.add(Conv2D(32, (3, 3), activation=self.activation))
@@ -180,18 +195,34 @@ class ConvolutionLstm(Net):
     def __init__(self, **kwargs):
         Net.__init__(self, "lstm", **kwargs)
         if 'model_file' not in kwargs.keys():
-            self.create_model()
+            if kwargs['complexity'] == "simple":
+                self.create_simple_model()
+            else:
+                self.create_complex_model()
 
-    def create_model(self):
+    def create_simple_model(self):
         print("Creating convolution LSTM model")
         self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation), input_shape=self.input_shape))
-        self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation)))
         self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
         self.model.add(TimeDistributed(Flatten()))
-        self.model.add(LSTM(128))
+        self.model.add(LSTM(25))
 
         if self.dropout:
             self.model.add(Dropout(self.drop_percentage))
 
         self.model.add(Dense(self.output_shape, activation="softmax"))
         self.model.compile(loss=self.loss, optimizer='adam')
+
+    def create_complex_model(self):
+        print("Creating convolution LSTM model")
+        self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation), input_shape=self.input_shape))
+        self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
+        self.model.add(TimeDistributed(Flatten()))
+        self.model.add(LSTM(25))
+
+        if self.dropout:
+            self.model.add(Dropout(self.drop_percentage))
+
+        self.model.add(Dense(self.output_shape, activation="softmax"))
+        self.model.compile(loss=self.loss, optimizer='adam')
+
