@@ -161,8 +161,9 @@ class Convolution2D(Net):
 
     def create_complex_model(self):
         print("Creating 2D convolutional model")
-        self.model.add(Conv2D(32, (3, 3), activation=self.activation, input_shape=self.input_shape))
-        self.model.add(Conv2D(32, (3, 3), activation=self.activation))
+        self.model.add(Conv2D(32, (5, 5), activation=self.activation, input_shape=self.input_shape))
+        self.model.add(Conv2D(40, (3, 3), activation=self.activation))
+        self.model.add(Conv2D(64, (3, 3), activation=self.activation))
 
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
@@ -216,9 +217,11 @@ class ConvolutionLstm(Net):
     def create_complex_model(self):
         print("Creating convolution LSTM model")
         self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation), input_shape=self.input_shape))
+        self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation)))
         self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
         self.model.add(TimeDistributed(Flatten()))
-        self.model.add(LSTM(25))
+        self.model.add(LSTM(25, return_sequences=True))
+        self.model.add(LSTM(50, return_sequences=True))
 
         if self.dropout:
             self.model.add(Dropout(self.drop_percentage))
