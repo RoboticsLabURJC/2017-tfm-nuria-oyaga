@@ -1,6 +1,14 @@
 # 2017-tfm-nuria-oyaga
 Below are explained the different steps that are taken in the realization of my TFM. The information displayed is sorted from most recent to oldest so that the latest updates can be accessed more quickly and easily.
 
+## Checkpoint
+After a while we resume the current situation of the project with the networks that have been trained and raised. 
+<p align="center">
+  <img width="550" src="https://github.com/RoboticsLabURJC/2017-tfm-nuria-oyaga/blob/master/docs/Checkpoint.png">
+</p>
+The green color indicates good network results, the orange indicates that the path is adequate although the results can be improved and the red poor results. The color black has been used for those scenarios that have been raised but not developed and gray for those that have not come up because it is meaningless.
+
+
 ## New linear motion - Adding a degree of freedom
 Since we have obtained a good result with the frames that include a linear motion we proceed to increase a degree of freedom in this type of data.
 
