@@ -8,7 +8,7 @@ header:
     #- label: "<i class='fas fa-download'></i> Install now"
     #  url: "/installation/"
 excerpt: 
-  Deep Reinforcement Learning for autonomous car
+  Frame prediction
 feature_row:
   - image_path: /assets/images/cover/logbook.jpg
     alt: "Logbook"
@@ -40,11 +40,11 @@ youTube_id: ID7qaEcIu4k
 
 Hello, everybody.
 
-I'm Nacho Arranz and this is the place where we will be putting the advances that are made on the work of end of master.
+I'm Nuria Oyaga and this is the place where we will be putting the advances that are made on the work of end of master.
 
-The objective of the work is the learning of the controllers of an autonomous vehicle so that it is able to complete the return to a circuit through learning by reinforcement.
+The objective of the work is to investigate different types of networks to find models that are capable of predicting movement dynamics, from simpler to more complex, in video frames.
 
 The tutors of the project are:
 
 - [Jose Maria Cañas](https://gsyc.urjc.es/jmplaza/)
-- [Alberto Martín](https://gestion2.urjc.es/pdi/ver/alberto.martinf)
+- [Inmaculada Mora](https://gestion2.urjc.es/pdi/ver/inmaculada.mora)
