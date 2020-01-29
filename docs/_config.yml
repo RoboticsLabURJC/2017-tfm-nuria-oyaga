@@ -21,7 +21,7 @@ title_separator          : "-"
 subtitle                 : Programming Robot Intelligence
 name                     : "JdeRobot"
 description              : "Programming Robot Intelligence"
-url                      : http://jderobot.github.io/2019-tfm-ignacio-arranz
+url                      : http://roboticslaburjc.github.io/2017-tfm-nuria-oyaga/
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : JdeRobot
 teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
@@ -122,7 +122,7 @@ analytics:
 # PROFILE
 # Site Author
 author:
-  name             : "Nacho Arranz"
+  name             : "Nuria Oyaga"
   avatar           : "/assets/images/profile.jpg"
   bio              : "Site for Master Thesis"
   location         : "Madrid"
@@ -130,16 +130,16 @@ author:
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
-      url: n.arranz.agueda@gmail.com
+      url: nuria.oyaga@gmail.com
     - label: "About Me"
       icon: "fas fa-fw fa-link"
-      url: "https://igarag.github.io/online-cv/"
-    - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
-      url: "https://twitter.com/i__arranz"
+      url: "https://www.linkedin.com/in/nuriaoyaga/"
+    #- label: "Twitter"
+    #  icon: "fab fa-fw fa-twitter-square"
+    #  url: "https://twitter.com/i__arranz"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      url: "https://github.com/igarag/2019-tfm-ignacio-arranz"
+      url: "https://github.com/RoboticsLabURJC/2017-tfm-nuria-oyaga"
     #- label: "Youtube"
     #  icon: "fab fa-fw fa-youtube"
     #  url: "https://www.youtube.com/channel/UCgmUgpircYAv_QhLQziHJOQ"
