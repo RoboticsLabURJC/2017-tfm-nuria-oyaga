@@ -34,17 +34,11 @@ The first thing we must do to train the network for prediction is to resize the 
 ```
 
 For this type of data we have trained a simple MLP whose structure can be seen in the following figure:
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Linear_function/15_False_relu_mean_squared_error_10_properties.png" alt="MLP structure" %}
-
 As you can see in the following image, the network manages to reduce and stabilize the loss function in only a few epochs, obtaining a very reduced error.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Linear_function/15_False_relu_mean_squared_error_10_history.png" alt="Loss history" %}
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Linear_function/15_False_relu_mean_squared_error_10_error_hist.png" alt="Relative error histogram" %}
-
 In the next image you can see the samples where the errors (absolute and relative) are maximum. In the case of relative error, when the line has a small slope the relative error is very high, this is because we divide by a very small value.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Linear_function/15_False_relu_mean_squared_error_10_max_error.png" alt="Relative and absolute error" %}
 
 
@@ -57,17 +51,11 @@ As in the functions case, the first thing we must do to train the network for pr
 ```
 
 For this type of data we have trained 1D convolutional network whose structure can be seen in the following figure:
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_properties.png" alt="1D Convolutional network structure" %}
-
 As expected and as it happened in the non-recurring case, the network manages to reduce and stabilize the loss function in only a few epochs, without any error.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_history.png" alt="Loss history" %}
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_error_hist.png" alt="Relative error histogram" %}
-
 In the next image you can see the samples where the errors (absolute and relative) are maximum. In this case we have not obtained any error so the first sample is shown.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_max_error.png" alt="Relative and absolute error" %}
 
 ### URM Point Frames dataset
@@ -79,17 +67,11 @@ As in the functions case, the first thing we must do to train the network for pr
 ```
 
 For this type of data we have trained 2D convolutional network whose structure can be seen in the following figure:
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Frame_point_URM/15_False_relu_categorical_crossentropy_10_properties.png" alt="2D Convolutional network structure" %}
-
 As in the two previous cases, the network manages to reduce and stabilize the loss function in only a few epochs, without any error.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Frame_point_URM/15_False_relu_categorical_crossentropy_10_history.png" alt="Loss history" %}
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Frame_point_URM/15_False_relu_categorical_crossentropy_10_error_hist.png" alt="Relative error histogram" %}
-
 In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. In this case we have not obtained any error so the first sample is shown.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Frame_point_URM/15_False_relu_categorical_crossentropy_10_max_error.png" alt="Relative and absolute error" %}
 
 ## Training Recurrent Neural Networks - LSTM
@@ -108,17 +90,11 @@ As in the non-recurrent case, the first thing we must do is to resize the data t
 ```
 
 For this type of data we have trained a simple LSTM network whose structure can be seen in the following figure:
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_properties.png" alt="Simple LSTM structure" %}
-
 As in the previous case, the network manages to reduce and stabilize the loss function in only a few epochs, without any error.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_history.png" alt="Loss history" %}
-
 {% include figure image_path="/assets/images/logbook/media//Models/Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_error_hist.png" alt="Relative error histogram" %}
-
 In the next image you can see the samples where the errors (absolute and relative) are maximum. In this case we have not obtained any error so the first sample is shown.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_max_error.png" alt="Relative and absolute error" %}
 
 ### URM Point Frames dataset
@@ -131,7 +107,5 @@ In this case we must modify the structure of the data in the following way:
 ```
 
 Due to the computational load involved in the training and evaluation of this network it is not yet possible to show the result of the evaluation, although its structure and evolution in training is shown.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/URM_point_255/64_False_relu_categorical_crossentropy_10_properties.png" alt="Convolutional + LSTM network structure" %}
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/URM_point_255/64_False_relu_categorical_crossentropy_10_history.png" alt="Relative and absolute error" %}
