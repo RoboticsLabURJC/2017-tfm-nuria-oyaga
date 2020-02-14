@@ -23,7 +23,9 @@ pinned: false
 
 ## New data type
 After making a learning with simpler data and see that the performance is good we decided to complicate things to the network. For this I have established a new type of movements in space for the white point of the frames: linear movement which will combine with the URM movement in time.
+
 The way to obtain these new frames is the same as before, we set the position in x by means of a URM movement but this time, instead of maintaining the height of the object (position y) constant, we will modify it according to a function.
+
 The problem that we can find in this type of samples is that we are modifying the height, a value that must be integer, by means of a function that accepts decimal values, which causes a rounding to be necessary. Depending on the sample, this rounding can make the movement not seem as natural as it would be because it is possible that the height does not change from one instant to the next.
 
 ## Non Recurrent Neural Networks - With new data type
