@@ -34,17 +34,11 @@ The problem that we can find in this type of samples is that we are modifying th
 First we do the training of non-recucurrent networks with the new type of data to check the scope they give us.
 
 As in the URM case, I started training a 2D convolutional network whose structure can be seen in the following figure:
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Frame_point_linear/1000_samples/2_False_relu_categorical_crossentropy_10_properties.png" alt="2D Convolutional network structure" %}
-
 As in the two previous cases, the network manages to reduce and stabilize the loss function in only a few epochs but, because the sequences begin to get more complicated, this network is not able to capture 100% of the different movements. 
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Frame_point_linear/1000_samples/2_False_relu_categorical_crossentropy_10_history.png" alt="Loss history" %}
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Frame_point_linear/1000_samples/2_False_relu_categorical_crossentropy_10_error_hist.png" alt="Relative error histogram" %}
-
 In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. As we commented previously, the error committed is not null, although the maximum error committed is quite small.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Frame_point_linear/1000_samples/2_False_relu_categorical_crossentropy_10_max_error.png" alt="Relative and absolute error" %}
 
 
@@ -52,47 +46,28 @@ In the next image you can see target frame in the samples where the errors (abso
 To try to improve performance we tried to increase the number of samples, according to the complexity of the data, to be able to cover more examples and get the network to improve its learning. I used 5000 samples instead of 1000 and the same structure.
 
 As the number of samples increases, the performance of the network improves and a greater stabilization of the same is achieved in the training.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Frame_point_linear/5000_samples/15_False_relu_categorical_crossentropy_10_history.png" alt="Loss history" %}
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Frame_point_linear/5000_samples/15_False_relu_categorical_crossentropy_10_error_hist.png" alt="Error histogram" %}
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Frame_point_linear/5000_samples/15_False_relu_categorical_crossentropy_10_rel_error_hist.png" alt="Relative error histogram" %}
-
 In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. As in the case with less samples, the error committed is not null, although the maximum error committed is quite small. In addition, despite the fact that the maximum error is the same, the average error has decreased with increasing number of samples.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Frame_point_linear/5000_samples/15_False_relu_categorical_crossentropy_10_max_error.png" alt="Relative and absolute error" %}
 
 ## Recurrent Neural Networks
 The performance obtained with the previous network can still be improved improved, so we chose to include the recurrent networks to try to improve it. I have used the following structure:
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/LSTM/15_False_relu_categorical_crossentropy_10_properties.png" alt="Conv + LSTM network structure" %}
-
 With the proposed structure the performance is not good and the error is very high.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/LSTM/15_False_relu_categorical_crossentropy_10_history.png" alt="Loss history" %}
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/LSTM/15_False_relu_categorical_crossentropy_10_error_hist.png" alt="Error histogram" %}
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/LSTM/15_False_relu_categorical_crossentropy_10_rel_error_hist.png" alt="Relative error histogram" %}
-
 In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. As I mentioned earlier, the error made with this network is excessively high.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/LSTM/15_False_relu_categorical_crossentropy_10_max_error.png" alt="Relative and absolute error " %}
 
 ## Recurrent Neural Networks - New structure 
 In view of the results obtained previously I have replaced the simple LSTM layer with a ConvLSTM which computes convolutional operations in both the input and the recurrent transformations. The new structure is as follows:
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_properties.png" alt="ConvLSTM structure" %}
-
 With the new structure the performance of the network is improved and the results are practically the same as in the non-recurrent case that were pretty good
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_history.png" alt="Loss history" %}
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_error_hist.png" alt="Error histogram" %}
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_rel_error_hist.pn" alt="Relative error histogram" %}
-
 In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. The maximum error committed coincides with the non-recurrent case and in terms of the average a very similar result is obtained.
-
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_max_error.png" alt="Relative and absolute error" %}
