@@ -1,6 +1,6 @@
 ---
-title: "Previous weeks - Previous work"
-excerpt: "All work done before resuming the thesis this year."
+title: "Previous weeks - First trainings"
+excerpt: "First contact with the created data."
 
 sidebar:
   nav: "docs"
@@ -91,3 +91,47 @@ As in the two previous cases, the network manages to reduce and stabilize the lo
 In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. In this case we have not obtained any error so the first sample is shown.
 
 {% include figure image_path="/assets/images/logbook/media/Models/Non-Recurrent/Frame_point_URM/15_False_relu_categorical_crossentropy_10_max_error.png" alt="Relative and absolute error" %}
+
+## Training Recurrent Neural Networks - LSTM
+Once we have tested the prediction with simple networks without recurrences, we start to train, with the same data, networks that incorporate recurrence. In particular, we will focus the work on the LSTM networks helping us with these [tutorials](https://machinelearningmastery.com/category/lstm/).
+
+### Linear Functions dataset
+Due to the simplicity of this data and the good result obtained with non-recurrent networks, we have decided not to train recurrent networks with this type of data.
+
+### URM Vectors dataset
+Although the result with non-recurrent networks was perfect, we decided to use this data to start with the new networks and verify that we have understood their implementation.
+As in the non-recurrent case, the first thing we must do is to resize the data to ensure that the input shape is correct.nothing changes with respect to non-recurrent networks, so we must have the following shapes:
+
+```ruby
+  input_shape=(n_samples, know_points=20, vector_length=320)
+  output_shape = vector_length
+```
+
+For this type of data we have trained a simple LSTM network whose structure can be seen in the following figure:
+
+{% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_properties.png" alt="Simple LSTM structure" %}
+
+As in the previous case, the network manages to reduce and stabilize the loss function in only a few epochs, without any error.
+
+{% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_history.png" alt="Loss history" %}
+
+{% include figure image_path="/assets/images/logbook/media//Models/Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_error_hist.png" alt="Relative error histogram" %}
+
+In the next image you can see the samples where the errors (absolute and relative) are maximum. In this case we have not obtained any error so the first sample is shown.
+
+{% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Vector_URM/15_False_relu_categorical_crossentropy_10_max_error.png" alt="Relative and absolute error" %}
+
+### URM Point Frames dataset
+For the same reason that in the case of vectors we decided to develop a recurrent network for this type of data, verifying that the implementation we made is correct.
+In this case we must modify the structure of the data in the following way:
+
+```ruby
+  input_shape=(n_samples, know_points=20, height=80, width=120, channels=1)
+  output_shape = height * width * channels
+```
+
+Due to the computational load involved in the training and evaluation of this network it is not yet possible to show the result of the evaluation, although its structure and evolution in training is shown.
+
+{% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/URM_point_255/64_False_relu_categorical_crossentropy_10_properties.png" alt="Convolutional + LSTM network structure" %}
+
+{% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/URM_point_255/64_False_relu_categorical_crossentropy_10_history.png" alt="Relative and absolute error" %}
