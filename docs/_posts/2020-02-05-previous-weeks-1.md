@@ -64,7 +64,7 @@ In the next image you can see target frame in the samples where the errors (abso
 
 ## Recurrent Neural Networks - New structure 
 In view of the results obtained previously I have replaced the simple LSTM layer with a ConvLSTM which computes convolutional operations in both the input and the recurrent transformations. The new structure is as follows:
-{% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_properties.png" alt="ConvLSTM structure" %}
+{% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255_y0/15_False_relu_categorical_crossentropy_10_properties.png" alt="ConvLSTM network structure" %}
 With the new structure the performance of the network is improved and the results are practically the same as in the non-recurrent case that were pretty good
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_history.png" alt="Loss history" %}
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_error_hist.png" alt="Error histogram" %}
