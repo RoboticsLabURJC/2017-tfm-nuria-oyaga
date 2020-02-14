@@ -28,7 +28,7 @@ The way to obtain these new frames is the same as before, we set the position in
 
 The problem that we can find in this type of samples is that we are modifying the height, a value that must be integer, by means of a function that accepts decimal values, which causes a rounding to be necessary. Depending on the sample, this rounding can make the movement not seem as natural as it would be because it is possible that the height does not change from one instant to the next.
 
-## Non Recurrent Neural Networks - With new data type
+## Non Recurrent Neural Networks
 First we do the training of non-recucurrent networks with the new type of data to check the scope they give us.
 
 As in the URM case, I started training a 2D convolutional network whose structure can be seen in the following figure:
