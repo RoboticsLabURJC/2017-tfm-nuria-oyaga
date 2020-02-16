@@ -23,7 +23,7 @@ circle_parameters:
 
 
 # Number of samples
-n_samples: 500000
+n_samples: 100000
 
 # Number of know points (x values)
 n_points: 20
