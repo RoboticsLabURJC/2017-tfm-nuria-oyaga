@@ -185,7 +185,8 @@ if __name__ == '__main__':
         obj_shape = conf['object']
         obj_color = conf['obj_color']
         motion_type = conf['motion_type']
-        data_dir = conf['root'] + "Frames_dataset/" + motion_type + '_' + obj_shape + '_' + str(obj_color)
+        y0 = conf['y0']
+        data_dir = conf['root'] + "Frames_dataset/" + motion_type + '_' + obj_shape + '_' + str(obj_color) + '_' + y0
         if obj_shape == 'point':
             shape = Shapes.Point(obj_color)
         else:
@@ -202,11 +203,11 @@ if __name__ == '__main__':
             if motion_type == 'URM':
                 if i == 0:
                     header = 'x0 u_x y0 n_points gap motion noise(mean, standard deviation)\n'
-                sample = Frames.URM(noise_parameters, n_points, gap, h, w, shape)
+                sample = Frames.URM(noise_parameters, n_points, gap, h, w, shape, y0)
             elif motion_type == 'linear':
                 if i == 0:
                     header = 'x0 u_x y0 m n_points gap motion noise(mean, standard deviation)\n'
-                sample = Frames.Linear(noise_parameters, n_points, gap, h, w, shape)
+                sample = Frames.Linear(noise_parameters, n_points, gap, h, w, shape, y0)
 
             elif motion_type == 'parabolic':
                 if i == 0:
@@ -217,15 +218,18 @@ if __name__ == '__main__':
                 if i == 0:
                     train_path = data_dir + '/' + motion_type + '_' + str(gap) + '_' \
                                      + str(noise_parameters) + '_train'
-                    check_dirs(train_path + '/samples')
+                    check_dirs(train_path + '/raw_samples')
+                    check_dirs(train_path + '/modeled_samples')
 
                     test_path = data_dir + '/' + motion_type + '_' + str(gap) + '_' \
                                     + str(noise_parameters) + '_test'
-                    check_dirs(test_path + '/samples')
+                    check_dirs(test_path + '/raw_samples')
+                    check_dirs(test_path + '/modeled_samples')
 
                     val_path = data_dir + '/' + motion_type + '_' + str(gap) + '_' \
                                    + str(noise_parameters) + '_val'
-                    check_dirs(val_path + '/samples')
+                    check_dirs(val_path + '/raw_samples')
+                    check_dirs(val_path + '/modeled_samples')
 
                     write_header(train_path + '/parameters.txt', header)
                     write_header(test_path + '/parameters.txt', header)
@@ -236,11 +240,14 @@ if __name__ == '__main__':
                     n_train = n_samples - n_val - n_test
 
                 if i < n_train:
-                    sample.save(train_path + '/samples/sample' + str(i) , train_path + '/parameters.txt')
+                    sample.save(train_path + '/raw_samples/sample' + str(i), train_path + '/parameters.txt',
+                                train_path + '/modeled_samples/sample' + str(i) + '.txt')
                 elif i < n_train + n_test:
-                    sample.save(test_path + '/samples/sample' + str(i), test_path + '/parameters.txt')
+                    sample.save(test_path + '/raw_samples/sample' + str(i), test_path + '/parameters.txt',
+                                test_path + '/modeled_samples/sample' + str(i) + '.txt')
                 else:
-                    sample.save(val_path + '/samples/sample' + str(i), val_path + '/parameters.txt')
+                    sample.save(val_path + '/raw_samples/sample' + str(i), val_path + '/parameters.txt',
+                                val_path + '/modeled_samples/sample' + str(i) + '.txt')
 
             else:
                 if i == 0:
