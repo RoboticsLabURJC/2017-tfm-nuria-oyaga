@@ -6,7 +6,7 @@ import cv2
 
 
 def read_frame_data(f_path, channels=False):
-    parameters_path = f_path.replace('samples', 'parameters.txt')
+    parameters_path = f_path.replace('raw_samples', 'parameters.txt')
     samples_paths = utils.get_dirs(f_path)
 
     dataX = []
