@@ -32,5 +32,5 @@ batch_size: 15
 patience: 10
 
 # Data
-#data_dir: /home/docker/data/linear_point_255_var_100000/linear_10_[None]_
-data_dir: /home/docker/data/linear_point_255_var_10000/linear_10_[None]_
+#data_dir: /home/docker/data/Frames_dataset/linear_point_255_var_100000/linear_10_[None]_
+data_dir: /home/docker/data/Frames_dataset/linear_point_255_var_10000/linear_10_[None]_

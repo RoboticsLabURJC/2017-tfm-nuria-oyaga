@@ -200,11 +200,12 @@ class ConvolutionLstm(Net):
                 self.create_simple_model()
             elif kwargs['complexity'] == "complex":
                 self.create_complex_model()
-	    else:
-	        self.create_conv_lstm_model()
+            else:
+                self.create_conv_lstm_model()
 
     def create_simple_model(self):
         print("Creating simple convolution LSTM model")
+        print(self.input_shape)
         self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation), input_shape=self.input_shape))
         self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
         self.model.add(TimeDistributed(Flatten()))
@@ -231,7 +232,7 @@ class ConvolutionLstm(Net):
         self.model.add(Dense(self.output_shape, activation="softmax"))
         self.model.compile(loss=self.loss, optimizer='adam')
 
-     def create_conv_lstm_model(self):
+    def create_conv_lstm_model(self):
         print("Creating convLSTM model")
         self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation), input_shape=self.input_shape))
         self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation)))
