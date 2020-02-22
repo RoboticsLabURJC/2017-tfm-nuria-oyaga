@@ -146,7 +146,7 @@ class Convolution2D(Net):
                 self.create_complex_model()
 
     def create_simple_model(self):
-        print("Creating 2D convolutional model")
+        print("Creating simple 2D convolutional model")
         self.model.add(Conv2D(32, (3, 3), activation=self.activation, input_shape=self.input_shape))
         self.model.add(Conv2D(32, (3, 3), activation=self.activation))
 
@@ -160,7 +160,7 @@ class Convolution2D(Net):
         self.model.compile(loss=self.loss, optimizer='adam')
 
     def create_complex_model(self):
-        print("Creating 2D convolutional model")
+        print("Creating complex 2D convolutional model")
         self.model.add(Conv2D(32, (5, 5), activation=self.activation, input_shape=self.input_shape))
         self.model.add(Conv2D(40, (3, 3), activation=self.activation))
         self.model.add(Conv2D(64, (3, 3), activation=self.activation))
@@ -198,11 +198,13 @@ class ConvolutionLstm(Net):
         if 'model_file' not in kwargs.keys():
             if kwargs['complexity'] == "simple":
                 self.create_simple_model()
-            else:
+            elif kwargs['complexity'] == "complex":
                 self.create_complex_model()
+	    else:
+	        self.create_conv_lstm_model()
 
     def create_simple_model(self):
-        print("Creating convolution LSTM model")
+        print("Creating simple convolution LSTM model")
         self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation), input_shape=self.input_shape))
         self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
         self.model.add(TimeDistributed(Flatten()))
@@ -212,16 +214,31 @@ class ConvolutionLstm(Net):
             self.model.add(Dropout(self.drop_percentage))
 
         self.model.add(Dense(self.output_shape, activation="softmax"))
-        self.model.compile(loss=self.loss, optimizer='adam')
+        self.model.compile(loss=self.loss, optimizer='adam')    
 
     def create_complex_model(self):
-        print("Creating convolution LSTM model")
+        print("Creating complex convolution LSTM model")
         self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation), input_shape=self.input_shape))
         self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation)))
         self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
         self.model.add(TimeDistributed(Flatten()))
         self.model.add(LSTM(25, return_sequences=True))
         self.model.add(LSTM(50, return_sequences=True))
+
+        if self.dropout:
+            self.model.add(Dropout(self.drop_percentage))
+
+        self.model.add(Dense(self.output_shape, activation="softmax"))
+        self.model.compile(loss=self.loss, optimizer='adam')
+
+     def create_conv_lstm_model(self):
+        print("Creating convLSTM model")
+        self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation), input_shape=self.input_shape))
+        self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation)))
+        self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
+        self.model.add(ConvLSTM2D(filters=5, kernel_size=(3, 3),
+                   padding='same', return_sequences=True))
+        self.model.add(TimeDistributed(Flatten()))
 
         if self.dropout:
             self.model.add(Dropout(self.drop_percentage))

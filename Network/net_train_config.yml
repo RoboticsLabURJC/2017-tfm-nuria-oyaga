@@ -1,14 +1,14 @@
 # Version
 version: 1
 
-# Complexity
+# Complexity: simple, complex, convLSTM
 complexity: simple
 
 # Root to save the model
 root: Models/
 
 # Type of the net to train (NoRec, Rec)
-net_type: NoRec
+net_type: Rec
 
 # Activation function
 activation: relu
@@ -32,5 +32,5 @@ batch_size: 15
 patience: 10
 
 # Data
-#data_dir: /home/docker/2017-tfm-nuria-oyaga/Frames_dataset/linear_point_255_var_5000/linear_10_[None]_
-data_dir: /home/docker/2017-tfm-nuria-oyaga/Frames_dataset/linear_point_255_var_10000/linear_10_[None]_
+#data_dir: /home/docker/data/linear_point_255_var_100000/linear_10_[None]_
+data_dir: /home/docker/data/linear_point_255_var_10000/linear_10_[None]_
