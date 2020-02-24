@@ -2,7 +2,7 @@
 version: 1
 
 # Complexity: simple, complex, convLSTM
-complexity: simple
+complexity: convLSTM
 
 # Root to save the model
 root: Models/

@@ -48,6 +48,8 @@ class Net(object):
                                        callbacks=[early_stopping, checkpoint], verbose=2)
         end_time = time()
 
+        print("End training")
+
         if len(model_history.epoch) < n_epochs:
             n_epochs = len(model_history.epoch)
 
@@ -88,7 +90,8 @@ class Net(object):
         error_stats, rel_error_stats = test_utils.get_errors_statistics(error, relative_error)
 
         # Draw error percentage
-        test_utils.error_histogram(relative_error)
+        test_utils.error_histogram(error)
+        test_utils.relative_error_histogram(relative_error)
 
         # Draw the max errors points
         test_utils.draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_stats, data_type)
@@ -224,7 +227,7 @@ class ConvolutionLstm(Net):
         self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
         self.model.add(TimeDistributed(Flatten()))
         self.model.add(LSTM(25, return_sequences=True))
-        self.model.add(LSTM(50, return_sequences=True))
+        self.model.add(LSTM(50))
 
         if self.dropout:
             self.model.add(Dropout(self.drop_percentage))
@@ -238,8 +241,8 @@ class ConvolutionLstm(Net):
         self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation)))
         self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
         self.model.add(ConvLSTM2D(filters=5, kernel_size=(3, 3),
-                   padding='same', return_sequences=True))
-        self.model.add(TimeDistributed(Flatten()))
+                   padding='same'))
+        self.model.add(Flatten())
 
         if self.dropout:
             self.model.add(Dropout(self.drop_percentage))

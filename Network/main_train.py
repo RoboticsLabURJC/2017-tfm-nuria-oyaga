@@ -97,7 +97,7 @@ if __name__ == '__main__':
 
         _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/raw_samples', channels)
         _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/raw_samples', channels)
-        filename = root + "_" + complexity
+        filename = root + "/" + complexity
 
         # Model settings
         in_dim = trainX.shape[1:]

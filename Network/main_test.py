@@ -14,11 +14,9 @@ from Network import Net
 
 if __name__ == '__main__':
     conf = utils.get_config_file()
-    print(conf['data_path'].split('/'))
-    data_type = conf['data_path'].split('/')[0]
-    net_type = conf['model_path'].split('/')[1]
+    data_type = conf['data_path'].split('/')[4]
+    net_type = conf['model_path'].split('/')[5]
 
-    print(data_type)
     # Load data
     if data_type == "Functions_dataset":
         parameters, test_set = func_utils.read_function_data(conf['data_path'])
@@ -41,7 +39,6 @@ if __name__ == '__main__':
             to_test_net = Net.Lstm(model_file=conf['model_path'])
 
     else:  # data_type == "Frames_dataset
-        print(net_type)
         if net_type == "NOREC":
             print('Puting the test data into the right shape...')
             parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'])
