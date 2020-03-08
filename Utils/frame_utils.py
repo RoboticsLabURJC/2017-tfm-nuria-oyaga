@@ -9,6 +9,21 @@ def read_frame_data(f_path, channels=False):
     parameters_path = f_path.replace('raw_samples', 'parameters.txt')
     samples_paths = utils.get_dirs(f_path)
 
+    dataX, dataY = get_samples(samples_paths, channels)
+    parameters = pd.read_csv(parameters_path, sep=' ')
+
+    return parameters, dataX, dataY
+
+
+def read_batch_data(samples, idx, batch_size, channels):
+    sub_samples = samples[idx * batch_size: (idx * batch_size) + batch_size]
+    dataX, dataY = get_samples(sub_samples, channels)
+
+    return dataX, dataY
+
+
+def get_samples(samples_paths, channels):
+
     dataX = []
     dataY = []
 
@@ -23,9 +38,17 @@ def read_frame_data(f_path, channels=False):
     if channels:
         dataX = np.expand_dims(dataX, axis=-1)
 
-    parameters = pd.read_csv(parameters_path, sep=' ')
+    return (dataX, dataY)
 
-    return parameters, dataX, dataY
+
+def batch_generator(samples, batch_size, steps, channels):
+     idx = 1
+     while True:
+        yield read_batch_data(samples, idx-1, batch_size, channels)
+        if idx < steps:
+            idx += 1
+        else:
+            idx = 1
 
 
 def get_positions(predictions, real, dim):
