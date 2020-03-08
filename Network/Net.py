@@ -67,14 +67,10 @@ class Net(object):
         if len(model_history.epoch) < n_epochs:
             n_epochs = len(model_history.epoch)
 
-        train_score = self.model.evaluate(data_train[0], data_train[1], verbose=0)
-        val_score = self.model.evaluate(data_val[0], data_val[1], verbose=0)
-
-        self.save_properties(patience, n_epochs, [train_score, val_score],
-                             round(end_time-start_time, 2), name + '_properties')
+        self.save_properties(patience, n_epochs, round(end_time-start_time, 2), name + '_properties')
         utils.save_history(model_history, name)
 
-    def save_properties(self, patience, epochs, scores, train_time, file_path):
+    def save_properties(self, patience, epochs, train_time, file_path):
         vis_utils.plot_model(self.model, file_path + '.png', show_shapes=True)
 
         with open(file_path + '.txt', 'w+') as f:
@@ -82,8 +78,6 @@ class Net(object):
             f.write('\n\n-----------------------------------------------------------------------------------\n\n')
             f.write('Patience: ' + str(patience) + '\n')
             f.write('Epochs: ' + str(epochs) + '\n')
-            f.write('Train score: ' + str(round(scores[0], 2)) + '\n')
-            f.write('Test score: ' + str(round(scores[1], 2)) + '\n')
             f.write('Execution time: ' + str(train_time) + '\n')
 
     def test(self, test_x, test_y, gap, data_type):
