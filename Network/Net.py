@@ -33,7 +33,7 @@ class Net(object):
             self.input_shape = kwargs['input_shape']
             self.output_shape = kwargs['output_shape']
 
-    def train(self, n_epochs, batch_size, patience, root, data_train, data_val):
+    def train(self, n_epochs, batch_size, patience, root, data_train, data_val, batch_data, channels):
         utils.check_dirs(root)
         name = root + '/' + str(batch_size) + '_' + str(self.dropout) + '_' + self.activation + '_' + \
             self.loss + '_' + str(patience)
@@ -43,9 +43,23 @@ class Net(object):
 
         print('Training model...')
         start_time = time()
-        model_history = self.model.fit(data_train[0], data_train[1], batch_size=batch_size,
-                                       epochs=n_epochs, validation_data=data_val,
-                                       callbacks=[early_stopping, checkpoint], verbose=2)
+        if batch_data:
+            print("Batch data")
+            steps_per_epoch = np.ceil(len(data_train) / batch_size)
+            validation_steps = np.ceil(len(data_val) / batch_size)
+            training_batch_generator = frame_utils.batch_generator(data_train, batch_size, steps_per_epoch, channels)
+            validation_batch_generator = frame_utils.batch_generator(data_val, batch_size, validation_steps, channels)
+            model_history = self.model.fit_generator(training_batch_generator,
+                                                     epochs=n_epochs, steps_per_epoch=steps_per_epoch,
+                                                     validation_data=validation_batch_generator,
+                                                     validation_steps=validation_steps,
+                                                     callbacks=[early_stopping, checkpoint], verbose=2)
+
+        else:
+            print("No batch data")
+            model_history = self.model.fit(data_train[0], data_train[1], batch_size=batch_size,
+                                           epochs=n_epochs, validation_data=data_val,
+                                           callbacks=[early_stopping, checkpoint], verbose=2)
         end_time = time()
 
         print("End training")

@@ -33,6 +33,7 @@ if __name__ == '__main__':
     root = conf['root'] + net_type.upper() + '/' + data_type + '/' + func_type
     utils.check_dirs(root)
     version = conf['version']
+    batch_data = conf['batch_data']
 
     print('Puting the data into the right shape...')
 
@@ -40,6 +41,8 @@ if __name__ == '__main__':
         print('Training with functions')
         loss = conf['func_loss']
         # Load data
+        channels = False
+        batch_data = False
         parameters, train_set = func_utils.read_function_data(data_dir + 'train.txt')
         _, val_set = func_utils.read_function_data(data_dir + 'val.txt')
 
@@ -54,6 +57,9 @@ if __name__ == '__main__':
         # Put the validation data into the right shape
         valX, valY = func_utils.reshape_function_data(val_set)
 
+        train_data = [trainX, trainY]
+        val_data = [valX, valY]
+
         # Model settings
         in_dim = trainX.shape[1:]
         out_dim = 1
@@ -64,6 +70,8 @@ if __name__ == '__main__':
         print('Training with vectors')
         loss = conf['vect_loss']
         # Load data
+        channels = False
+        batch_data = False
         _, train_set = vect_utils.read_vector_data(data_dir + 'train/samples')
         _, val_set = vect_utils.read_vector_data(data_dir + 'val/samples')
         filename = root
@@ -73,6 +81,9 @@ if __name__ == '__main__':
 
         # Put the validation data into the right shape
         valX, valY = vect_utils.reshape_vector_data(val_set)
+
+        train_data = [trainX, trainY]
+        val_data = [valX, valY]
 
         # Model settings
         in_dim = trainX.shape[1:]
@@ -95,13 +106,25 @@ if __name__ == '__main__':
         if net_type == "Rec":
             channels = True
 
-        _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/raw_samples', channels)
-        _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/raw_samples', channels)
-        filename = root + "/" + complexity
+        if batch_data:
+            train_data = utils.get_dirs(data_dir + 'train/raw_samples')
+            val_data = utils.get_dirs(data_dir + 'val/raw_samples')
+            if channels:
+                in_dim = [20, 80, 120, 1]
+            else:
+                in_dim = [20, 80, 120]
+            out_dim = np.prod(in_dim[1:])
+        else:
+            _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/raw_samples', channels)
+            _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/raw_samples', channels)
+            train_data = [trainX, trainY]
+            val_data = [valX, valY]
+            in_dim = trainX.shape[1:]
+            out_dim = np.prod(in_dim[1:])
 
+        filename = root + "/" + complexity
         # Model settings
-        in_dim = trainX.shape[1:]
-        out_dim = np.prod(in_dim[1:])
+
         if net_type == "NoRec":
             to_train_net = Net.Convolution2D(activation=activation, loss=loss, dropout=dropout,
                                              drop_percentage=drop_percentage, input_shape=in_dim,
@@ -112,4 +135,4 @@ if __name__ == '__main__':
                                                output_shape=out_dim, complexity=complexity)
     print('Training')
 
-    to_train_net.train(n_epochs, batch_size, patience, filename, [trainX, trainY], [valX, valY])
+    to_train_net.train(n_epochs, batch_size, patience, filename, train_data, val_data, batch_data, channels)
