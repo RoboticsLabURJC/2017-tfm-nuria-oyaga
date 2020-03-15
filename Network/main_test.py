@@ -15,7 +15,10 @@ from Network import Net
 if __name__ == '__main__':
     conf = utils.get_config_file()
     data_type = conf['data_path'].split('/')[4]
-    net_type = conf['model_path'].split('/')[5]
+    net_type = conf['model_path'].split('/')[4]
+    complexity = conf['model_path'].split('/')[7]
+
+    print("Evaluating with " + data_type + " a " + complexity + " " + net_type + " model")
 
     # Load data
     if data_type == "Functions_dataset":

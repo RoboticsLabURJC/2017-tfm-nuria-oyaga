@@ -216,7 +216,6 @@ class ConvolutionLstm(Net):
 
     def create_simple_model(self):
         print("Creating simple convolution LSTM model")
-        print(self.input_shape)
         self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation), input_shape=self.input_shape))
         self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
         self.model.add(TimeDistributed(Flatten()))

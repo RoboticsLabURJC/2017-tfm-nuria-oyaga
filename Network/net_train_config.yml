@@ -2,7 +2,7 @@
 version: 1
 
 # Complexity: simple, complex, convLSTM
-complexity: simple
+complexity: complex
 
 # Root to save the model
 root: /home/docker/Models/
@@ -32,6 +32,6 @@ batch_size: 15
 patience: 10
 
 # Data
-#data_dir: /home/docker/data/Frames_dataset/linear_point_255_var_100000/linear_10_[None]_
-data_dir: /home/docker/data/Frames_dataset/linear_point_255_var_10000/linear_10_[None]_
+data_dir: /home/docker/data/Frames_dataset/linear_point_255_var_100000/linear_10_[None]_
+#data_dir: /home/docker/data/Frames_dataset/linear_point_255_var_10000/linear_10_[None]_
 batch_data: True #True or False
