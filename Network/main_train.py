@@ -113,14 +113,14 @@ if __name__ == '__main__':
                 in_dim = [20, 80, 120, 1]
             else:
                 in_dim = [20, 80, 120]
-            out_dim = np.prod(in_dim[1:])
         else:
             _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/raw_samples', channels)
             _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/raw_samples', channels)
             train_data = [trainX, trainY]
             val_data = [valX, valY]
             in_dim = trainX.shape[1:]
-            out_dim = np.prod(in_dim[1:])
+
+        out_dim = np.prod(in_dim[1:])
 
         filename = root + "/" + complexity
         # Model settings
