@@ -2,13 +2,13 @@
 version: 1
 
 # Complexity: simple, complex, convLSTM
-complexity: complex
+complexity: convLSTM
 
 # Root to save the model
 root: /home/docker/Models/
 
 # Type of the net to train (NoRec, Rec)
-net_type: NoRec
+net_type: Rec
 
 # Activation function
 activation: relu
@@ -29,7 +29,7 @@ n_epochs: 200
 batch_size: 15
 
 # Patience
-patience: 10
+patience: 30
 
 # Data
 data_dir: /home/docker/data/Frames_dataset/linear_point_255_var_100000/linear_10_[None]_

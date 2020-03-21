@@ -22,6 +22,7 @@ class Net(object):
     def __init__(self, net_type, **kwargs):
         self.net_type = net_type
         if 'model_file' in kwargs.keys():
+            self.model_path = kwargs['model_file'][:kwargs['model_file'].rfind("/") + 1]
             self.model = load_model(kwargs['model_file'])
         else:
             self.model = Sequential()
@@ -93,6 +94,14 @@ class Net(object):
                                                                              (test_x.shape[2], test_x.shape[3]))
 
         error, relative_error = test_utils.calculate_error(real_values, predict_values, maximum)
+
+        with open(self.model_path + 'error_result.txt', 'w') as file:
+            for i in range(error.shape[0]):
+                file.write("Processed sample " + str(i) + ": \n")
+                file.write("Target position: " + str(real_values[i]) + "\n")
+                file.write("Position: " + str(predict_values[i]) + "\n")
+                file.write("Error: " + str(np.round(error[i], 2)) + " (" + str(np.round(relative_error[i], 2)) + "%)\n")
+                file.write("--------------------------------------------------------------\n")
 
         # Calculate stats
         error_stats, rel_error_stats = test_utils.get_errors_statistics(error, relative_error)

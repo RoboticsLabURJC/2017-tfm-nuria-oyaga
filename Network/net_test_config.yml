@@ -1,6 +1,6 @@
 # Test dataset path
-# data_path: /home/docker/data/Frames_dataset/linear_point_255_var_10000/linear_10_[None]_test/raw_samples
-data_path: /home/docker/data/Frames_dataset/linear_point_255_var_100000/linear_10_[None]_test/raw_samples
+data_path: /home/docker/data/Frames_dataset/linear_point_255_var_10000/linear_10_[None]_test/raw_samples
+# data_path: /home/docker/data/Frames_dataset/linear_point_255_var_100000/linear_10_[None]_test/raw_samples
 
 # Model path
 # model_path: /home/docker/Models/NOREC/Frames_dataset/linear_point_255_var_100000/complex/15_False_relu_categorical_crossentropy_10.h5
