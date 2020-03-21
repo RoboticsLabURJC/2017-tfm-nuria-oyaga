@@ -8,9 +8,9 @@ def calculate_error(real, prediction, maximum):
     # Calculate error
     if len(real.shape) > 1:
         error = np.array([np.linalg.norm(np.array(real[i]) - np.array(prediction[i]))
-                          for i in range(real.shape[0] - 1)])
+                          for i in range(real.shape[0])])
     else:
-        error = np.array([abs(real[i] - prediction[i]) for i in range(real.size - 1)])
+        error = np.array([abs(real[i] - prediction[i]) for i in range(real.size)])
 
     # Calculate relative error
     relative_error = np.zeros(error.size)
