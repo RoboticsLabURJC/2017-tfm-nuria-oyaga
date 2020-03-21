@@ -33,9 +33,9 @@ def calculate_error(real, prediction, maximum):
     # Calculate error
     if len(real.shape) > 1:
         error = np.array([np.linalg.norm(np.array(real[i]) - np.array(prediction[i]))
-                          for i in range(real.shape[0] - 1)])
+                          for i in range(real.shape[0])])
     else:
-        error = np.array([abs(real[i] - prediction[i]) for i in range(real.size - 1)])
+        error = np.array([abs(real[i] - prediction[i]) for i in range(real.size)])
 
     # Calculate relative error
     relative_error = np.zeros(error.size)
@@ -52,5 +52,11 @@ if __name__ == '__main__':
     real_data = get_samples(target)
     predict_positions, real_positions, maximum_val = get_positions(prediction_data, real_data, (80, 120))
     abs_error, rel_error = calculate_error(real_positions, predict_positions, maximum_val)
+    with open('error_result.txt', 'w') as file:
+        for i, image in enumerate(images):
+            file.write(image.split("/")[-1] + ": \n")
+            file.write("Target position: " + str(real_positions[i]) + "\n")
+            file.write("Position: " + str(predict_positions[i]) + "\n")
+            file.write("Error: " + str(np.round(abs_error[i], 2)) + " (" + str(np.round(rel_error[i], 2)) + "%)\n")
+            file.write("--------------------------------------------------------------\n")
 
-    print()
