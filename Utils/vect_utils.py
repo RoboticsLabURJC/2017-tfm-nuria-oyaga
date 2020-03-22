@@ -5,9 +5,9 @@ import pandas as pd
 import cv2
 
 
-def read_vector_data(path):
-    parameters_path = path.replace('samples', 'parameters.txt')
-    images_paths = utils.read_images(path)
+def read_vector_data(data_path):
+    parameters_path = data_path.replace('samples', 'parameters.txt')
+    images_paths = utils.get_images(data_path)
 
     parameters = pd.read_csv(parameters_path, sep=' ')
     images = [cv2.imread(img_path, 0) for img_path in images_paths]

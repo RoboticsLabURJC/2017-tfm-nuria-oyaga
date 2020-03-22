@@ -5,11 +5,17 @@ import numpy as np
 import cv2
 
 
-def read_frame_data(f_path, channels=False):
-    parameters_path = f_path.replace('raw_samples', 'parameters.txt')
-    samples_paths = utils.get_dirs(f_path)
+def read_frame_data(f_path, sample_type, channels=False):
+    f_path = f_path + sample_type
+    parameters_path = f_path.replace(sample_type, 'parameters.txt')
 
-    dataX, dataY = get_samples(samples_paths, channels)
+    if sample_type == "raw_samples":
+        samples_paths = utils.get_dirs(f_path)
+        dataX, dataY = get_samples(samples_paths, channels)
+    else:
+        samples_paths = utils.get_files(f_path)
+        dataX, dataY = get_modeled_samples(samples_paths)
+
     parameters = pd.read_csv(parameters_path, sep=' ')
 
     return parameters, dataX, dataY
@@ -39,6 +45,18 @@ def get_samples(samples_paths, channels):
         dataX = np.expand_dims(dataX, axis=-1)
 
     return (dataX, dataY)
+
+
+def get_modeled_samples(samples_paths):
+    dataX = []
+    dataY = []
+
+    for p in samples_paths:
+        sample = pd.read_csv(p)
+        dataX.append(sample.iloc[:-1, :].values)
+        dataY.append(sample.iloc[-1, :].values)
+
+    return np.array(dataX), np.array(dataY)
 
 
 def batch_generator(samples, batch_size, steps, channels):

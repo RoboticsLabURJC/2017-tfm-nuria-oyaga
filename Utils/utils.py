@@ -28,12 +28,12 @@ def get_config_file():
     return conf
 
 
-def check_dirs(path, replace=False):
-    if os.path.exists(path) and replace==True:
-        shutil.rmtree(path)
-        os.makedirs(path)
-    elif not os.path.exists(path):
-        os.makedirs(path)
+def check_dirs(dir_path, replace=False):
+    if os.path.exists(dir_path) and replace==True:
+        shutil.rmtree(dir_path)
+        os.makedirs(dir_path)
+    elif not os.path.exists(dir_path):
+        os.makedirs(dir_path)
 
 
 def write_header(file_path, header):
@@ -41,21 +41,29 @@ def write_header(file_path, header):
         file.write(header)
 
 
-def get_dirs(path):
-    dirs = [d[0] for d in os.walk(path)][1:]
+def get_dirs(dir_path):
+    dirs = [d[0] for d in os.walk(dir_path)][1:]
 
     return dirs
 
 
-def read_images(path):
+def get_images(dir_path):
     img_paths = []
-    for root, dirs, files in os.walk(path):
+    for root, dirs, files in os.walk(dir_path):
         img_paths = [os.path.join(root, file) for file in files if file.endswith(".png")]
 
     return img_paths
 
 
-def save_history(model_history, path):
+def get_files(dir_path):
+    file_paths = []
+    for root, dirs, files in os.walk(dir_path):
+        file_paths = [os.path.join(root, file) for file in files if file.endswith(".txt")]
+
+    return file_paths
+
+
+def save_history(model_history, dir_path):
     # plot the training loss and accuracy
     plt.style.use("ggplot")
     n_epochs = len(model_history.epoch)
@@ -65,4 +73,4 @@ def save_history(model_history, path):
     plt.xlabel("Epoch #")
     plt.ylabel("Loss/Accuracy")
     plt.legend(loc="lower left")
-    plt.savefig(path + '_history.png')
+    plt.savefig(dir_path + '_history.png')
