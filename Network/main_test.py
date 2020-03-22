@@ -43,17 +43,24 @@ if __name__ == '__main__':
 
     else:  # data_type == "Frames_dataset
         sample_type = conf['data_path'].split('/')[-1]
+        data_type = data_type + "_" + sample_type
         if sample_type == "raw_samples":
             if net_type == "NOREC":
                 print('Puting the test data into the right shape...')
-                parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'])
+                parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'], sample_type)
                 to_test_net = Net.Convolution2D(model_file=conf['model_path'])
             else:
                 print('Puting the test data into the right shape...')
-                parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'], True)
+                parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'], sample_type, True)
                 to_test_net = Net.ConvolutionLstm(model_file=conf['model_path'])
         else:
-            print()
+            parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'], sample_type)
+            if net_type == "NOREC":
+                print('Puting the test data into the right shape...')
+                to_test_net = Net.Convolution1D(model_file=conf['model_path'])
+            else:
+                print('Puting the test data into the right shape...')
+                to_test_net = Net.Lstm(model_file=conf['model_path'])
 
         gap = parameters.iloc[0]['gap']
 

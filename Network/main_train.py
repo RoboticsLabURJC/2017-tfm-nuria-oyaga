@@ -98,13 +98,13 @@ if __name__ == '__main__':
 
     else:  # data_type == 'Frames_dataset':
         print('Training with frames')
-        loss = conf['vect_loss']
-        complexity = conf['complexity']
         data_model = conf['data_model']
 
         # Load data
         channels = False
         if data_model == "raw":
+            loss = conf['vect_loss']
+            complexity = conf['complexity']
             print("Raw images")
             if net_type == "Rec":
                 channels = True
@@ -139,7 +139,8 @@ if __name__ == '__main__':
 
         else:
             print("Modeled images")
-            filename = root + "_Modeled/" + complexity
+            loss = conf['func_loss']
+            filename = root + "_Modeled/"
             _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'modeled_samples')
             _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'modeled_samples')
             train_data = [trainX, trainY]

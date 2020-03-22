@@ -87,11 +87,13 @@ class Net(object):
             maximum = [np.max(np.abs(np.append(test_x[i], test_y[i]))) for i in range(len(test_x))]
             predict_values = predict
             real_values = test_y
-        elif data_type == "Vectors_dataset" :
+        elif data_type == "Vectors_dataset":
             predict_values, real_values, maximum = vect_utils.get_positions(predict, test_y)
-        else:  # data_type == "Frames_dataset"
+        elif data_type == "Frames_dataset_raw_samples":
             predict_values, real_values, maximum = frame_utils.get_positions(predict, test_y,
                                                                              (test_x.shape[2], test_x.shape[3]))
+        else:  # data_type == "Frames_dataset_modeled_samples"
+            predict_values, real_values, maximum = frame_utils.get_positions(predict, test_y, (80, 120), False)
 
         error, relative_error = test_utils.calculate_error(real_values, predict_values, maximum)
 
