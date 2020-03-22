@@ -2,13 +2,13 @@
 version: 1
 
 # Complexity: simple, complex, convLSTM
-complexity: convLSTM
+complexity: simple
 
 # Root to save the model
 root: /home/docker/Models/
 
 # Type of the net to train (NoRec, Rec)
-net_type: Rec
+net_type: NoRec
 
 # Activation function
 activation: relu
@@ -32,6 +32,8 @@ batch_size: 15
 patience: 30
 
 # Data
-data_dir: /home/docker/data/Frames_dataset/linear_point_255_var_100000/linear_10_[None]_
-#data_dir: /home/docker/data/Frames_dataset/linear_point_255_var_10000/linear_10_[None]_
-batch_data: True #True or False
+#data_dir: /home/docker/data/Frames_dataset/linear_point_255_var_100000/linear_10_[None]_
+data_dir: /home/docker/data/Frames_dataset/linear_point_255_var_10000/linear_10_[None]_
+#data_dir: /home/docker/data/Vectors_dataset/URM/URM_10_[None]_
+batch_data: False #True or False
+data_model: modeled #Raw or Modeled

@@ -31,7 +31,6 @@ if __name__ == '__main__':
     func_type = data_dir.split('/')[5]
 
     root = conf['root'] + net_type.upper() + '/' + data_type + '/' + func_type
-    utils.check_dirs(root)
     version = conf['version']
     batch_data = conf['batch_data']
 
@@ -101,38 +100,62 @@ if __name__ == '__main__':
         print('Training with frames')
         loss = conf['vect_loss']
         complexity = conf['complexity']
+        data_model = conf['data_model']
+
         # Load data
         channels = False
-        if net_type == "Rec":
-            channels = True
+        if data_model == "raw":
+            print("Raw images")
+            if net_type == "Rec":
+                channels = True
 
-        if batch_data:
-            train_data = utils.get_dirs(data_dir + 'train/raw_samples')
-            val_data = utils.get_dirs(data_dir + 'val/raw_samples')
-            if channels:
-                in_dim = [20, 80, 120, 1]
+            filename = root + "/" + complexity
+
+            if batch_data:
+                train_data = utils.get_dirs(data_dir + 'train/raw_samples')
+                val_data = utils.get_dirs(data_dir + 'val/raw_samples')
+                if channels:
+                    in_dim = [20, 80, 120, 1]
+                else:
+                    in_dim = [20, 80, 120]
             else:
-                in_dim = [20, 80, 120]
+                _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'raw_samples', channels)
+                _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'raw_samples', channels)
+                train_data = [trainX, trainY]
+                val_data = [valX, valY]
+                in_dim = trainX.shape[1:]
+
+            out_dim = np.prod(in_dim[1:])
+
+            # Model settings
+            if net_type == "NoRec":
+                to_train_net = Net.Convolution2D(activation=activation, loss=loss, dropout=dropout,
+                                                 drop_percentage=drop_percentage, input_shape=in_dim,
+                                                 output_shape=out_dim, complexity=complexity)
+            else:
+                to_train_net = Net.ConvolutionLstm(activation=activation, loss=loss, dropout=dropout,
+                                                   drop_percentage=drop_percentage, input_shape=in_dim,
+                                                   output_shape=out_dim, complexity=complexity)
+
         else:
-            _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/raw_samples', channels)
-            _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/raw_samples', channels)
+            print("Modeled images")
+            filename = root + "_Modeled/" + complexity
+            _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'modeled_samples')
+            _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'modeled_samples')
             train_data = [trainX, trainY]
             val_data = [valX, valY]
+
+            # Model settings
             in_dim = trainX.shape[1:]
+            out_dim = np.prod(in_dim[1:])
+            if net_type == "NoRec":
+                to_train_net = Net.Convolution1D(activation=activation, loss=loss, dropout=dropout,
+                                                 drop_percentage=drop_percentage, input_shape=in_dim,
+                                                 output_shape=out_dim)
+            else:  # net_type == "Rec"
+                to_train_net = Net.Lstm(activation=activation, loss=loss, dropout=dropout,
+                                        drop_percentage=drop_percentage, input_shape=in_dim,
+                                        output_shape=out_dim)
 
-        out_dim = np.prod(in_dim[1:])
-
-        filename = root + "/" + complexity
-        # Model settings
-
-        if net_type == "NoRec":
-            to_train_net = Net.Convolution2D(activation=activation, loss=loss, dropout=dropout,
-                                             drop_percentage=drop_percentage, input_shape=in_dim,
-                                             output_shape=out_dim, complexity=complexity)
-        else:
-            to_train_net = Net.ConvolutionLstm(activation=activation, loss=loss, dropout=dropout,
-                                               drop_percentage=drop_percentage, input_shape=in_dim,
-                                               output_shape=out_dim, complexity=complexity)
     print('Training')
-
     to_train_net.train(n_epochs, batch_size, patience, filename, train_data, val_data, batch_data, channels)
