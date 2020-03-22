@@ -6,7 +6,9 @@ import cv2
 
 
 def read_frame_data(f_path, sample_type, channels=False):
-    f_path = f_path + sample_type
+    if sample_type not in f_path:
+        f_path = f_path + sample_type
+
     parameters_path = f_path.replace(sample_type, 'parameters.txt')
 
     if sample_type == "raw_samples":
@@ -53,8 +55,8 @@ def get_modeled_samples(samples_paths):
 
     for p in samples_paths:
         sample = pd.read_csv(p)
-        dataX.append(sample.iloc[:-1, :].values)
-        dataY.append(sample.iloc[-1, :].values)
+        dataX.append(np.fliplr(sample.iloc[:-1, :].values))
+        dataY.append(sample.iloc[-1, :].values[::-1])
 
     return np.array(dataX), np.array(dataY)
 
@@ -69,32 +71,46 @@ def batch_generator(samples, batch_size, steps, channels):
             idx = 1
 
 
-def get_positions(predictions, real, dim):
+def get_positions(predictions, real, dim, raw=True):
     predict_pos = []
     real_pos = []
     maximum = []
     for i, p in enumerate(predictions):
-        p = p.reshape(dim)
-        predict_pos.append(np.unravel_index(p.argmax(), p.shape))
-        r = real[i].reshape(dim)
-        real_pos.append(np.unravel_index(r.argmax(), r.shape))
+        if raw:
+            p = p.reshape(dim)
+            predict_pos.append(np.unravel_index(p.argmax(), p.shape))
+            r = real[i].reshape(dim)
+            real_pos.append(np.unravel_index(r.argmax(), r.shape))
+        else:
+            predict_pos.append(p)
+            real_pos.append(real[i])
+
         maximum.append(np.linalg.norm(np.array((0, 0)) - np.array(dim)))
 
     return np.array(predict_pos), np.array(real_pos), np.array(maximum)
 
 
 def draw_frame(fig, real_data, pred_data, dim):
-    bw_image_real = real_data.reshape(dim)
-    bw_image_real = bw_image_real.astype(np.uint8) * 255
+    if len(real_data) > 2:
+        bw_image_real = real_data.reshape(dim)
+        bw_image_real = bw_image_real.astype(np.uint8) * 255
+
+        pred_data[np.argmax(pred_data)] = 1
+        pred_data = np.round(pred_data)
+        bw_image_pred = pred_data.reshape(dim)
+        bw_image_pred = bw_image_pred.astype(np.uint8) * 255
+
+    else:
+        bw_image_real = np.zeros(dim, np.uint8)
+        bw_image_real[real_data[0], real_data[1]] = 255
+
+        bw_image_pred = np.zeros(dim, np.uint8)
+        bw_image_pred[int(pred_data[0]), int(pred_data[1])] = 255
+
     color_image_real = np.dstack([bw_image_real, bw_image_real, bw_image_real])
-
-    pred_data[np.argmax(pred_data)] = 1
-    pred_data = np.round(pred_data)
-    bw_image_pred = pred_data.reshape(dim)
-    bw_image_pred = bw_image_pred.astype(np.uint8) * 255
     color_image_pred = np.dstack([bw_image_pred, np.zeros(dim, np.uint8), np.zeros(dim, np.uint8)])
-
     color_image = color_image_pred + color_image_real
     fig.imshow(color_image)
 
     return fig
+

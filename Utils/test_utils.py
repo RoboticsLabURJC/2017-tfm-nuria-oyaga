@@ -115,9 +115,13 @@ def draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_
         vect_utils.draw_vector(s2, [test_x[rel_error_stats[1][0]], test_y[rel_error_stats[1][0]]],
                                np.round(predict[rel_error_stats[1][0]]), gap)
 
-    else:  # data_type == "Frames_dataset"
+    else:
+        if data_type == "Frames_dataset_raw_samples":
+            frame_dim = (test_x.shape[2], test_x.shape[3])
+        else:
+            frame_dim = (80, 120)
+
         f, (s1, s2) = plt.subplots(1, 2, sharey='all', sharex='all')
-        frame_dim = (test_x.shape[2], test_x.shape[3])
         frame_utils.draw_frame(s1, test_y[error_stats[1][0]], predict[error_stats[1][0]], frame_dim)
         frame_utils.draw_frame(s2, test_y[rel_error_stats[1][0]], predict[rel_error_stats[1][0]], frame_dim)
 
