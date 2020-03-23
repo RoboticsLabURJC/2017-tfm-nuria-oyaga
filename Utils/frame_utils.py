@@ -23,6 +23,12 @@ def read_frame_data(f_path, sample_type, channels=False):
     return parameters, dataX, dataY
 
 
+def get_images_per_sample(sample_dir):
+    images = utils.get_images(sample_dir)
+
+    return len(images) - 1
+
+
 def read_batch_data(samples, idx, batch_size, channels):
     sub_samples = samples[idx * batch_size: (idx * batch_size) + batch_size]
     dataX, dataY = get_samples(sub_samples, channels)
@@ -71,7 +77,7 @@ def batch_generator(samples, batch_size, steps, channels):
             idx = 1
 
 
-def get_positions(predictions, real, dim, raw=True):
+def get_positions(predictions, real, dim, raw):
     predict_pos = []
     real_pos = []
     maximum = []
