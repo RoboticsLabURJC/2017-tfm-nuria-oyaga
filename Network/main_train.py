@@ -99,6 +99,8 @@ if __name__ == '__main__':
     else:  # data_type == 'Frames_dataset':
         print('Training with frames')
         data_model = conf['data_model']
+        samples_dir = data_dir.split('/')[5]
+        dim = (int(samples_dir.split('_')[-2]), int(samples_dir.split('_')[-1]))
 
         # Load data
         channels = False
@@ -114,10 +116,11 @@ if __name__ == '__main__':
             if batch_data:
                 train_data = utils.get_dirs(data_dir + 'train/raw_samples')
                 val_data = utils.get_dirs(data_dir + 'val/raw_samples')
+                images_per_sample = frame_utils.get_images_per_sample(train_data[0])
                 if channels:
-                    in_dim = [20, 80, 120, 1]
+                    in_dim = [images_per_sample, dim[0], dim[1], 1]
                 else:
-                    in_dim = [20, 80, 120]
+                    in_dim = [images_per_sample, dim[0], dim[1]]
             else:
                 _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'raw_samples', channels)
                 _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'raw_samples', channels)
@@ -140,6 +143,7 @@ if __name__ == '__main__':
         else:
             print("Modeled images")
             loss = conf['func_loss']
+            dim = (int(samples_dir.split('_')[-2]), int(samples_dir.split('_')[-1]))
             filename = root + "_Modeled/"
             _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'modeled_samples')
             _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'modeled_samples')

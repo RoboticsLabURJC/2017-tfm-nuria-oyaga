@@ -81,7 +81,7 @@ class Net(object):
             f.write('Epochs: ' + str(epochs) + '\n')
             f.write('Execution time: ' + str(train_time) + '\n')
 
-    def test(self, test_x, test_y, gap, data_type):
+    def test(self, test_x, test_y, gap, data_type, dim):
         predict = self.model.predict(test_x)
         if data_type == "Functions_dataset":
             maximum = [np.max(np.abs(np.append(test_x[i], test_y[i]))) for i in range(len(test_x))]
@@ -89,11 +89,11 @@ class Net(object):
             real_values = test_y
         elif data_type == "Vectors_dataset":
             predict_values, real_values, maximum = vect_utils.get_positions(predict, test_y)
-        elif data_type == "Frames_dataset_raw_samples":
-            predict_values, real_values, maximum = frame_utils.get_positions(predict, test_y,
-                                                                             (test_x.shape[2], test_x.shape[3]))
-        else:  # data_type == "Frames_dataset_modeled_samples"
-            predict_values, real_values, maximum = frame_utils.get_positions(predict, test_y, (80, 120), False)
+        else:
+            raw = True
+            if "modeled" in data_type:
+                raw = False
+            predict_values, real_values, maximum = frame_utils.get_positions(predict, test_y, dim, raw)
 
         error, relative_error = test_utils.calculate_error(real_values, predict_values, maximum)
 

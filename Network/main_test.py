@@ -24,6 +24,7 @@ if __name__ == '__main__':
     if data_type == "Functions_dataset":
         parameters, test_set = func_utils.read_function_data(conf['data_path'])
         gap = float(parameters[0][3])
+        dim = None
 
         print('Puting the test data into the right shape...')
         testX, testY = func_utils.reshape_function_data(test_set)
@@ -33,6 +34,7 @@ if __name__ == '__main__':
     elif data_type == "Vectors_dataset":
         parameters, test_set = vect_utils.read_vector_data(conf['data_path'])
         gap = parameters.iloc[0]['gap']
+        dim = None
 
         print('Puting the test data into the right shape...')
         testX, testY = vect_utils.reshape_vector_data(test_set)
@@ -44,6 +46,8 @@ if __name__ == '__main__':
     else:  # data_type == "Frames_dataset
         sample_type = conf['data_path'].split('/')[-1]
         data_type = data_type + "_" + sample_type
+        samples_dir = conf['data_path'].split('/')[5]
+        dim = (int(samples_dir.split('_')[-2]), int(samples_dir.split('_')[-1]))
         if sample_type == "raw_samples":
             if net_type == "NOREC":
                 print('Puting the test data into the right shape...')
@@ -64,4 +68,4 @@ if __name__ == '__main__':
 
         gap = parameters.iloc[0]['gap']
 
-    to_test_net.test(testX, testY, gap, data_type)
+    to_test_net.test(testX, testY, gap, data_type, dim)
