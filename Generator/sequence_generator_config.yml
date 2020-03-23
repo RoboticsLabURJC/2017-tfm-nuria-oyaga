@@ -1,5 +1,5 @@
 # Root to save
-root: /home/nuria/Desktop/Data/
+root: /home/docker/Generated_Data/
 
 # Type of element to generate
 to_generate: f  #frame('f'), vector('v') or number('n')
@@ -23,7 +23,7 @@ circle_parameters:
 
 
 # Number of samples
-n_samples: 100000
+n_samples: 10000
 
 # Number of know points (x values)
 n_points: 20

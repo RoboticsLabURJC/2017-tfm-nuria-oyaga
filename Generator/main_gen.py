@@ -195,6 +195,7 @@ if __name__ == '__main__':
             shape = Shapes.Circle(obj_color, circle_parameters['radius'])
             data_dir = data_dir + '_' + str(circle_parameters['radius'])
 
+        data_dir = data_dir + str(h) + "_" + str(w)
         check_dirs(data_dir, True)
 
         for i in range(n_samples):
