@@ -122,8 +122,8 @@ if __name__ == '__main__':
                 else:
                     in_dim = [images_per_sample, dim[0], dim[1]]
             else:
-                _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'raw_samples', channels)
-                _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'raw_samples', channels)
+                _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'raw_samples', dim, channels)
+                _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'raw_samples', dim, channels)
                 train_data = [trainX, trainY]
                 val_data = [valX, valY]
                 in_dim = trainX.shape[1:]
@@ -145,8 +145,8 @@ if __name__ == '__main__':
             loss = conf['func_loss']
             dim = (int(samples_dir.split('_')[-2]), int(samples_dir.split('_')[-1]))
             filename = root + "_Modeled/"
-            _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'modeled_samples')
-            _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'modeled_samples')
+            _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'modeled_samples', dim)
+            _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'modeled_samples', dim)
             train_data = [trainX, trainY]
             val_data = [valX, valY]
 

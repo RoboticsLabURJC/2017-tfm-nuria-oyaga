@@ -1,6 +1,6 @@
 # Test dataset path
-#data_path: /home/docker/data/Frames_dataset/linear_point_255_var_10000/linear_10_[None]_test/raw_samples
-#data_path: /home/docker/data/Frames_dataset/linear_point_255_var_100000/linear_10_[None]_test/raw_samples
+#data_path: /home/docker/data/Frames_dataset/linear_point_255_var_10000_80_120/linear_10_[None]_test/raw_samples
+#data_path: /home/docker/data/Frames_dataset/linear_point_255_var_100000_80_120/linear_10_[None]_test/raw_samples
 data_path: /home/docker/data/Frames_dataset/linear_point_255_var_10000_80_120/linear_10_[None]_test/modeled_samples
 
 # Model path

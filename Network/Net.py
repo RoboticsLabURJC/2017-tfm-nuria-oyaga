@@ -95,7 +95,7 @@ class Net(object):
                 raw = False
             predict_values, real_values, maximum = frame_utils.get_positions(predict, test_y, dim, raw)
 
-        error, relative_error = test_utils.calculate_error(real_values, predict_values, maximum)
+        error, x_error, y_error, relative_error = test_utils.calculate_error(real_values, predict_values, maximum)
 
         with open(self.model_path + 'error_result.txt', 'w') as file:
             for i in range(error.shape[0]):
@@ -106,14 +106,19 @@ class Net(object):
                 file.write("--------------------------------------------------------------\n")
 
         # Calculate stats
-        error_stats, rel_error_stats = test_utils.get_errors_statistics(error, relative_error)
+        error_stats, x_error_stats, y_error_stats, \
+            rel_error_stats, rel_x_error_stats, rel_y_error_stats = test_utils.get_errors_statistics(error,
+                                                                                                     x_error,
+                                                                                                     y_error,
+                                                                                                     relative_error,
+                                                                                                     dim)
 
         # Draw error percentage
         test_utils.error_histogram(error)
         test_utils.relative_error_histogram(relative_error)
 
         # Draw the max errors points
-        test_utils.draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_stats, data_type)
+        test_utils.draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_stats, data_type, dim)
 
 
 class Mlp(Net):
