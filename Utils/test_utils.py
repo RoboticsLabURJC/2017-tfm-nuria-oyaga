@@ -1,4 +1,4 @@
-from Utils import func_utils, vect_utils, frame_utils
+from Utils import func_utils, vect_utils, frame_utils, utils
 
 from matplotlib import pyplot as plt
 import numpy as np
@@ -6,45 +6,71 @@ import numpy as np
 
 def calculate_error(real, prediction, maximum):
     # Calculate error
+    x_error = []
+    y_error = []
     if len(real.shape) > 1:
         error = np.array([np.linalg.norm(np.array(real[i]) - np.array(prediction[i]))
                           for i in range(real.shape[0])])
+        y_error = np.array([abs(real[i][0] - prediction[i][0]) for i in range(real.shape[0])])
+        x_error = np.array([abs(real[i][1] - prediction[i][1]) for i in range(real.shape[0])])
+
     else:
         error = np.array([abs(real[i] - prediction[i]) for i in range(real.size)])
+        x_error = None
+        y_error = None
+        x_rel_error = None
+        y_rel_error = None
 
     # Calculate relative error
-    relative_error = np.zeros(error.size)
-    for i in range(relative_error.size - 1):
-        relative_error[i] = np.array((error[i] / abs(maximum[i])) * 100)
+    relative_error = np.array([((error[i] / abs(maximum[i])) * 100) for i in range(error.size)])
 
-    return error, relative_error
+    return error, x_error, y_error, relative_error
 
 
-def get_errors_statistics(error, relative_error):
+def get_errors_statistics(error, x_error, y_error, relative_error, dim):
     # Max error
-    max_error_index = np.argmax(error)
-    max_error = round(float(error[max_error_index]), 3)
+    max_error_index, max_error = utils.calculate_max(error)
 
+    # Relative error
     # Locate nan in relative error
-    nan_index = np.argwhere(np.isnan(relative_error) == 1)
+    # nan_index = np.argwhere(np.isnan(relative_error) == 1)
 
     # Replace Nan to 0 for calculate max
-    for i in nan_index:
-        relative_error[i] = 0
-
-    max_rel_error_index = np.argmax(relative_error)
-    max_rel_error = round(float(relative_error[max_rel_error_index]), 3)
+    """for i in nan_index:
+        relative_error[i] = 0"""
+    max_rel_error_index, max_rel_error = utils.calculate_max(relative_error)
 
     # Calculate error mean
-    error_mean = np.sum(error) / error.size
-
+    error_mean = utils.calculate_mean(error)
     # Remove nan to calculate relative error mean
-    relative_error = np.delete(relative_error, nan_index)
+    # relative_error = np.delete(relative_error, nan_index)
+    relative_error_mean = utils.calculate_mean(relative_error)
 
-    relative_error_mean = np.sum(relative_error) / relative_error.size
+    if x_error is not None:
+        _, x_max_error = utils.calculate_max(x_error)
+        x_mean_error = utils.calculate_mean(x_error)
+        _, y_max_error = utils.calculate_max(y_error)
+        y_mean_error = utils.calculate_mean(y_error)
+        x_max_rel_error = round((x_max_error/dim[1] * 100), 3)
+        x_mean_rel_error = round((x_mean_error/dim[1] * 100), 3)
+        y_max_rel_error = round((y_max_error/dim[0] * 100), 3)
+        y_mean_rel_error = round((y_mean_error/dim[0] * 100), 3)
+    else:
+        x_max_error = None
+        y_max_error = None
+        x_mean_error = None
+        y_mean_error = None
+        x_max_rel_error = None
+        x_mean_rel_error = None
+        y_max_rel_error = None
+        y_mean_rel_error = None
 
-    return [error_mean, [max_error_index, max_error]],\
-           [relative_error_mean, [max_rel_error_index, max_rel_error]]
+    return [error_mean, [max_error_index, max_error]], \
+           [x_mean_error, x_max_error], \
+           [y_mean_error, y_max_error], \
+           [relative_error_mean, [max_rel_error_index, max_rel_error]], \
+           [x_mean_rel_error, x_max_rel_error], \
+           [y_mean_rel_error, y_max_rel_error]
 
 
 def error_histogram(error):
@@ -99,7 +125,7 @@ def relative_error_histogram(error):
     plt.title('Relative error histogram')
 
 
-def draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_stats, data_type):
+def draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_stats, data_type, dim):
 
     if data_type == "Functions_dataset":
         f, (s1, s2) = plt.subplots(1, 2, sharey='all', sharex='all')
@@ -116,14 +142,19 @@ def draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_
                                np.round(predict[rel_error_stats[1][0]]), gap)
 
     else:
-        if data_type == "Frames_dataset_raw_samples":
-            frame_dim = (test_x.shape[2], test_x.shape[3])
-        else:
-            frame_dim = (80, 120)
-
+        target = test_y[error_stats[1][0]]
+        prediction = predict[error_stats[1][0]]
+        rel_target = test_y[rel_error_stats[1][0]]
+        rel_prediction = predict[rel_error_stats[1][0]]
+        if "modeled" in data_type:
+            target = utils.scale_position(target, dim[1], dim[0])
+            prediction = utils.scale_position(prediction, dim[1], dim[0])
+            rel_target = utils.scale_position(rel_target, dim[1], dim[0])
+            rel_prediction = utils.scale_position(rel_prediction, dim[1], dim[0])
+            
         f, (s1, s2) = plt.subplots(1, 2, sharey='all', sharex='all')
-        frame_utils.draw_frame(s1, test_y[error_stats[1][0]], predict[error_stats[1][0]], frame_dim)
-        frame_utils.draw_frame(s2, test_y[rel_error_stats[1][0]], predict[rel_error_stats[1][0]], frame_dim)
+        frame_utils.draw_frame(s1, target, prediction, dim)
+        frame_utils.draw_frame(s2, rel_target, rel_prediction, dim)
 
     s1.set_title(
         'Sample ' + str(error_stats[1][0]) + '\n' + 'Max. absolute error = ' + str(error_stats[1][1]) + '\n' +

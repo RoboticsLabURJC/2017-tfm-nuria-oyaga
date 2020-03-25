@@ -5,9 +5,9 @@ import numpy as np
 import cv2
 
 
-def read_frame_data(f_path, sample_type, channels=False):
+def read_frame_data(f_path, sample_type, dim, channels=False):
     if sample_type not in f_path:
-        f_path = f_path + sample_type
+        f_path += sample_type
 
     parameters_path = f_path.replace(sample_type, 'parameters.txt')
 
@@ -16,7 +16,7 @@ def read_frame_data(f_path, sample_type, channels=False):
         dataX, dataY = get_samples(samples_paths, channels)
     else:
         samples_paths = utils.get_files(f_path)
-        dataX, dataY = get_modeled_samples(samples_paths)
+        dataX, dataY = get_modeled_samples(samples_paths, dim)
 
     parameters = pd.read_csv(parameters_path, sep=' ')
 
@@ -55,14 +55,18 @@ def get_samples(samples_paths, channels):
     return (dataX, dataY)
 
 
-def get_modeled_samples(samples_paths):
+def get_modeled_samples(samples_paths, dim):
     dataX = []
     dataY = []
 
     for p in samples_paths:
         sample = pd.read_csv(p)
-        dataX.append(np.fliplr(sample.iloc[:-1, :].values))
-        dataY.append(sample.iloc[-1, :].values[::-1])
+        positions = np.fliplr(sample.values).astype(np.float)
+        for i in range(len(positions)):
+            positions[i][0] /= dim[0]
+            positions[i][1] /= dim[1]
+        dataX.append(positions[:-1])
+        dataY.append(positions[-1])
 
     return np.array(dataX), np.array(dataY)
 
@@ -88,8 +92,8 @@ def get_positions(predictions, real, dim, raw):
             r = real[i].reshape(dim)
             real_pos.append(np.unravel_index(r.argmax(), r.shape))
         else:
-            predict_pos.append(p)
-            real_pos.append(real[i])
+            predict_pos.append(utils.scale_position(p, dim[1], dim[0]))
+            real_pos.append(utils.scale_position(real[i], dim[1], dim[0]))
 
         maximum.append(np.linalg.norm(np.array((0, 0)) - np.array(dim)))
 

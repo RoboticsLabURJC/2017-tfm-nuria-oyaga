@@ -74,3 +74,16 @@ def save_history(model_history, dir_path):
     plt.ylabel("Loss/Accuracy")
     plt.legend(loc="lower left")
     plt.savefig(dir_path + '_history.png')
+
+
+def calculate_max(values):
+    max_pos = np.argmax(values)
+    return max_pos, round(float(values[np.argmax(values)]), 3)
+
+
+def calculate_mean(values):
+    return round(np.sum(values) / values.size, 3)
+
+
+def scale_position(pos, x_max, y_max):
+    return [int(pos[0] * y_max), int(pos[1] * x_max)]
