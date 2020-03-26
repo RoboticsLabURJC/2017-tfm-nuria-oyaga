@@ -151,7 +151,7 @@ def draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_
             prediction = utils.scale_position(prediction, dim[1], dim[0])
             rel_target = utils.scale_position(rel_target, dim[1], dim[0])
             rel_prediction = utils.scale_position(rel_prediction, dim[1], dim[0])
-            
+
         f, (s1, s2) = plt.subplots(1, 2, sharey='all', sharex='all')
         frame_utils.draw_frame(s1, target, prediction, dim)
         frame_utils.draw_frame(s2, rel_target, rel_prediction, dim)
@@ -164,4 +164,32 @@ def draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_
         'Sample ' + str(rel_error_stats[1][0]) + '\n' + 'Max. relative error = ' + str(rel_error_stats[1][1]) +
         '%' + '\n' + 'Relative error mean = ' + "{0:.4f}".format(rel_error_stats[0]) + '%')
 
+
+def draw_error_breakdown(error_stats, x_error_stats, y_error_stats,
+                         rel_error_stats, rel_x_error_stats, rel_y_error_stats):
+
+    if x_error_stats[0] is not None:
+        abs_error = [error_stats[0], error_stats[1][1]]
+        rel_error = [rel_error_stats[0], rel_error_stats[1][1]]
+        f, (s1, s2) = plt.subplots(1, 2, sharey='all', sharex='all')
+        draw_bar_error(s1, abs_error, x_error_stats, y_error_stats, "Absolute error", [None, None, None])
+        draw_bar_error(s2, rel_error, rel_x_error_stats, rel_y_error_stats, "Relative error", ["global", "x", "y"])
+        f.legend()
+
     plt.show()
+
+
+def draw_bar_error(fig, glob_val, x_val, y_val, title, labels):
+    x = ['Mean', 'Max']
+    x_pos = np.arange(len(x))
+    width = 0.25
+
+    fig.bar(x_pos - width, glob_val, width, color="darkslategray", label=labels[0])
+    fig.bar(x_pos, x_val, width, color="darkcyan", label=labels[1])
+    fig.bar(x_pos + width, y_val, width, color="darkturquoise", label=labels[2])
+
+    fig.set_title(title)
+    fig.set_xticks(x_pos)
+    fig.set_xticklabels(x)
+
+    return fig
