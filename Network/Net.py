@@ -120,6 +120,10 @@ class Net(object):
         # Draw the max errors points
         test_utils.draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_stats, data_type, dim)
 
+        # Draw the error breakdown
+        test_utils.draw_error_breakdown(error_stats, x_error_stats, y_error_stats,
+                                        rel_error_stats, rel_x_error_stats, rel_y_error_stats)
+
 
 class Mlp(Net):
 
