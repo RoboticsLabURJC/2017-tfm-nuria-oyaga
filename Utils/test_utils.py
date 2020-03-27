@@ -6,8 +6,6 @@ import numpy as np
 
 def calculate_error(real, prediction, maximum):
     # Calculate error
-    x_error = []
-    y_error = []
     if len(real.shape) > 1:
         error = np.array([np.linalg.norm(np.array(real[i]) - np.array(prediction[i]))
                           for i in range(real.shape[0])])
@@ -18,8 +16,6 @@ def calculate_error(real, prediction, maximum):
         error = np.array([abs(real[i] - prediction[i]) for i in range(real.size)])
         x_error = None
         y_error = None
-        x_rel_error = None
-        y_rel_error = None
 
     # Calculate relative error
     relative_error = np.array([((error[i] / abs(maximum[i])) * 100) for i in range(error.size)])
@@ -46,11 +42,7 @@ def get_error_stats(test_x, test_y, predict, gap, data_type, dim, error, x_error
 
     # Draw error breakdowns
     if x_error_stats[0] is not None:
-        abs_error_stats = [error_stats[0], error_stats[1][1]]
-        relative_error = [rel_error_stats[0], rel_error_stats[1][1]]
-        draw_error_breakdown(abs_error_stats, x_error_stats, y_error_stats,
-                             relative_error, rel_x_error_stats, rel_y_error_stats,
-                             figures_dir)
+        draw_error_breakdown(error, x_error, y_error, relative_error, dim, figures_dir)
         figures.insert(2, "breakdown")
 
     utils.combine_figures(figures_dir, figures)
@@ -119,7 +111,7 @@ def error_histogram(error, fig_dir):
     x = range(len(hist))
     y = hist
 
-    plt.bar(x, y, color='darkslategray')
+    plt.bar(x, y, color='powderblue', edgecolor='black')
 
     plt.xticks(x, labels)
     plt.ylabel("Number errors")
@@ -146,7 +138,7 @@ def relative_error_histogram(error, fig_dir):
     x = range(len(hist))
     y = hist
 
-    plt.bar(x, y, color='darkslategray')
+    plt.bar(x, y, color='powderblue', edgecolor='black')
 
     plt.xticks(x, labels)
     plt.ylabel("Number errors")
@@ -198,27 +190,27 @@ def draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_
     f.savefig(fig_dir + 'max_error.png')
 
 
-def draw_error_breakdown(abs_error_stats, x_error_stats, y_error_stats,
-                         rel_error_stats, rel_x_error_stats, rel_y_error_stats, fig_dir):
+def draw_error_breakdown(error, x_error, y_error, relative_error, dim, fig_dir):
 
     f, (s1, s2) = plt.subplots(1, 2, sharey='all', sharex='all')
-    draw_bar_error(s1, abs_error_stats, x_error_stats, y_error_stats, "Absolute error", [None, None, None])
-    draw_bar_error(s2, rel_error_stats, rel_x_error_stats, rel_y_error_stats, "Relative error", ["global", "x", "y"])
-    f.legend()
+    draw_boxplot_error(s1, [error, x_error, y_error], "Absolute error")
+    draw_boxplot_error(s2,
+                       [relative_error, np.round((x_error/dim[1])*100, 3), np.round((y_error/dim[0])*100, 3)],
+                       "Relative error")
 
     f.savefig(fig_dir + 'breakdown.png')
 
 
-def draw_bar_error(fig, glob_val, x_val, y_val, title, labels):
+def draw_boxplot_error(fig, data, title):
+    median_props = dict(linestyle=':', linewidth=1, color='black')
+    mean_line_props = dict(linestyle='-', linewidth=2, color='grey')
 
-    x = ['Mean', 'Max']
-    x_pos = np.arange(len(x))
-    width = 0.25
-
-    fig.bar(x_pos - width, glob_val, width, color="darkslategray", label=labels[0])
-    fig.bar(x_pos, x_val, width, color="darkcyan", label=labels[1])
-    fig.bar(x_pos + width, y_val, width, color="darkturquoise", label=labels[2])
+    b_plot = fig.boxplot(data, patch_artist=True, labels=["Global", "Dim. x", "Dim. y"], notch=True,
+                         medianprops=median_props, meanprops=mean_line_props, meanline=True, showmeans=True)
+    colors = ["lightcyan", "lavender", "thistle"]
+    for patch, color in zip(b_plot['boxes'], colors):
+        patch.set_facecolor(color)
 
     fig.set_title(title)
-    fig.set_xticks(x_pos)
-    fig.set_xticklabels(x)
+    fig.yaxis.grid(True)
+
