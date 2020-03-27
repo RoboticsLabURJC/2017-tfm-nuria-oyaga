@@ -87,3 +87,21 @@ def calculate_mean(values):
 
 def scale_position(pos, x_max, y_max):
     return [int(pos[0] * y_max), int(pos[1] * x_max)]
+
+
+def combine_figures(figures_dir, figures):
+    figures_images = [cv2.imread(figures_dir + f_path + ".png") for f_path in figures]
+    if len(figures) % 2 == 0:
+        horizontal = [np.concatenate((figures_images[i], figures_images[i+1]), axis=1)
+                      for i in range(len(figures)) if i % 2 == 0]
+    else:
+        horizontal = [np.concatenate((figures_images[i], figures_images[i + 1]), axis=1)
+                      for i in range(len(figures) - 1) if i % 2 == 0]
+        border_size = int(figures_images[-1].shape[1] / 2)
+        last = cv2.copyMakeBorder(figures_images[-1], 0, 0, border_size, border_size,
+                                  cv2.BORDER_CONSTANT, None, [255, 255, 255])
+        horizontal.append(last)
+
+    vertical = np.concatenate(horizontal, axis=0)
+
+    cv2.imwrite(figures_dir + "error_stats.png", vertical)

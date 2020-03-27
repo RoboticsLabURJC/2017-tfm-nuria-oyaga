@@ -27,7 +27,36 @@ def calculate_error(real, prediction, maximum):
     return error, x_error, y_error, relative_error
 
 
-def get_errors_statistics(error, x_error, y_error, relative_error, dim):
+def get_error_stats(test_x, test_y, predict, gap, data_type, dim, error, x_error, y_error, relative_error, figures_dir):
+
+    figures_dir += "error_stats/"
+    utils.check_dirs(figures_dir, True)
+
+    error_stats, x_error_stats, y_error_stats, \
+        rel_error_stats, rel_x_error_stats, rel_y_error_stats = calculate_errors_statistics(error, x_error, y_error,
+                                                                                            relative_error, dim)
+
+    # Errors histograms
+    error_histogram(error, figures_dir)
+    relative_error_histogram(relative_error, figures_dir)
+
+    # Draw max error
+    draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_stats, data_type, dim, figures_dir)
+    figures = ["abs_hist", "rel_hist", "max_error"]
+
+    # Draw error breakdowns
+    if x_error_stats[0] is not None:
+        abs_error_stats = [error_stats[0], error_stats[1][1]]
+        relative_error = [rel_error_stats[0], rel_error_stats[1][1]]
+        draw_error_breakdown(abs_error_stats, x_error_stats, y_error_stats,
+                             relative_error, rel_x_error_stats, rel_y_error_stats,
+                             figures_dir)
+        figures.insert(2, "breakdown")
+
+    utils.combine_figures(figures_dir, figures)
+
+
+def calculate_errors_statistics(error, x_error, y_error, relative_error, dim):
     # Max error
     max_error_index, max_error = utils.calculate_max(error)
 
@@ -73,7 +102,8 @@ def get_errors_statistics(error, x_error, y_error, relative_error, dim):
            [y_mean_rel_error, y_max_rel_error]
 
 
-def error_histogram(error):
+def error_histogram(error, fig_dir):
+
     hist = [sum((error >= 0) & (error < 1)),
             sum((error >= 1) & (error < 2)),
             sum((error >= 2) & (error < 5)),
@@ -85,47 +115,48 @@ def error_histogram(error):
 
     labels = ['[0, 1)', '[1, 2)', '[2, 5)', '[5, 10)', '[10, 20)', '[20, 40)', '[40, 80)', '>80']
 
-    plt.figure()
+    fig = plt.figure()
     x = range(len(hist))
     y = hist
 
-    plt.bar(x, y, color='red')
+    plt.bar(x, y, color='darkslategray')
 
     plt.xticks(x, labels)
     plt.ylabel("Number errors")
     plt.xlabel('Error intervals')
     plt.title('Error histogram')
 
+    fig.savefig(fig_dir + 'abs_hist.png')
 
-def relative_error_histogram(error):
+
+def relative_error_histogram(error, fig_dir):
+
     hist = [sum((error >= 0) & (error < 10)),
             sum((error >= 10) & (error < 20)),
             sum((error >= 20) & (error < 30)),
             sum((error >= 30) & (error < 40)),
-            sum((error >= 40) & (error < 50)),
-            sum((error >= 50) & (error < 60)),
-            sum((error >= 60) & (error < 70)),
-            sum((error >= 70) & (error < 80)),
-            sum((error >= 80) & (error < 90)),
-            sum((error >= 90) & (error < 100)),
+            sum((error >= 40) & (error < 60)),
+            sum((error >= 60) & (error < 80)),
+            sum((error >= 80) & (error < 100)),
             sum((error >= 100))]
 
-    labels = ['[0, 10)', '[10, 20)', '[20, 30)', '[30, 40)', '[40, 50)', '[50, 60)', '[60, 70)',
-              '[70, 80)', '[80, 90)', '[90, 100)', '>100']
+    labels = ['<10', '[10,20)', '[20,30)', '[30,40)', '[40,60)', '[60,80)', '[80,100)', '>100']
 
-    plt.figure()
+    fig = plt.figure()
     x = range(len(hist))
     y = hist
 
-    plt.bar(x, y, color='red')
+    plt.bar(x, y, color='darkslategray')
 
     plt.xticks(x, labels)
     plt.ylabel("Number errors")
     plt.xlabel('Relative error intervals')
     plt.title('Relative error histogram')
 
+    fig.savefig(fig_dir + 'rel_hist.png')
 
-def draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_stats, data_type, dim):
+
+def draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_stats, data_type, dim, fig_dir):
 
     if data_type == "Functions_dataset":
         f, (s1, s2) = plt.subplots(1, 2, sharey='all', sharex='all')
@@ -164,22 +195,22 @@ def draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_
         'Sample ' + str(rel_error_stats[1][0]) + '\n' + 'Max. relative error = ' + str(rel_error_stats[1][1]) +
         '%' + '\n' + 'Relative error mean = ' + "{0:.4f}".format(rel_error_stats[0]) + '%')
 
+    f.savefig(fig_dir + 'max_error.png')
 
-def draw_error_breakdown(error_stats, x_error_stats, y_error_stats,
-                         rel_error_stats, rel_x_error_stats, rel_y_error_stats):
 
-    if x_error_stats[0] is not None:
-        abs_error = [error_stats[0], error_stats[1][1]]
-        rel_error = [rel_error_stats[0], rel_error_stats[1][1]]
-        f, (s1, s2) = plt.subplots(1, 2, sharey='all', sharex='all')
-        draw_bar_error(s1, abs_error, x_error_stats, y_error_stats, "Absolute error", [None, None, None])
-        draw_bar_error(s2, rel_error, rel_x_error_stats, rel_y_error_stats, "Relative error", ["global", "x", "y"])
-        f.legend()
+def draw_error_breakdown(abs_error_stats, x_error_stats, y_error_stats,
+                         rel_error_stats, rel_x_error_stats, rel_y_error_stats, fig_dir):
 
-    plt.show()
+    f, (s1, s2) = plt.subplots(1, 2, sharey='all', sharex='all')
+    draw_bar_error(s1, abs_error_stats, x_error_stats, y_error_stats, "Absolute error", [None, None, None])
+    draw_bar_error(s2, rel_error_stats, rel_x_error_stats, rel_y_error_stats, "Relative error", ["global", "x", "y"])
+    f.legend()
+
+    f.savefig(fig_dir + 'breakdown.png')
 
 
 def draw_bar_error(fig, glob_val, x_val, y_val, title, labels):
+
     x = ['Mean', 'Max']
     x_pos = np.arange(len(x))
     width = 0.25
@@ -191,5 +222,3 @@ def draw_bar_error(fig, glob_val, x_val, y_val, title, labels):
     fig.set_title(title)
     fig.set_xticks(x_pos)
     fig.set_xticklabels(x)
-
-    return fig

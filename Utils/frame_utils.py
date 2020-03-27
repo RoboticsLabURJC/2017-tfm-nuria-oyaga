@@ -117,6 +117,9 @@ def draw_frame(fig, real_data, pred_data, dim):
         bw_image_pred = np.zeros(dim, np.uint8)
         bw_image_pred[int(pred_data[0]), int(pred_data[1])] = 255
 
+    kernel = np.ones((3, 3), np.uint8)
+    bw_image_real = cv2.dilate(bw_image_real, kernel, iterations=1)
+    bw_image_pred = cv2.dilate(bw_image_pred, kernel, iterations=1)
     color_image_real = np.dstack([bw_image_real, bw_image_real, bw_image_real])
     color_image_pred = np.dstack([bw_image_pred, np.zeros(dim, np.uint8), np.zeros(dim, np.uint8)])
     color_image = color_image_pred + color_image_real
