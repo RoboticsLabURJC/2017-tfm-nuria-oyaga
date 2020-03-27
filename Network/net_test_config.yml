@@ -6,4 +6,4 @@ data_path: /home/docker/data/Frames_dataset/linear_point_255_var_10000_80_120/li
 # Model path
 #model_path: /home/docker/Models/NOREC/Frames_dataset/linear_point_255_var_100000/simple/15_False_relu_categorical_crossentropy_10.h5
 #model_path: /home/docker/Models/REC/Frames_dataset/linear_point_255_var_100000/convLSTM/15_False_relu_categorical_crossentropy_10.h5
-model_path: /home/docker/Models/NOREC/Frames_dataset/linear_point_255_var_10000_Modeled/15_False_relu_mean_squared_error_30.h5
+model_path: /home/docker/Models/NOREC/Frames_dataset/linear_point_255_var_10000_80_120_Modeled/15_False_relu_mean_squared_error_30.h5
