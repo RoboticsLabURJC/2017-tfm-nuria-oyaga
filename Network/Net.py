@@ -106,23 +106,8 @@ class Net(object):
                 file.write("--------------------------------------------------------------\n")
 
         # Calculate stats
-        error_stats, x_error_stats, y_error_stats, \
-            rel_error_stats, rel_x_error_stats, rel_y_error_stats = test_utils.get_errors_statistics(error,
-                                                                                                     x_error,
-                                                                                                     y_error,
-                                                                                                     relative_error,
-                                                                                                     dim)
-
-        # Draw error percentage
-        test_utils.error_histogram(error)
-        test_utils.relative_error_histogram(relative_error)
-
-        # Draw the max errors points
-        test_utils.draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_stats, data_type, dim)
-
-        # Draw the error breakdown
-        test_utils.draw_error_breakdown(error_stats, x_error_stats, y_error_stats,
-                                        rel_error_stats, rel_x_error_stats, rel_y_error_stats)
+        test_utils.get_error_stats(test_x, test_y, predict, gap, data_type, dim,
+                                   error, x_error, y_error, relative_error, self.model_path)
 
 
 class Mlp(Net):
