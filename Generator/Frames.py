@@ -4,11 +4,12 @@ import numpy as np
 import pandas as pd
 import random
 import cv2
+import math
 
 
 class Frames(object):
 
-    def __init__(self, m_type, noise_parameters, n_points, gap, h, w, shape):
+    def __init__(self, m_type, noise_parameters, n_points, gap, h, w, shape, y0_type):
         self.h = h
         self.w = w
         self.shape = shape
@@ -16,56 +17,78 @@ class Frames(object):
         self.noise_parameters = noise_parameters
         self.n_points = n_points
         self.gap = gap
-        self.f = None
+        # x = x0 + ux*t
+        self.f = lambda t, x0, u_x: x0 + u_x * t
         self.g = None
+        self.y0_type = y0_type
         self.parameters = []
         self.raw_sample = []
         self.modeled_sample = []
 
     def get_sample(self):
-        positions_x, positions_y = self.get_positions()
+        x0 = 0
+        limit = int(self.w / (self.n_points + self.gap))
+        if self.shape.type == "Circle":
+            x0 = self.shape.r
+            limit = int((self.w - self.shape.r) / (self.n_points + self.gap))
+
+        u_x = random.randint(1, limit)
+
+        if self.y0_type == 'fix':
+            y0 = int(self.h / 2)
+        else:
+            y0 = None
+
+        self.parameters = [x0, u_x, y0]
+
+        positions_x, positions_y = self.get_positions(x0, u_x, y0)
+
         for i in range(self.n_points + 1):
             self.raw_sample.append(self.get_image(positions_x[i], positions_y[i]))
             self.modeled_sample.append([positions_x[i], positions_y[i]])
 
-    def get_positions(self):
+    def get_positions(self, x0, u_x, y0):
         while True:
-            if self.type == 'URM':
-                numbers_x = [self.f(x) for x in range(self.n_points)]
-                numbers_x.append(self.f(self.n_points + self.gap - 1))
-                if self.parameters[2] is None:
-                    y0 = random.randint(1, self.h - 1)
-                    self.parameters[2] = y0
-                else:
-                    y0 = self.parameters[2]
+            if y0 is None:
+                y0 = random.randint(1, self.h - 1)
+                self.parameters[-1] = y0
 
+            if self.type == 'URM':
+                numbers_x = [self.f(x, x0, u_x) for x in range(self.n_points)]
+                numbers_x.append(self.f(self.n_points + self.gap - 1, x0, u_x))
                 numbers_y = [self.g(n_x, y0) for n_x in numbers_x]
                 numbers_y.append(self.g(numbers_x[-1], y0))
+
             elif self.type == 'Linear':
-                numbers_x = [self.f(x) for x in range(self.n_points)]
-                numbers_x.append(self.f(self.n_points + self.gap - 1))
-                if self.parameters[2] is None:
-                    y0 = random.randint(1, self.h - 1)
-                else:
-                    y0 = self.parameters[2]
-
+                numbers_x = [self.f(x, x0, u_x) for x in range(self.n_points)]
+                numbers_x.append(self.f(self.n_points + self.gap - 1, x0, u_x))
                 m = np.round(random.uniform(-self.h/10, self.h/10), 2)
-
-                self.parameters[-2:] = [y0, m]
+                self.parameters.append(m)
                 numbers_y = [int(self.g(n_x, y0, m)) for n_x in numbers_x]
                 numbers_y.append(int(self.g(numbers_x[-1], y0, m)))
-            else:  # self.type == 'Parabolic'
-                angle = np.radians(89)
-                v0 = np.round(random.uniform(10, 100), 2)
-                print(v0)
-                self.parameters[-2:] = [angle, v0]
-                numbers_x = [int(self.f(t, v0, angle)) for t in range(self.n_points)]
-                numbers_x.append(self.f(self.n_points + self.gap - 1, v0, angle))
-                numbers_y = [int(self.g(t, v0, angle)) for t in range(self.n_points)]
-                numbers_y.append(self.g(self.n_points + self.gap - 1, v0, angle))
+
+            elif self.type == 'Parabolic':
+                numbers_x = [self.f(x, x0, u_x) for x in range(self.n_points)]
+                numbers_x.append(self.f(self.n_points + self.gap - 1, x0, u_x))
+                a = round(random.uniform(-0.05, 0.05), 4)
+                b = 0.1
+                self.parameters += [a, b]
+                numbers_y = [int(self.g(n_x, a, b, y0)) for n_x in numbers_x]
+                numbers_y.append(int(self.g(numbers_x[-1], a, b, y0)))
+            else:  # self.type == 'Sinusoidal'
+                numbers_x = [self.f(x, x0, u_x) for x in range(self.n_points)]
+                numbers_x.append(self.f(self.n_points + self.gap - 1, x0, u_x))
+                a = 25
+                b = math.radians(0)
+                f = round(random.uniform(0.5, 5), 2)
+                self.parameters += [a, b]
+                numbers_y = [int(self.g(n_x, a, b, y0, f)) for n_x in numbers_x]
+                numbers_y.append(int(self.g(numbers_x[-1], a, b, y0, f)))
 
             if self.is_valid(numbers_x, numbers_y):
                 break
+            else:
+                self.parameters = self.parameters[0:2]
 
         return numbers_x, numbers_y
 
@@ -114,63 +137,39 @@ class Frames(object):
 class URM(Frames):
 
     def __init__(self, noise_parameters, n_points, gap, h, w, shape, y0_type):
-        Frames.__init__(self, "URM", noise_parameters, n_points, gap, h, w, shape)
+        Frames.__init__(self, "URM", noise_parameters, n_points, gap, h, w, shape, y0_type)
 
-        x0 = 0
-        if y0_type == 'fix':
-            y0 = int(self.h / 2)
-        else:
-            y0 = None
-
-        limit = int(self.w / (n_points + gap))
-        if self.shape.type == "Circle":
-            x0 = self.shape.r
-            limit = int((self.w - self.shape.r) / (n_points + gap))
-
-        u_x = random.randint(1, limit)
-        self.parameters = [x0, u_x, y0]
-        self.f = lambda x: x0 + u_x * x
-        self.g = lambda y, y0: y0
+        # y = y0
+        self.g = lambda x, y0: y0
         self.get_sample()
 
 
 class Linear(Frames):
     def __init__(self, noise_parameters, n_points, gap, h, w, shape, y0_type):
-        Frames.__init__(self, "Linear", noise_parameters, n_points, gap, h, w, shape)
+        Frames.__init__(self, "Linear", noise_parameters, n_points, gap, h, w, shape, y0_type)
 
-        x0 = 0
-        if y0_type == 'fix':
-            y0 = int(self.h / 2)
-        else:
-            y0 = None
-
-        limit = int(self.w / (n_points + gap))
-        if self.shape.type == "Circle":
-            x0 = self.shape.r
-            limit = int((self.w - self.shape.r) / (n_points + gap))
-        u_x = random.randint(1, limit)
-
-        self.parameters = [x0, u_x, y0, None]
-        self.f = lambda x: x0 + u_x * x
-        self.g = lambda y, y0, m: (m * y) + y0
+        # y = m*x + y0
+        self.g = lambda x, y0, m: (m * x) + y0
         self.get_sample()
 
 
 class Parabolic(Frames):
-    def __init__(self, noise_parameters, n_points, gap, h, w, shape):
-        Frames.__init__(self, "Parabolic", noise_parameters, n_points, gap, h, w, shape)
+    def __init__(self, noise_parameters, n_points, gap, h, w, shape, y0_type):
+        Frames.__init__(self, "Parabolic", noise_parameters, n_points, gap, h, w, shape, y0_type)
 
-        x0 = 0
-        if self.shape.type == "Circle":
-            x0 = self.shape.r
-        y0 = 0
-        gravity = 9.8
+        # y = a*t^2 + b*t + c
+        self.g = lambda x, a, b, c: a * (x ** 2) + b * x + c
 
-        # x=v0·cosθ·t + x0
-        # y=v0·senθ·t-gt2/2 + y0
-        self.parameters = [x0, y0, gravity, None, None]
-        self.f = lambda t, v0, angle: (v0 * np.cos(angle) * t) + x0
-        self.g = lambda t, v0, angle: (v0 * np.sin(angle) * t) - (0.5 * gravity * (t**2)) + y0
+        self.get_sample()
+
+
+class Sinusoidal(Frames):
+    def __init__(self, noise_parameters, n_points, gap, h, w, shape, y0_type):
+        Frames.__init__(self, "Sinusoidal", noise_parameters, n_points, gap, h, w, shape, y0_type)
+
+        # y = a*sin(fx + b) + c
+        self.g = lambda x, a, b, c, f: a * math.sin(2 * math.pi * f * math.radians(x) + b) + c
+
         self.get_sample()
 
 

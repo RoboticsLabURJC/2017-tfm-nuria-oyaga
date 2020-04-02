@@ -195,7 +195,7 @@ if __name__ == '__main__':
             shape = Shapes.Circle(obj_color, circle_parameters['radius'])
             data_dir = data_dir + '_' + str(circle_parameters['radius'])
 
-        data_dir = data_dir + str(h) + "_" + str(w)
+        data_dir = data_dir + "_" + str(h) + "_" + str(w)
         check_dirs(data_dir, True)
 
         for i in range(n_samples):
@@ -213,8 +213,13 @@ if __name__ == '__main__':
 
             elif motion_type == 'parabolic':
                 if i == 0:
-                    header = 'x0 y0 g angle v0 n_points gap motion noise(mean, standard deviation)\n'
-                sample = Frames.Parabolic(noise_parameters, n_points, gap, h, w, shape)
+                    header = 'x0 u_x y0 a b n_points gap motion noise(mean, standard deviation)\n'
+                sample = Frames.Parabolic(noise_parameters, n_points, gap, h, w, shape, y0)
+
+            else:  # motion_type == 'sinusoidal'
+                if i == 0:
+                    header = 'x0 u_x y0 a b c f n_points gap motion noise(mean, standard deviation)\n'
+                sample = Frames.Sinusoidal(noise_parameters, n_points, gap, h, w, shape, y0)
 
             if split_flag:
                 if i == 0:

@@ -8,7 +8,7 @@ to_generate: f  #frame('f'), vector('v') or number('n')
 func_type: linear #linear, quadratic, sinusoidal, poly3, poly4
 
 # If toGenerate = 'v'; Motion type, sample size
-motion_type: linear #URM, linear, parabolic
+motion_type: sinusoidal #URM, linear, parabolic, sinusoidal
 vector_len: 320
 
 # If toGenerate = 'f'; Motion type (same in vector), height, width, object
@@ -16,11 +16,10 @@ height: 80
 width: 120
 object: point # point, circle
 obj_color: 255 # For b/w: 255; For color: [0, 255, 0]
-y0: var # fix, var
+y0: fix # fix, var
 
 circle_parameters:
   radius: 5
-
 
 # Number of samples
 n_samples: 10000
