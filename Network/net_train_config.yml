@@ -8,7 +8,7 @@ complexity: simple
 root: /home/docker/Models/
 
 # Type of the net to train (NoRec, Rec)
-net_type: NoRec
+net_type: Rec
 
 # Activation function
 activation: relu
@@ -29,11 +29,9 @@ n_epochs: 200
 batch_size: 15
 
 # Patience
-patience: 30
+patience: 10
 
 # Data
-#data_dir: /home/docker/data/Frames_dataset/linear_point_255_var_100000/linear_10_[None]_
 data_dir: /home/docker/data/Frames_dataset/linear_point_255_var_10000_80_120/linear_10_[None]_
-#data_dir: /home/docker/data/Vectors_dataset/URM/URM_10_[None]_
 batch_data: False #True or False
 data_model: modeled #Raw or Modeled
