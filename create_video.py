@@ -2,26 +2,26 @@ from Utils import utils
 
 import random
 import cv2
-import os
 
 
 if __name__ == '__main__':
 
-    # samples_folder = "/home/nuria/Desktop/Data/Frames_dataset/linear_point_255_var_10000/linear_10_[None]_train/raw_samples/"
-    video_name = '/home/nuria/Desktop/Videos/raw_modeled_sample.avi'
-    front_name = video_name.replace('.avi', '.png')
-
-    # samples_paths = utils.get_dirs(samples_folder)
-    # to_draw = random.randint(0, len(samples_paths) - 1)
-    # sample_to_draw = samples_paths[to_draw]
-    # sample_to_draw = "/home/nuria/Desktop/Data/Frames_dataset/linear_point_255_var_10000/linear_10_[None]_train/raw_samples/sample57"
-    sample_to_draw = "/home/nuria/Desktop/Videos/images"
+    data_type = "sinusoidal"
+    samples_folder = "/home/docker/Generated_Data/Frames_dataset/" + data_type + "_point_255_fix_10000_80_120/" +\
+                     data_type + "_10_[None]_train/raw_samples/"
+    # front_name = video_name.replace('.avi', '.png')
+    video_dir = '/home/docker/Videos/'
+    utils.check_dirs(video_dir)
+    samples_paths = utils.get_dirs(samples_folder)
+    to_draw = random.randint(0, len(samples_paths) - 1)
+    sample_to_draw = samples_paths[to_draw]
+    video_name = video_dir + data_type + '_' + sample_to_draw.split("/")[-1] + '.avi'
     print(sample_to_draw)
     # sample = [sample_to_draw + '/' + str(i) + '.png' for i in range(21)]
-    sample = [sample_to_draw + '/image' + str(i) + '.png' for i in range(21)]
+    sample = [sample_to_draw + '/' + str(i) + '.png' for i in range(21)]
 
     front = cv2.imread(sample[0])
-    cv2.imwrite(front_name, front)
+    # cv2.imwrite(front_name, front)
     height, width, layers = front.shape
 
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
