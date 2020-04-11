@@ -6,7 +6,7 @@ import cv2
 
 if __name__ == '__main__':
 
-    data_type = "sinusoidal"
+    data_type = "parabolic"
     samples_folder = "/home/docker/Generated_Data/Frames_dataset/" + data_type + "_point_255_fix_10000_80_120/" +\
                      data_type + "_10_[None]_train/raw_samples/"
     # front_name = video_name.replace('.avi', '.png')
