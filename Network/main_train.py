@@ -94,7 +94,7 @@ if __name__ == '__main__':
         else:  # net_type == "Rec"
             to_train_net = Net.Lstm(activation=activation, loss=loss, dropout=dropout,
                                     drop_percentage=drop_percentage, input_shape=in_dim,
-                                    output_shape=out_dim)
+                                    output_shape=out_dim, data_type="Vector")
 
     else:  # data_type == 'Frames_dataset':
         print('Training with frames')
@@ -157,11 +157,11 @@ if __name__ == '__main__':
             if net_type == "NoRec":
                 to_train_net = Net.Mlp(activation=activation, loss=loss, dropout=dropout,
                                        drop_percentage=drop_percentage, input_shape=in_dim,
-                                       output_shape=out_dim, data_type="Frames")
+                                       output_shape=out_dim, data_type="Frame")
             else:  # net_type == "Rec"
                 to_train_net = Net.Lstm(activation=activation, loss=loss, dropout=dropout,
                                         drop_percentage=drop_percentage, input_shape=in_dim,
-                                        output_shape=out_dim)
+                                        output_shape=out_dim, data_type="Frame")
 
     print('Training')
     to_train_net.train(n_epochs, batch_size, patience, filename, train_data, val_data, batch_data, channels)

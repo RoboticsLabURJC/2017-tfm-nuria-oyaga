@@ -40,7 +40,7 @@ class Net(object):
         name = root + '/' + str(batch_size) + '_' + str(self.dropout) + '_' + self.activation + '_' + \
             self.loss + '_' + str(patience)
 
-        early_stopping = EarlyStopping(monitor='val_loss', min_delta=0.01, patience=patience)
+        early_stopping = EarlyStopping(monitor='val_loss', min_delta=0.0001, patience=patience)
         checkpoint = ModelCheckpoint(name + '.h5', verbose=1, monitor='val_loss', save_best_only=True, mode='auto')
         print(name)
 
@@ -117,30 +117,32 @@ class Mlp(Net):
     def __init__(self, **kwargs):
         Net.__init__(self, "MLP", **kwargs)
         if 'model_file' not in kwargs.keys():
-            data_type = kwargs['data_type']
-            self.create_model(data_type)
+            if kwargs['data_type'] == "Function":
+                self.create_function_model()
+            else:  # kwargs['data_type'] == "Frame"
+                self.create_frame_model()
 
-    def create_model(self, data_type):
-        if data_type == "Function":
-            print("Creating Function MLP model")
-            self.model.add(Dense(15, input_shape=self.input_shape, activation=self.activation))
+    def create_function_model(self):
+        print("Creating function MLP model")
+        self.model.add(Dense(15, input_shape=self.input_shape, activation=self.activation))
 
-            if self.dropout:
-                self.model.add(Dropout(self.drop_percentage))
+        if self.dropout:
+            self.model.add(Dropout(self.drop_percentage))
 
-            self.model.add(Dense(self.output_shape))
-            self.model.compile(loss=self.loss, optimizer='adam')
-        else:  # data_type == "Modeled frame"
-            print("Creating Frame MLP model")
-            self.model.add(TimeDistributed(Dense(10, activation=self.activation), input_shape=self.input_shape))
+        self.model.add(Dense(self.output_shape))
+        self.model.compile(loss=self.loss, optimizer='adam')
 
-            if self.dropout:
-                self.model.add(Dropout(self.drop_percentage))
+    def create_frame_model(self):
+        print("Creating frame MLP model")
+        self.model.add(TimeDistributed(Dense(10, activation=self.activation), input_shape=self.input_shape))
 
-            self.model.add(Flatten())
+        if self.dropout:
+            self.model.add(Dropout(self.drop_percentage))
 
-            self.model.add(Dense(self.output_shape))
-            self.model.compile(loss=self.loss, optimizer='adam')
+        self.model.add(Flatten())
+
+        self.model.add(Dense(self.output_shape))
+        self.model.compile(loss=self.loss, optimizer='adam')
 
 
 class Convolution1D(Net):
@@ -210,16 +212,29 @@ class Lstm(Net):
     def __init__(self, **kwargs):
         Net.__init__(self, "lstm", **kwargs)
         if 'model_file' not in kwargs.keys():
-            self.create_model()
+            if kwargs['data_type'] == "Vector":
+                self.create_vector_model()
+            else:  # kwargs['data_type'] == "Frame"
+                self.create_frame_model()
 
-    def create_model(self):
-        print("Creating LSTM model")
+    def create_vector_model(self):
+        print("Creating function LSTM model")
         self.model.add(LSTM(25, input_shape=self.input_shape))
 
         if self.dropout:
             self.model.add(Dropout(self.drop_percentage))
 
         self.model.add(Dense(self.output_shape, activation="softmax"))
+        self.model.compile(loss=self.loss, optimizer='adam')
+
+    def create_frame_model(self):
+        print("Creating frame LSTM model")
+        self.model.add(LSTM(25, input_shape=self.input_shape))
+
+        if self.dropout:
+            self.model.add(Dropout(self.drop_percentage))
+
+        self.model.add(Dense(self.output_shape))
         self.model.compile(loss=self.loss, optimizer='adam')
 
 
