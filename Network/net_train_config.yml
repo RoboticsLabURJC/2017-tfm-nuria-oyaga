@@ -8,14 +8,18 @@ complexity: simple
 root: /home/docker/Models/
 
 # Type of the net to train (NoRec, Rec)
-net_type: Rec
+net_type: NoRec
 
 # Activation function
 activation: relu
+modeled_activation: tanh
 
 # Loss function
 func_loss: mean_squared_error
 vect_loss: categorical_crossentropy
+raw_frame_loss: categorical_crossentropy
+modeled_frame_loss: mean_squared_error
+
 
 # Dropout options
 dropout:

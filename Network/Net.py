@@ -41,6 +41,7 @@ class Net(object):
 
         early_stopping = EarlyStopping(monitor='val_loss', min_delta=0.01, patience=patience)
         checkpoint = ModelCheckpoint(name + '.h5', verbose=1, monitor='val_loss', save_best_only=True, mode='auto')
+        print(name)
 
         print('Training model...')
         start_time = time()
@@ -106,7 +107,7 @@ class Net(object):
                 file.write("--------------------------------------------------------------\n")
 
         # Calculate stats
-        test_utils.get_error_stats(test_x, test_y, predict, gap, data_type, dim,
+        test_utils.get_error_stats(test_x, test_y, predict_values, gap, data_type, dim,
                                    error, x_error, y_error, relative_error, self.model_path)
 
 
@@ -115,17 +116,30 @@ class Mlp(Net):
     def __init__(self, **kwargs):
         Net.__init__(self, "MLP", **kwargs)
         if 'model_file' not in kwargs.keys():
-            self.create_model()
+            data_type = kwargs['data_type']
+            self.create_model(data_type)
 
-    def create_model(self):
-        print("Creating MLP model")
-        self.model.add(Dense(15, input_shape=self.input_shape, activation=self.activation))
+    def create_model(self, data_type):
+        if data_type == "Function":
+            print("Creating Function MLP model")
+            self.model.add(Dense(15, input_shape=self.input_shape, activation=self.activation))
 
-        if self.dropout:
-            self.model.add(Dropout(self.drop_percentage))
+            if self.dropout:
+                self.model.add(Dropout(self.drop_percentage))
 
-        self.model.add(Dense(self.output_shape))
-        self.model.compile(loss=self.loss, optimizer='adam')
+            self.model.add(Dense(self.output_shape))
+            self.model.compile(loss=self.loss, optimizer='adam')
+        else:  # data_type == "Modeled frame"
+            print("Creating Frame MLP model")
+            self.model.add(TimeDistributed(Dense(10, activation=self.activation), input_shape=self.input_shape))
+
+            if self.dropout:
+                self.model.add(Dropout(self.drop_percentage))
+
+            self.model.add(Flatten())
+
+            self.model.add(Dense(self.output_shape))
+            self.model.compile(loss=self.loss, optimizer='adam')
 
 
 class Convolution1D(Net):
