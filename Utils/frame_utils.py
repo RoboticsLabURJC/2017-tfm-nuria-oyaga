@@ -5,7 +5,7 @@ import numpy as np
 import cv2
 
 
-def read_frame_data(f_path, sample_type, dim, channels=False):
+def read_frame_data(f_path, sample_type, channels=False):
     if sample_type not in f_path:
         f_path += sample_type
 
@@ -16,7 +16,7 @@ def read_frame_data(f_path, sample_type, dim, channels=False):
         dataX, dataY = get_samples(samples_paths, channels)
     else:
         samples_paths = utils.get_files(f_path)
-        dataX, dataY = get_modeled_samples(samples_paths, dim)
+        dataX, dataY = get_modeled_samples(samples_paths)
 
     parameters = pd.read_csv(parameters_path, sep=' ')
 
@@ -55,16 +55,13 @@ def get_samples(samples_paths, channels):
     return (dataX, dataY)
 
 
-def get_modeled_samples(samples_paths, dim):
+def get_modeled_samples(samples_paths):
     dataX = []
     dataY = []
 
     for p in samples_paths:
         sample = pd.read_csv(p)
         positions = np.fliplr(sample.values).astype(np.float)
-        for i in range(len(positions)):
-            positions[i][0] /= dim[0]
-            positions[i][1] /= dim[1]
         dataX.append(positions[:-1])
         dataY.append(positions[-1])
 
@@ -92,8 +89,9 @@ def get_positions(predictions, real, dim, raw):
             r = real[i].reshape(dim)
             real_pos.append(np.unravel_index(r.argmax(), r.shape))
         else:
-            predict_pos.append(utils.scale_position(p, dim[1], dim[0]))
-            real_pos.append(utils.scale_position(real[i], dim[1], dim[0]))
+            p = np.round(p).astype(np.float64)
+            predict_pos.append(p)
+            real_pos.append(real[i])
 
         maximum.append(np.linalg.norm(np.array((0, 0)) - np.array(dim)))
 
@@ -112,7 +110,7 @@ def draw_frame(fig, real_data, pred_data, dim):
 
     else:
         bw_image_real = np.zeros(dim, np.uint8)
-        bw_image_real[real_data[0], real_data[1]] = 255
+        bw_image_real[int(real_data[0]), int(real_data[1])] = 255
 
         bw_image_pred = np.zeros(dim, np.uint8)
         bw_image_pred[int(pred_data[0]), int(pred_data[1])] = 255

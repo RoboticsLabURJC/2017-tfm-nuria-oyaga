@@ -169,11 +169,6 @@ def draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_
         prediction = predict[error_stats[1][0]]
         rel_target = test_y[rel_error_stats[1][0]]
         rel_prediction = predict[rel_error_stats[1][0]]
-        if "modeled" in data_type:
-            target = utils.scale_position(target, dim[1], dim[0])
-            prediction = utils.scale_position(prediction, dim[1], dim[0])
-            rel_target = utils.scale_position(rel_target, dim[1], dim[0])
-            rel_prediction = utils.scale_position(rel_prediction, dim[1], dim[0])
 
         f, (s1, s2) = plt.subplots(1, 2, sharey='all', sharex='all')
         frame_utils.draw_frame(s1, target, prediction, dim)

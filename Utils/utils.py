@@ -85,10 +85,6 @@ def calculate_mean(values):
     return round(np.sum(values) / values.size, 3)
 
 
-def scale_position(pos, x_max, y_max):
-    return [int(pos[0] * y_max), int(pos[1] * x_max)]
-
-
 def combine_figures(figures_dir, figures):
     figures_images = [cv2.imread(figures_dir + f_path + ".png") for f_path in figures]
     if len(figures) % 2 == 0:
