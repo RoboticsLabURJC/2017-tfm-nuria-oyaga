@@ -70,8 +70,8 @@ class Frames(object):
             elif self.type == 'Parabolic':
                 numbers_x = [self.f(x, x0, u_x) for x in range(self.n_points)]
                 numbers_x.append(self.f(self.n_points + self.gap - 1, x0, u_x))
-                a = round(random.uniform(-0.05, 0.05), 4)
-                b = 0.1
+                a = round(random.uniform(-0.2, 0.2), 4)
+                b = 0.4
                 self.parameters += [a, b]
                 numbers_y = [int(self.g(n_x, a, b, y0)) for n_x in numbers_x]
                 numbers_y.append(int(self.g(numbers_x[-1], a, b, y0)))

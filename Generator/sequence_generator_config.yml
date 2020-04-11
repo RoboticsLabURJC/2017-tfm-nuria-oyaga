@@ -8,7 +8,7 @@ to_generate: f  #frame('f'), vector('v') or number('n')
 func_type: linear #linear, quadratic, sinusoidal, poly3, poly4
 
 # If toGenerate = 'v'; Motion type, sample size
-motion_type: sinusoidal #URM, linear, parabolic, sinusoidal
+motion_type: parabolic #URM, linear, parabolic, sinusoidal
 vector_len: 320
 
 # If toGenerate = 'f'; Motion type (same in vector), height, width, object
