@@ -36,6 +36,7 @@ class Net(object):
 
     def train(self, n_epochs, batch_size, patience, root, data_train, data_val, batch_data, channels):
         utils.check_dirs(root)
+
         name = root + '/' + str(batch_size) + '_' + str(self.dropout) + '_' + self.activation + '_' + \
             self.loss + '_' + str(patience)
 

@@ -145,7 +145,7 @@ if __name__ == '__main__':
             loss = conf['modeled_frame_loss']
             activation = conf['modeled_activation']
             dim = (int(samples_dir.split('_')[-2]), int(samples_dir.split('_')[-1]))
-            filename = root + "_Modeled/"
+            filename = root + "_Modeled"
             _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'modeled_samples')
             _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'modeled_samples')
             train_data = [trainX, trainY]
