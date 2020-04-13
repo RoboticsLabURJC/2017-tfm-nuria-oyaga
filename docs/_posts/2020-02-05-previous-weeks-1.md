@@ -24,7 +24,7 @@ pinned: false
 ## New data type
 After making a learning with simpler data and see that the performance is good we decided to complicate things to the network. For this I have established a new type of movements in space for the white point of the frames: linear movement which will combine with the URM movement in time.
 
-In the following [link](https://roboticslaburjc.github.io/2017-tfm-nuria-oyaga/previous%20work/datasets/) you can find a description of this new type of images.
+In the following [link](https://roboticslaburjc.github.io/2017-tfm-nuria-oyaga/data/datasets/) you can find a description of this new type of images.
 
 The way to obtain these new frames is the same as before, we set the position in x by means of a URM movement but this time, instead of maintaining the height of the object (position y) constant, we will modify it according to a function.
 
