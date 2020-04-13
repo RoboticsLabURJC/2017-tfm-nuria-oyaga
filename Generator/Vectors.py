@@ -56,5 +56,5 @@ class URM(Vector):
         u_x = random.randint(1, int(self.v_size[1] / (n_points + gap)))
         x0 = 0
         self.parameters = [x0, u_x]
-        self.f = lambda x: x0 + u_x * x
+        self.f = lambda t: x0 + u_x * t
         self.get_sample()

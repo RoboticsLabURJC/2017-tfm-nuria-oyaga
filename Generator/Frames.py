@@ -57,7 +57,6 @@ class Frames(object):
                 numbers_x = [self.f(x, x0, u_x) for x in range(self.n_points)]
                 numbers_x.append(self.f(self.n_points + self.gap - 1, x0, u_x))
                 numbers_y = [self.g(n_x, y0) for n_x in numbers_x]
-                numbers_y.append(self.g(numbers_x[-1], y0))
 
             elif self.type == 'Linear':
                 numbers_x = [self.f(x, x0, u_x) for x in range(self.n_points)]
@@ -65,16 +64,15 @@ class Frames(object):
                 m = np.round(random.uniform(-self.h/10, self.h/10), 2)
                 self.parameters.append(m)
                 numbers_y = [int(self.g(n_x, y0, m)) for n_x in numbers_x]
-                numbers_y.append(int(self.g(numbers_x[-1], y0, m)))
 
             elif self.type == 'Parabolic':
                 numbers_x = [self.f(x, x0, u_x) for x in range(self.n_points)]
                 numbers_x.append(self.f(self.n_points + self.gap - 1, x0, u_x))
-                a = round(random.uniform(-0.2, 0.2), 4)
-                b = 0.4
+                a = round(random.uniform(-0.75, 0.75), 3)
+                b = 1.5
                 self.parameters += [a, b]
                 numbers_y = [int(self.g(n_x, a, b, y0)) for n_x in numbers_x]
-                numbers_y.append(int(self.g(numbers_x[-1], a, b, y0)))
+
             else:  # self.type == 'Sinusoidal'
                 numbers_x = [self.f(x, x0, u_x) for x in range(self.n_points)]
                 numbers_x.append(self.f(self.n_points + self.gap - 1, x0, u_x))
@@ -83,7 +81,6 @@ class Frames(object):
                 f = round(random.uniform(0.5, 5), 2)
                 self.parameters += [a, b]
                 numbers_y = [int(self.g(n_x, a, b, y0, f)) for n_x in numbers_x]
-                numbers_y.append(int(self.g(numbers_x[-1], a, b, y0, f)))
 
             if self.is_valid(numbers_x, numbers_y):
                 break
@@ -110,9 +107,6 @@ class Frames(object):
         image = self.shape.draw(image, (posx, posy))
 
         return image
-
-    def get_complex_image(self, object_pos):
-        pass
 
     def save(self, image_path, filename, sample_file_path):
         sample_df = pd.DataFrame(columns=['x', 'y'])
