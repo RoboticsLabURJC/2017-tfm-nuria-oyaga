@@ -68,6 +68,6 @@ In view of the results obtained previously I have replaced the simple LSTM layer
 With the new structure the performance of the network is improved and the results are practically the same as in the non-recurrent case that were pretty good
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_history.png" alt="Loss history" %}
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_error_hist.png" alt="Error histogram" %}
-{% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_rel_error_hist.pn" alt="Relative error histogram" %}
+{% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_rel_error_hist.png" alt="Relative error histogram" %}
 In the next image you can see target frame in the samples where the errors (absolute and relative) are maximum. The maximum error committed coincides with the non-recurrent case and in terms of the average a very similar result is obtained.
 {% include figure image_path="/assets/images/logbook/media/Models/Recurrent/Frames/linear_point_255/ConvLSTM/15_False_relu_categorical_crossentropy_10_max_error.png" alt="Relative and absolute error" %}
