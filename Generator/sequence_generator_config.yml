@@ -7,16 +7,18 @@ to_generate: f  #frame('f'), vector('v') or number('n')
 # If toGenerate = 'n'; Function type
 func_type: linear #linear, quadratic, sinusoidal, poly3, poly4
 
-# If toGenerate = 'v'; Motion type, sample size
-motion_type: parabolic #URM, linear, parabolic, sinusoidal
+# If toGenerate = 'v'; Sample size
 vector_len: 320
 
-# If toGenerate = 'f'; Motion type (same in vector), height, width, object
+# If toGenerate = 'v' or 'f'; Motion type
+motion_type: parabolic #URM, linear, parabolic, sinusoidal
+
+# If toGenerate = 'f'; Height, width, object
 height: 80
 width: 120
 object: point # point, circle
 obj_color: 255 # For b/w: 255; For color: [0, 255, 0]
-y0: fix # fix, var
+y0: var # fix, var, (var_1, (var_2))
 
 circle_parameters:
   radius: 5

@@ -69,15 +69,24 @@ class Frames(object):
                 numbers_x = [self.f(x, x0, u_x) for x in range(self.n_points)]
                 numbers_x.append(self.f(self.n_points + self.gap - 1, x0, u_x))
                 a = round(random.uniform(-0.75, 0.75), 3)
-                b = 1.5
+                if self.y0_type in ['fix', 'var']:
+                    b = 1.5
+                else:
+                    b = round(random.uniform(-2, 2), 3)
                 self.parameters += [a, b]
                 numbers_y = [int(self.g(n_x, a, b, y0)) for n_x in numbers_x]
 
             else:  # self.type == 'Sinusoidal'
                 numbers_x = [self.f(x, x0, u_x) for x in range(self.n_points)]
                 numbers_x.append(self.f(self.n_points + self.gap - 1, x0, u_x))
-                a = 25
-                b = math.radians(0)
+                if self.y0_type in ['fix', 'var']:
+                    a = 25
+                else:
+                    a = random.randint(-50, 50)
+                if self.y0_type == "var_2":
+                    b = round(random.uniform(0, 2 * math.pi), 3)
+                else:
+                    b = 0
                 f = round(random.uniform(0.5, 5), 2)
                 self.parameters += [a, b]
                 numbers_y = [int(self.g(n_x, a, b, y0, f)) for n_x in numbers_x]
@@ -86,6 +95,7 @@ class Frames(object):
                 break
             else:
                 self.parameters = self.parameters[0:2]
+                y0 = None
 
         return numbers_x, numbers_y
 

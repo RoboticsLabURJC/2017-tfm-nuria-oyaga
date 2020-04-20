@@ -6,6 +6,9 @@ TFM - main_gen.py - Description
 __author__ = "Nuria Oyaga"
 __date__ = "23/04/2018"
 
+import sys
+sys.path.insert(0, '/home/docker/2017-tfm-nuria-oyaga')
+
 from Utils.utils import write_header, check_dirs, get_config_file
 import Function, Vectors, Frames, Shapes
 
