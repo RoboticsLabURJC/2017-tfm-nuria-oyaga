@@ -26,6 +26,7 @@ def calculate_error(real, prediction, maximum):
 def get_error_stats(test_x, test_y, predict, gap, data_type, dim, error, x_error, y_error, relative_error, figures_dir):
 
     figures_dir += "error_stats/"
+    # figures_dir = "error_stats/"
     utils.check_dirs(figures_dir, True)
 
     error_stats, x_error_stats, y_error_stats, \
@@ -187,11 +188,11 @@ def draw_max_error_samples(test_x, test_y, predict, gap, error_stats, rel_error_
 
 def draw_error_breakdown(error, x_error, y_error, relative_error, dim, fig_dir):
 
-    f, (s1, s2) = plt.subplots(1, 2, sharey='all', sharex='all')
+    f, (s1, s2) = plt.subplots(1, 2, sharex='all')
     draw_boxplot_error(s1, [error, x_error, y_error], "Absolute error")
     draw_boxplot_error(s2,
                        [relative_error, np.round((x_error/dim[1])*100, 3), np.round((y_error/dim[0])*100, 3)],
-                       "Relative error")
+                       "Relative error (%)")
 
     f.savefig(fig_dir + 'breakdown.png')
 
