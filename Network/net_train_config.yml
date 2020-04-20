@@ -8,7 +8,7 @@ complexity: simple
 root: /home/docker/Models/
 
 # Type of the net to train (NoRec, Rec)
-net_type: Rec
+net_type: NoRec
 
 # Activation function
 activation: relu
@@ -27,15 +27,15 @@ dropout:
   percentage: 0.2
 
 # Epochs
-n_epochs: 300
+n_epochs: 600
 
 # Batch size
 batch_size: 15
 
 # Patience
-patience: 10
+patience: 15
 
 # Data
-data_dir: /home/docker/data/Frames_dataset/sinusoidal_point_255_fix_10000_80_120/sinusoidal_10_[None]_
+data_dir: /home/docker/data/Frames_dataset/parabolic_point_255_var_10000_80_120/parabolic_10_[None]_
 batch_data: False #True or False
 data_model: modeled #Raw or Modeled
