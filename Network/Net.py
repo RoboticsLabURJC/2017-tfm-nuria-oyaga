@@ -89,13 +89,20 @@ class Net(object):
             maximum = [np.max(np.abs(np.append(test_x[i], test_y[i]))) for i in range(len(test_x))]
             predict_values = predict
             real_values = test_y
+            v_to_draw = predict_values
         elif data_type == "Vectors_dataset":
             predict_values, real_values, maximum = vect_utils.get_positions(predict, test_y)
+            v_to_draw = predict_values
         else:
             raw = True
             if "modeled" in data_type:
                 raw = False
             predict_values, real_values, maximum = frame_utils.get_positions(predict, test_y, dim, raw)
+
+            if raw:
+                v_to_draw = predict
+            else:
+                v_to_draw = predict_values
 
         error, x_error, y_error, relative_error = test_utils.calculate_error(real_values, predict_values, maximum)
 
@@ -108,7 +115,8 @@ class Net(object):
                 file.write("--------------------------------------------------------------\n")
 
         # Calculate stats
-        test_utils.get_error_stats(test_x, test_y, predict_values, gap, data_type, dim,
+
+        test_utils.get_error_stats(test_x, test_y, v_to_draw, gap, data_type, dim,
                                    error, x_error, y_error, relative_error, self.model_path)
 
 

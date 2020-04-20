@@ -1,5 +1,5 @@
 # Test dataset path
-data_path: /home/docker/data/Frames_dataset/parabolic_point_255_var_10000_80_120/parabolic_10_[None]_test/modeled_samples
+data_path: /home/docker/data/Frames_dataset/linear_point_255_var_10000_80_120/linear_10_[None]_test/raw_samples
 
 # Model path
-model_path: /home/docker/Models/NOREC/Frames_dataset/parabolic_point_255_var_10000_80_120_Modeled/15_False_tanh_mean_squared_error_15.h5
+model_path: /home/docker/Models_def/NOREC/Frames_dataset/linear_point_255_var_10000_80_120/simple/15_False_relu_categorical_crossentropy_10.h5
