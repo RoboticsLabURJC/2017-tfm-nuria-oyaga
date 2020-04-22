@@ -9,7 +9,7 @@ import math
 
 class Frames(object):
 
-    def __init__(self, m_type, noise_parameters, n_points, gap, h, w, shape, y0_type):
+    def __init__(self, m_type, noise_parameters, n_points, gap, h, w, shape, dof_type):
         self.h = h
         self.w = w
         self.shape = shape
@@ -20,7 +20,7 @@ class Frames(object):
         # x = x0 + ux*t
         self.f = lambda t, x0, u_x: x0 + u_x * t
         self.g = None
-        self.y0_type = y0_type
+        self.dof_type = dof_type
         self.parameters = []
         self.raw_sample = []
         self.modeled_sample = []
@@ -34,7 +34,7 @@ class Frames(object):
 
         u_x = random.randint(1, limit)
 
-        if self.y0_type == 'fix':
+        if self.dof_type == 'fix':
             y0 = int(self.h / 2)
         else:
             y0 = None
@@ -69,7 +69,7 @@ class Frames(object):
                 numbers_x = [self.f(x, x0, u_x) for x in range(self.n_points)]
                 numbers_x.append(self.f(self.n_points + self.gap - 1, x0, u_x))
                 a = round(random.uniform(-0.75, 0.75), 3)
-                if self.y0_type in ['fix', 'var']:
+                if self.dof_type in ['fix', 'var']:
                     b = 1.5
                 else:
                     b = round(random.uniform(-2, 2), 3)
@@ -79,11 +79,11 @@ class Frames(object):
             else:  # self.type == 'Sinusoidal'
                 numbers_x = [self.f(x, x0, u_x) for x in range(self.n_points)]
                 numbers_x.append(self.f(self.n_points + self.gap - 1, x0, u_x))
-                if self.y0_type in ['fix', 'var']:
+                if self.dof_type in ['fix', 'var']:
                     a = 25
                 else:
-                    a = random.randint(-50, 50)
-                if self.y0_type == "var_2":
+                    a = random.randint(15, 40)
+                if self.dof_type == "var_2":
                     b = round(random.uniform(0, 2 * math.pi), 3)
                 else:
                     b = 0
@@ -140,8 +140,8 @@ class Frames(object):
 
 class URM(Frames):
 
-    def __init__(self, noise_parameters, n_points, gap, h, w, shape, y0_type):
-        Frames.__init__(self, "URM", noise_parameters, n_points, gap, h, w, shape, y0_type)
+    def __init__(self, noise_parameters, n_points, gap, h, w, shape, dof_type):
+        Frames.__init__(self, "URM", noise_parameters, n_points, gap, h, w, shape, dof_type)
 
         # y = y0
         self.g = lambda x, y0: y0
@@ -149,8 +149,8 @@ class URM(Frames):
 
 
 class Linear(Frames):
-    def __init__(self, noise_parameters, n_points, gap, h, w, shape, y0_type):
-        Frames.__init__(self, "Linear", noise_parameters, n_points, gap, h, w, shape, y0_type)
+    def __init__(self, noise_parameters, n_points, gap, h, w, shape, dof_type):
+        Frames.__init__(self, "Linear", noise_parameters, n_points, gap, h, w, shape, dof_type)
 
         # y = m*x + y0
         self.g = lambda x, y0, m: (m * x) + y0
@@ -158,8 +158,8 @@ class Linear(Frames):
 
 
 class Parabolic(Frames):
-    def __init__(self, noise_parameters, n_points, gap, h, w, shape, y0_type):
-        Frames.__init__(self, "Parabolic", noise_parameters, n_points, gap, h, w, shape, y0_type)
+    def __init__(self, noise_parameters, n_points, gap, h, w, shape, dof_type):
+        Frames.__init__(self, "Parabolic", noise_parameters, n_points, gap, h, w, shape, dof_type)
 
         # y = a*t^2 + b*t + c
         self.g = lambda x, a, b, c: a * (x ** 2) + b * x + c
@@ -168,8 +168,8 @@ class Parabolic(Frames):
 
 
 class Sinusoidal(Frames):
-    def __init__(self, noise_parameters, n_points, gap, h, w, shape, y0_type):
-        Frames.__init__(self, "Sinusoidal", noise_parameters, n_points, gap, h, w, shape, y0_type)
+    def __init__(self, noise_parameters, n_points, gap, h, w, shape, dof_type):
+        Frames.__init__(self, "Sinusoidal", noise_parameters, n_points, gap, h, w, shape, dof_type)
 
         # y = a*sin(fx + b) + c
         self.g = lambda x, a, b, c, f: a * math.sin(2 * math.pi * f * math.radians(x) + b) + c

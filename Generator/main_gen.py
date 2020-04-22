@@ -188,8 +188,8 @@ if __name__ == '__main__':
         obj_shape = conf['object']
         obj_color = conf['obj_color']
         motion_type = conf['motion_type']
-        y0 = conf['y0']
-        data_dir = conf['root'] + "Frames_dataset/" + motion_type + '_' + obj_shape + '_' + str(obj_color) + '_' + y0 \
+        dof = conf['dof']
+        data_dir = conf['root'] + "Frames_dataset/" + motion_type + '_' + obj_shape + '_' + str(obj_color) + '_' + dof \
                     + '_' + str(n_samples)
         if obj_shape == 'point':
             shape = Shapes.Point(obj_color)
@@ -200,6 +200,7 @@ if __name__ == '__main__':
 
         data_dir = data_dir + "_" + str(h) + "_" + str(w)
         check_dirs(data_dir, True)
+        print(data_dir)
 
         for i in range(n_samples):
             if i % 1 == 0 or i == n_samples - 1:
@@ -208,21 +209,21 @@ if __name__ == '__main__':
             if motion_type == 'URM':
                 if i == 0:
                     header = 'x0 u_x y0 n_points gap motion noise(mean, standard deviation)\n'
-                sample = Frames.URM(noise_parameters, n_points, gap, h, w, shape, y0)
+                sample = Frames.URM(noise_parameters, n_points, gap, h, w, shape, dof)
             elif motion_type == 'linear':
                 if i == 0:
                     header = 'x0 u_x y0 m n_points gap motion noise(mean, standard deviation)\n'
-                sample = Frames.Linear(noise_parameters, n_points, gap, h, w, shape, y0)
+                sample = Frames.Linear(noise_parameters, n_points, gap, h, w, shape, dof)
 
             elif motion_type == 'parabolic':
                 if i == 0:
                     header = 'x0 u_x y0 a b n_points gap motion noise(mean, standard deviation)\n'
-                sample = Frames.Parabolic(noise_parameters, n_points, gap, h, w, shape, y0)
+                sample = Frames.Parabolic(noise_parameters, n_points, gap, h, w, shape, dof)
 
             else:  # motion_type == 'sinusoidal'
                 if i == 0:
                     header = 'x0 u_x y0 a b c f n_points gap motion noise(mean, standard deviation)\n'
-                sample = Frames.Sinusoidal(noise_parameters, n_points, gap, h, w, shape, y0)
+                sample = Frames.Sinusoidal(noise_parameters, n_points, gap, h, w, shape, dof)
 
             if split_flag:
                 if i == 0:

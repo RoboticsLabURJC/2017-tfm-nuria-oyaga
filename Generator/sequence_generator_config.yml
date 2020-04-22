@@ -11,20 +11,20 @@ func_type: linear #linear, quadratic, sinusoidal, poly3, poly4
 vector_len: 320
 
 # If toGenerate = 'v' or 'f'; Motion type
-motion_type: parabolic #URM, linear, parabolic, sinusoidal
+motion_type: sinusoidal #URM, linear, parabolic, sinusoidal
 
 # If toGenerate = 'f'; Height, width, object
 height: 80
 width: 120
 object: point # point, circle
 obj_color: 255 # For b/w: 255; For color: [0, 255, 0]
-y0: var # fix, var, (var_1, (var_2))
+dof: var_2 # fix, var, (var_1, (var_2))
 
 circle_parameters:
   radius: 5
 
 # Number of samples
-n_samples: 10000
+n_samples: 100000
 
 # Number of know points (x values)
 n_points: 20
