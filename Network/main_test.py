@@ -18,6 +18,9 @@ if __name__ == '__main__':
     net_type = conf['model_path'].split('/')[4]
     complexity = conf['model_path'].split('/')[7]
 
+    print("Dataset: " + conf['data_path'])
+    print("Model: " + conf['model_path'])
+
     print("Evaluating with " + data_type + " a " + complexity + " " + net_type + " model")
 
     # Load data

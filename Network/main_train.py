@@ -101,12 +101,13 @@ if __name__ == '__main__':
         data_model = conf['data_model']
         samples_dir = data_dir.split('/')[5]
         dim = (int(samples_dir.split('_')[-2]), int(samples_dir.split('_')[-1]))
+        complexity = conf['complexity']
 
         # Load data
         channels = False
         if data_model == "raw":
             loss = conf['raw_frame_loss']
-            complexity = conf['complexity']
+
             print("Raw images")
             if net_type == "Rec":
                 channels = True
@@ -122,8 +123,8 @@ if __name__ == '__main__':
                 else:
                     in_dim = [images_per_sample, dim[0], dim[1]]
             else:
-                _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'raw_samples', dim, channels)
-                _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'raw_samples', dim, channels)
+                _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'raw_samples', channels)
+                _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'raw_samples', channels)
                 train_data = [trainX, trainY]
                 val_data = [valX, valY]
                 in_dim = trainX.shape[1:]
@@ -145,7 +146,8 @@ if __name__ == '__main__':
             loss = conf['modeled_frame_loss']
             activation = conf['modeled_activation']
             dim = (int(samples_dir.split('_')[-2]), int(samples_dir.split('_')[-1]))
-            filename = root + "_Modeled"
+            filename = root + "_Modeled/" + complexity
+
             _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'modeled_samples')
             _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'modeled_samples')
             train_data = [trainX, trainY]
@@ -157,11 +159,11 @@ if __name__ == '__main__':
             if net_type == "NoRec":
                 to_train_net = Net.Mlp(activation=activation, loss=loss, dropout=dropout,
                                        drop_percentage=drop_percentage, input_shape=in_dim,
-                                       output_shape=out_dim, data_type="Frame")
+                                       output_shape=out_dim, complexity=complexity, data_type="Frame")
             else:  # net_type == "Rec"
                 to_train_net = Net.Lstm(activation=activation, loss=loss, dropout=dropout,
                                         drop_percentage=drop_percentage, input_shape=in_dim,
-                                        output_shape=out_dim, data_type="Frame")
+                                        output_shape=out_dim, complexity=complexity, data_type="Frame")
 
     print('Training')
     to_train_net.train(n_epochs, batch_size, patience, filename, train_data, val_data, batch_data, channels)

@@ -9,7 +9,8 @@ __date__ = "21/05/2018"
 from Utils import utils, vect_utils, frame_utils, test_utils
 
 from keras.models import Sequential, load_model
-from keras.layers import Dense, Dropout, Conv1D, MaxPooling1D, Conv2D, MaxPooling2D, Flatten, LSTM, ConvLSTM2D, TimeDistributed
+from keras.layers import Dense, Dropout, Conv1D, MaxPooling1D, Conv2D, MaxPooling2D, Flatten, LSTM, ConvLSTM2D, \
+    TimeDistributed, BatchNormalization
 from keras.utils import vis_utils
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 
@@ -40,7 +41,7 @@ class Net(object):
         name = root + '/' + str(batch_size) + '_' + str(self.dropout) + '_' + self.activation + '_' + \
             self.loss + '_' + str(patience)
 
-        early_stopping = EarlyStopping(monitor='val_loss', min_delta=0.0001, patience=patience)
+        early_stopping = EarlyStopping(monitor='val_loss', min_delta=0.001, patience=patience)
         checkpoint = ModelCheckpoint(name + '.h5', verbose=1, monitor='val_loss', save_best_only=True, mode='auto')
         print(name)
 
@@ -115,7 +116,6 @@ class Net(object):
                 file.write("--------------------------------------------------------------\n")
 
         # Calculate stats
-
         test_utils.get_error_stats(test_x, test_y, v_to_draw, gap, data_type, dim,
                                    error, x_error, y_error, relative_error, self.model_path)
 
@@ -128,7 +128,10 @@ class Mlp(Net):
             if kwargs['data_type'] == "Function":
                 self.create_function_model()
             else:  # kwargs['data_type'] == "Frame"
-                self.create_frame_model()
+                if kwargs['complexity'] == "simple":
+                    self.create_frame_simple_model()
+                else:
+                    self.create_frame_complex_model()
 
     def create_function_model(self):
         print("Creating function MLP model")
@@ -140,9 +143,21 @@ class Mlp(Net):
         self.model.add(Dense(self.output_shape))
         self.model.compile(loss=self.loss, optimizer='adam')
 
-    def create_frame_model(self):
-        print("Creating frame MLP model")
+    def create_frame_simple_model(self):
+        print("Creating frame simple MLP model")
         self.model.add(TimeDistributed(Dense(10, activation=self.activation), input_shape=self.input_shape))
+
+        if self.dropout:
+            self.model.add(Dropout(self.drop_percentage))
+
+        self.model.add(Flatten())
+
+        self.model.add(Dense(self.output_shape))
+        self.model.compile(loss=self.loss, optimizer='adam')
+
+    def create_frame_complex_model(self):
+        print("Creating frame complex MLP model")
+        self.model.add(TimeDistributed(Dense(50, activation=self.activation), input_shape=self.input_shape))
 
         if self.dropout:
             self.model.add(Dropout(self.drop_percentage))
@@ -223,7 +238,10 @@ class Lstm(Net):
             if kwargs['data_type'] == "Vector":
                 self.create_vector_model()
             else:  # kwargs['data_type'] == "Frame"
-                self.create_frame_model()
+                if kwargs['complexity'] == "simple":
+                    self.create_frame_simple_model()
+                else:
+                    self.create_frame_complex_model()
 
     def create_vector_model(self):
         print("Creating function LSTM model")
@@ -235,8 +253,18 @@ class Lstm(Net):
         self.model.add(Dense(self.output_shape, activation="softmax"))
         self.model.compile(loss=self.loss, optimizer='adam')
 
-    def create_frame_model(self):
-        print("Creating frame LSTM model")
+    def create_frame_simple_model(self):
+        print("Creating frame simple LSTM model")
+        self.model.add(LSTM(90, input_shape=self.input_shape))
+
+        if self.dropout:
+            self.model.add(Dropout(self.drop_percentage))
+
+        self.model.add(Dense(self.output_shape))
+        self.model.compile(loss=self.loss, optimizer='adam')
+
+    def create_frame_complex_model(self):
+        print("Creating frame complex LSTM model")
         self.model.add(LSTM(25, input_shape=self.input_shape))
 
         if self.dropout:
@@ -254,8 +282,10 @@ class ConvolutionLstm(Net):
                 self.create_simple_model()
             elif kwargs['complexity'] == "complex":
                 self.create_complex_model()
-            else:
+            elif kwargs['complexity'] == "convLSTM":
                 self.create_conv_lstm_model()
+            else:
+                self.create_complex_conv_lstm_model()
 
     def create_simple_model(self):
         print("Creating simple convolution LSTM model")
@@ -292,6 +322,23 @@ class ConvolutionLstm(Net):
         self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
         self.model.add(ConvLSTM2D(filters=5, kernel_size=(3, 3),
                    padding='same'))
+        self.model.add(Flatten())
+
+        if self.dropout:
+            self.model.add(Dropout(self.drop_percentage))
+
+        self.model.add(Dense(self.output_shape, activation="softmax"))
+        self.model.compile(loss=self.loss, optimizer='adam')
+
+    def create_complex_conv_lstm_model(self):
+        print("Creating complex convLSTM model")
+        self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation), input_shape=self.input_shape))
+        self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation)))
+        self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
+        self.model.add(ConvLSTM2D(filters=5, kernel_size=(3, 3),
+                                  padding='same', return_sequences=True))
+        self.model.add(ConvLSTM2D(filters=5, kernel_size=(3, 3),
+                                  padding='same'))
         self.model.add(Flatten())
 
         if self.dropout:

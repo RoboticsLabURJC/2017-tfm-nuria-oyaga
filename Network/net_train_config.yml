@@ -1,14 +1,14 @@
 # Version
 version: 1
 
-# Complexity: simple, complex, convLSTM
-complexity: simple
+# Complexity: simple, complex, convLSTM, complex_convLSTM
+complexity: complex_convLSTM
 
 # Root to save the model
 root: /home/docker/Models/
 
 # Type of the net to train (NoRec, Rec)
-net_type: NoRec
+net_type: Rec
 
 # Activation function
 activation: relu
@@ -30,12 +30,12 @@ dropout:
 n_epochs: 600
 
 # Batch size
-batch_size: 15
+batch_size: 10
 
 # Patience
-patience: 15
+patience: 10
 
 # Data
-data_dir: /home/docker/data/Frames_dataset/parabolic_point_255_var_10000_80_120/parabolic_10_[None]_
-batch_data: False #True or False
-data_model: modeled #Raw or Modeled
+data_dir: /home/docker/data/Frames_dataset/parabolic_point_255_var_1_100000_80_120/parabolic_10_[None]_
+batch_data: True #True or False
+data_model: raw #raw or modeled
