@@ -46,6 +46,9 @@ def get_error_stats(test_x, test_y, predict, gap, data_type, dim, error, x_error
         draw_error_breakdown(error, x_error, y_error, relative_error, dim, figures_dir)
         figures.insert(2, "breakdown")
 
+    # Draw real vs predictions
+    draw_pred_vs_real(test_y, predict, dim, figures_dir)
+
     utils.combine_figures(figures_dir, figures)
 
 
@@ -209,4 +212,29 @@ def draw_boxplot_error(fig, data, title):
 
     fig.set_title(title)
     fig.yaxis.grid(True)
+
+
+def draw_pred_vs_real(real, predict, dim, fig_dir):
+    x_real = [val[1] for val in real]
+    x_predict = [val[1] for val in predict]
+    y_real = [val[0] for val in real]
+    y_predict = [val[0] for val in predict]
+
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+    ax1.scatter(x_real, x_predict, c='powderblue')
+    ax1.plot([0, dim[1]], [0, dim[1]], 'k--', lw=2)
+    ax1.set_xlabel('Real')
+    ax1.set_ylabel('Predicted')
+    ax1.set_title("X")
+    ax1.grid(True)
+
+    ax2.scatter(y_real, y_predict, c='powderblue')
+    ax2.plot([0, dim[0]], [0, dim[0]], 'k--', lw=2)
+    ax2.set_xlabel('Real')
+    ax2.set_title("Y")
+    ax2.grid(True)
+
+    fig.savefig(fig_dir + 'Real_VS_Pred.png')
+
+
 

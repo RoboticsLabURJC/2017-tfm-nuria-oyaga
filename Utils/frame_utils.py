@@ -113,7 +113,10 @@ def draw_frame(fig, real_data, pred_data, dim):
         bw_image_real[int(real_data[0]), int(real_data[1])] = 255
 
         bw_image_pred = np.zeros(dim, np.uint8)
-        bw_image_pred[int(pred_data[0]), int(pred_data[1])] = 255
+        try:
+            bw_image_pred[int(pred_data[0]), int(pred_data[1])] = 255
+        except IndexError:
+            pass
 
     kernel = np.ones((3, 3), np.uint8)
     bw_image_real = cv2.dilate(bw_image_real, kernel, iterations=1)
