@@ -146,18 +146,6 @@ class Mlp(Net):
         self.model.add(Dense(self.output_shape))
         self.model.compile(loss=self.loss, optimizer='adam')
 
-    """def create_frame_simple_model(self):
-        print("Creating frame simple MLP model")
-        self.model.add(TimeDistributed(Dense(10, activation=self.activation), input_shape=self.input_shape))
-
-        if self.dropout:
-            self.model.add(Dropout(self.drop_percentage))
-
-        self.model.add(Flatten())
-
-        self.model.add(Dense(self.output_shape))
-        self.model.compile(loss=self.loss, optimizer='adam')"""
-
     def create_frame_simple_model(self):
         print("Creating frame simple MLP model")
         self.model = tf.keras.Sequential()
@@ -274,23 +262,28 @@ class Lstm(Net):
 
     def create_frame_simple_model(self):
         print("Creating frame simple LSTM model")
-        self.model.add(LSTM(90, input_shape=self.input_shape))
+        self.model = tf.keras.Sequential()
+        self.model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.LSTM(90, input_shape=self.input_shape)))
 
         if self.dropout:
-            self.model.add(Dropout(self.drop_percentage))
+            self.model.add(tf.keras.layers.Dropout(self.drop_percentage))
 
-        self.model.add(Dense(self.output_shape))
+        self.model.add(tf.keras.layers.Dense(self.output_shape))
+
         self.model.compile(loss=self.loss, optimizer='adam')
 
     def create_frame_complex_model(self):
         print("Creating frame complex LSTM model")
-        self.model.add(LSTM(25, input_shape=self.input_shape))
+
+        self.model = tf.keras.Sequential()
+        self.model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.LSTM(90, input_shape=self.input_shape)))
 
         if self.dropout:
-            self.model.add(Dropout(self.drop_percentage))
+            self.model.add(tf.keras.layers.Dropout(self.drop_percentage))
 
-        self.model.add(Dense(self.output_shape))
-        self.model.compile(loss=self.loss, optimizer='adam')
+        self.model.add(tf.keras.layers.Dense(self.output_shape))
+
+        self.model.compile(loss=self.loss, optimizer='adagrad')
 
 
 class ConvolutionLstm(Net):
