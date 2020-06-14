@@ -10,9 +10,12 @@ from Utils import utils, vect_utils, frame_utils, test_utils
 
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout, Conv1D, MaxPooling1D, Conv2D, MaxPooling2D, Flatten, LSTM, ConvLSTM2D, \
-    TimeDistributed, BatchNormalization
+    TimeDistributed
 from keras.utils import vis_utils
 from keras.callbacks import EarlyStopping, ModelCheckpoint
+
+import tensorflow as tf
+import tensorflow_graphics as tfg
 
 import numpy as np
 from time import time
@@ -143,7 +146,7 @@ class Mlp(Net):
         self.model.add(Dense(self.output_shape))
         self.model.compile(loss=self.loss, optimizer='adam')
 
-    def create_frame_simple_model(self):
+    """def create_frame_simple_model(self):
         print("Creating frame simple MLP model")
         self.model.add(TimeDistributed(Dense(10, activation=self.activation), input_shape=self.input_shape))
 
@@ -153,19 +156,35 @@ class Mlp(Net):
         self.model.add(Flatten())
 
         self.model.add(Dense(self.output_shape))
+        self.model.compile(loss=self.loss, optimizer='adam')"""
+
+    def create_frame_simple_model(self):
+        print("Creating frame simple MLP model")
+        self.model = tf.keras.Sequential()
+        self.model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(10, activation=self.activation),
+                                                       input_shape=self.input_shape))
+
+        if self.dropout:
+            self.model.add(tf.keras.layers.Dropout(self.drop_percentage))
+
+        self.model.add(tf.keras.layers.Flatten())
+
+        self.model.add(tf.keras.layers.Dense(self.output_shape))
         self.model.compile(loss=self.loss, optimizer='adam')
 
     def create_frame_complex_model(self):
         print("Creating frame complex MLP model")
-        self.model.add(TimeDistributed(Dense(50, activation=self.activation), input_shape=self.input_shape))
+        self.model = tf.keras.Sequential()
+        self.model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(10, activation=self.activation),
+                                                       input_shape=self.input_shape))
 
         if self.dropout:
-            self.model.add(Dropout(self.drop_percentage))
+            self.model.add(tf.keras.layers.Dropout(self.drop_percentage))
 
-        self.model.add(Flatten())
+        self.model.add(tf.keras.layers.Flatten())
 
-        self.model.add(Dense(self.output_shape))
-        self.model.compile(loss=self.loss, optimizer='adam')
+        self.model.add(tf.keras.layers.Dense(self.output_shape))
+        self.model.compile(loss=self.loss, optimizer='adagrad')
 
 
 class Convolution1D(Net):
