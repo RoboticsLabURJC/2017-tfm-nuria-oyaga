@@ -15,7 +15,6 @@ from keras.utils import vis_utils
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 import tensorflow as tf
-import tensorflow_graphics as tfg
 
 import numpy as np
 from time import time
@@ -25,11 +24,19 @@ class Net(object):
 
     def __init__(self, net_type, **kwargs):
         self.net_type = net_type
+        self.framework = kwargs['framework']
         if 'model_file' in kwargs.keys():
             self.model_path = kwargs['model_file'][:kwargs['model_file'].rfind("/") + 1]
-            self.model = load_model(kwargs['model_file'])
+            if self.framework == "keras":
+                self.model = load_model(kwargs['model_file'])
+            else:
+                self.model = tf.keras.models.load_model(kwargs['model_file'])
         else:
-            self.model = Sequential()
+            if self.framework == "keras":
+                self.model = Sequential()
+            else:
+                self.model = tf.keras.Sequential()
+
             self.dropout = kwargs['dropout']
             if self.dropout:
                 self.drop_percentage = kwargs['drop_percentage']
@@ -37,6 +44,7 @@ class Net(object):
             self.activation = kwargs['activation']
             self.input_shape = kwargs['input_shape']
             self.output_shape = kwargs['output_shape']
+            self.framework = "keras"
 
     def train(self, n_epochs, batch_size, patience, root, data_train, data_val, batch_data, channels):
         utils.check_dirs(root)
@@ -78,7 +86,10 @@ class Net(object):
         utils.save_history(model_history, name)
 
     def save_properties(self, patience, epochs, train_time, file_path):
-        vis_utils.plot_model(self.model, file_path + '.png', show_shapes=True)
+        if self.framework == "keras":
+            vis_utils.plot_model(self.model, file_path + '.png', show_shapes=True)
+        else:
+            tf.keras.utils.plot_model(self.model, file_path + '.png', show_shapes=True)
 
         with open(file_path + '.txt', 'w+') as f:
             self.model.summary(print_fn=lambda x: f.write(x + '\n'))
@@ -148,7 +159,6 @@ class Mlp(Net):
 
     def create_frame_simple_model(self):
         print("Creating frame simple MLP model")
-        self.model = tf.keras.Sequential()
         self.model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(10, activation=self.activation),
                                                        input_shape=self.input_shape))
 
@@ -162,8 +172,7 @@ class Mlp(Net):
 
     def create_frame_complex_model(self):
         print("Creating frame complex MLP model")
-        self.model = tf.keras.Sequential()
-        self.model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(10, activation=self.activation),
+        self.model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(40, activation=self.activation),
                                                        input_shape=self.input_shape))
 
         if self.dropout:
@@ -262,8 +271,7 @@ class Lstm(Net):
 
     def create_frame_simple_model(self):
         print("Creating frame simple LSTM model")
-        self.model = tf.keras.Sequential()
-        self.model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.LSTM(90, input_shape=self.input_shape)))
+        self.model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.LSTM(25, input_shape=self.input_shape)))
 
         if self.dropout:
             self.model.add(tf.keras.layers.Dropout(self.drop_percentage))
@@ -274,9 +282,7 @@ class Lstm(Net):
 
     def create_frame_complex_model(self):
         print("Creating frame complex LSTM model")
-
-        self.model = tf.keras.Sequential()
-        self.model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.LSTM(90, input_shape=self.input_shape)))
+        self.model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.LSTM(50, input_shape=self.input_shape)))
 
         if self.dropout:
             self.model.add(tf.keras.layers.Dropout(self.drop_percentage))
@@ -358,4 +364,3 @@ class ConvolutionLstm(Net):
 
         self.model.add(Dense(self.output_shape, activation="softmax"))
         self.model.compile(loss=self.loss, optimizer='adam')
-

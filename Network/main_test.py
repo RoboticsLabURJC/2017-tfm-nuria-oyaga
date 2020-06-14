@@ -32,7 +32,7 @@ if __name__ == '__main__':
         print('Puting the test data into the right shape...')
         testX, testY = func_utils.reshape_function_data(test_set)
 
-        to_test_net = Net.Mlp(model_file=conf['model_path'])
+        to_test_net = Net.Mlp(model_file=conf['model_path'], framework="keras")
 
     elif data_type == "Vectors_dataset":
         parameters, test_set = vect_utils.read_vector_data(conf['data_path'])
@@ -42,9 +42,9 @@ if __name__ == '__main__':
         print('Puting the test data into the right shape...')
         testX, testY = vect_utils.reshape_vector_data(test_set)
         if net_type == "NOREC":
-            to_test_net = Net.Convolution1D(model_file=conf['model_path'])
+            to_test_net = Net.Convolution1D(model_file=conf['model_path'], framework="keras")
         else:
-            to_test_net = Net.Lstm(model_file=conf['model_path'])
+            to_test_net = Net.Lstm(model_file=conf['model_path'], framework="keras")
 
     else:  # data_type == "Frames_dataset
         sample_type = conf['data_path'].split('/')[-1]
@@ -55,19 +55,19 @@ if __name__ == '__main__':
             if net_type == "NOREC":
                 print('Puting the test data into the right shape...')
                 parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'], sample_type)
-                to_test_net = Net.Convolution2D(model_file=conf['model_path'])
+                to_test_net = Net.Convolution2D(model_file=conf['model_path'], framework="keras")
             else:
                 print('Puting the test data into the right shape...')
                 parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'], sample_type, True)
-                to_test_net = Net.ConvolutionLstm(model_file=conf['model_path'])
+                to_test_net = Net.ConvolutionLstm(model_file=conf['model_path'], framework="keras")
         else:
             parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'], sample_type)
             if net_type == "NOREC":
                 print('Puting the test data into the right shape...')
-                to_test_net = Net.Convolution1D(model_file=conf['model_path'])
+                to_test_net = Net.Mlp(model_file=conf['model_path'], framework="tensorflow")
             else:
                 print('Puting the test data into the right shape...')
-                to_test_net = Net.Lstm(model_file=conf['model_path'])
+                to_test_net = Net.Lstm(model_file=conf['model_path'], framework="tensorflow")
 
         gap = parameters.iloc[0]['gap']
 

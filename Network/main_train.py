@@ -62,8 +62,9 @@ if __name__ == '__main__':
         # Model settings
         in_dim = trainX.shape[1:]
         out_dim = 1
-        to_train_net = Net.Mlp(activation=activation, loss=loss, dropout=dropout, drop_percentage=drop_percentage,
-                               input_shape=trainX[0].shape, output_shape=out_dim, data_type="Function")
+        to_train_net = Net.Mlp(activation=activation, loss=loss, dropout=dropout,
+                               drop_percentage=drop_percentage, input_shape=trainX[0].shape,
+                               output_shape=out_dim, data_type="Function", framework="keras")
 
     elif data_type == 'Vectors_dataset':
         print('Training with vectors')
@@ -90,11 +91,11 @@ if __name__ == '__main__':
         if net_type == "NoRec":
             to_train_net = Net.Convolution1D(activation=activation, loss=loss, dropout=dropout,
                                              drop_percentage=drop_percentage, input_shape=in_dim,
-                                             output_shape=out_dim)
+                                             output_shape=out_dim, framework="keras")
         else:  # net_type == "Rec"
             to_train_net = Net.Lstm(activation=activation, loss=loss, dropout=dropout,
                                     drop_percentage=drop_percentage, input_shape=in_dim,
-                                    output_shape=out_dim, data_type="Vector")
+                                    output_shape=out_dim, data_type="Vector", framework="keras")
 
     else:  # data_type == 'Frames_dataset':
         print('Training with frames')
@@ -135,11 +136,11 @@ if __name__ == '__main__':
             if net_type == "NoRec":
                 to_train_net = Net.Convolution2D(activation=activation, loss=loss, dropout=dropout,
                                                  drop_percentage=drop_percentage, input_shape=in_dim,
-                                                 output_shape=out_dim, complexity=complexity)
+                                                 output_shape=out_dim, complexity=complexity, framework="keras")
             else:
                 to_train_net = Net.ConvolutionLstm(activation=activation, loss=loss, dropout=dropout,
                                                    drop_percentage=drop_percentage, input_shape=in_dim,
-                                                   output_shape=out_dim, complexity=complexity)
+                                                   output_shape=out_dim, complexity=complexity, framework="keras")
 
         else:
             print("Modeled images")
@@ -158,12 +159,12 @@ if __name__ == '__main__':
             out_dim = np.prod(in_dim[1:])
             if net_type == "NoRec":
                 to_train_net = Net.Mlp(activation=activation, loss=loss, dropout=dropout,
-                                       drop_percentage=drop_percentage, input_shape=in_dim,
-                                       output_shape=out_dim, complexity=complexity, data_type="Frame")
+                                       drop_percentage=drop_percentage, input_shape=in_dim, output_shape=out_dim,
+                                       complexity=complexity, data_type="Frame", framework="tensorflow")
             else:  # net_type == "Rec"
                 to_train_net = Net.Lstm(activation=activation, loss=loss, dropout=dropout,
-                                        drop_percentage=drop_percentage, input_shape=in_dim,
-                                        output_shape=out_dim, complexity=complexity, data_type="Frame")
+                                        drop_percentage=drop_percentage, input_shape=in_dim, output_shape=out_dim,
+                                        complexity=complexity, data_type="Frame", framework="tensorflow")
 
     print('Training')
     to_train_net.train(n_epochs, batch_size, patience, filename, train_data, val_data, batch_data, channels)

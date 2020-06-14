@@ -2,7 +2,7 @@
 version: 1
 
 # Complexity: simple, complex, convLSTM, complex_convLSTM
-complexity: simple
+complexity: complex
 
 # Root to save the model
 root: /home/docker/Models/
