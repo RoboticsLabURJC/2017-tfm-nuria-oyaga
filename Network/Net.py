@@ -25,6 +25,7 @@ class Net(object):
     def __init__(self, net_type, **kwargs):
         self.net_type = net_type
         self.framework = kwargs['framework']
+        print(self.framework)
         if 'model_file' in kwargs.keys():
             self.model_path = kwargs['model_file'][:kwargs['model_file'].rfind("/") + 1]
             if self.framework == "keras":
@@ -44,7 +45,6 @@ class Net(object):
             self.activation = kwargs['activation']
             self.input_shape = kwargs['input_shape']
             self.output_shape = kwargs['output_shape']
-            self.framework = "keras"
 
     def train(self, n_epochs, batch_size, patience, root, data_train, data_val, batch_data, channels):
         utils.check_dirs(root)
@@ -175,13 +175,16 @@ class Mlp(Net):
         self.model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(40, activation=self.activation),
                                                        input_shape=self.input_shape))
 
+        self.model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(10, activation=self.activation),
+                                                       input_shape=self.input_shape))
+
         if self.dropout:
             self.model.add(tf.keras.layers.Dropout(self.drop_percentage))
 
         self.model.add(tf.keras.layers.Flatten())
 
         self.model.add(tf.keras.layers.Dense(self.output_shape))
-        self.model.compile(loss=self.loss, optimizer='adagrad')
+        self.model.compile(loss=self.loss, optimizer='adam')
 
 
 class Convolution1D(Net):
@@ -289,7 +292,7 @@ class Lstm(Net):
 
         self.model.add(tf.keras.layers.Dense(self.output_shape))
 
-        self.model.compile(loss=self.loss, optimizer='adagrad')
+        self.model.compile(loss=self.loss, optimizer='adam')
 
 
 class ConvolutionLstm(Net):
