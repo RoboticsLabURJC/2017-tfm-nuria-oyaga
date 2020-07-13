@@ -11,7 +11,7 @@ func_type: linear #linear, quadratic, sinusoidal, poly3, poly4
 vector_len: 320
 
 # If toGenerate = 'v' or 'f'; Motion type
-motion_type: sinusoidal #URM, linear, parabolic, sinusoidal
+motion_type: sinusoidal #URM, linear, parabolic, sinusoidal, mix
 
 # If toGenerate = 'f'; Height, width, object
 height: 80
