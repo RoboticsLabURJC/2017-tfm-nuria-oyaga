@@ -8,7 +8,7 @@ complexity: complex
 root: /home/docker/Models/
 
 # Type of the net to train (NoRec, Rec)
-net_type: NoRec
+net_type: Rec
 
 # Activation function
 activation: relu
@@ -36,6 +36,6 @@ batch_size: 10
 patience: 10
 
 # Data
-data_dir: /home/docker/data/Frames_dataset/sinusoidal_point_255_var_2_100000_80_120/sinusoidal_10_[None]_
+data_dir: /home/docker/data/Frames_dataset/mix_lin_par_sin_255_var_100000_80_120/mix_
 batch_data: False #True or False
 data_model: modeled #raw or modeled

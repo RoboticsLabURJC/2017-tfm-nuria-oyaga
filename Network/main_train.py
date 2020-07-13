@@ -164,7 +164,7 @@ if __name__ == '__main__':
             else:  # net_type == "Rec"
                 to_train_net = Net.Lstm(activation=activation, loss=loss, dropout=dropout,
                                         drop_percentage=drop_percentage, input_shape=in_dim, output_shape=out_dim,
-                                        complexity=complexity, data_type="Frame", framework="tensorflow")
+                                        complexity=complexity, data_type="Frame", framework="keras")
 
     print('Training')
     to_train_net.train(n_epochs, batch_size, patience, filename, train_data, val_data, batch_data, channels)
