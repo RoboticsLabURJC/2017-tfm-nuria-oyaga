@@ -38,7 +38,6 @@ class Frames(object):
             y0 = int(self.h / 2)
         else:
             y0 = None
-
         self.parameters = [x0, u_x, y0]
 
         positions_x, positions_y = self.get_positions(x0, u_x, y0)
@@ -48,6 +47,7 @@ class Frames(object):
             self.modeled_sample.append([positions_x[i], positions_y[i]])
 
     def get_positions(self, x0, u_x, y0):
+        init_y0 = y0
         while True:
             if y0 is None:
                 y0 = random.randint(1, self.h - 1)
@@ -95,7 +95,7 @@ class Frames(object):
                 break
             else:
                 self.parameters = self.parameters[0:2]
-                y0 = None
+                y0 = init_y0
 
         return numbers_x, numbers_y
 
@@ -151,7 +151,6 @@ class URM(Frames):
 class Linear(Frames):
     def __init__(self, noise_parameters, n_points, gap, h, w, shape, dof_type):
         Frames.__init__(self, "Linear", noise_parameters, n_points, gap, h, w, shape, dof_type)
-
         # y = m*x + y0
         self.g = lambda x, y0, m: (m * x) + y0
         self.get_sample()

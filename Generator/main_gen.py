@@ -132,7 +132,7 @@ if __name__ == '__main__':
         vector_len = conf['vector_len']
         motion_type = conf['motion_type']  # Type of motion
 
-        data_dir = conf['root'] + "Vectors_dataset/" + motion_type + '_' + str(n_samples)
+        data_dir = conf['root'] + "Vectors_dataset/" + motion_type + '_' + str(n_samples) + "_" + str(vector_len)
         check_dirs(data_dir, True)
 
         for i in range(n_samples):
@@ -200,10 +200,9 @@ if __name__ == '__main__':
 
         data_dir = data_dir + "_" + str(h) + "_" + str(w)
         check_dirs(data_dir, True)
-        print(data_dir)
 
         for i in range(n_samples):
-            if i % 1 == 0 or i == n_samples - 1:
+            if i % 100 == 0 or i == n_samples - 1:
                 print(i)
 
             if motion_type == 'URM':

@@ -1,8 +1,8 @@
 # Root to save
-root: /home/docker/Generated_Data/
+root: /home/docker/data/
 
 # Type of element to generate
-to_generate: f  #frame('f'), vector('v') or number('n')
+to_generate: f #frame('f'), vector('v') or number('n')
 
 # If toGenerate = 'n'; Function type
 func_type: linear #linear, quadratic, sinusoidal, poly3, poly4
@@ -11,14 +11,14 @@ func_type: linear #linear, quadratic, sinusoidal, poly3, poly4
 vector_len: 320
 
 # If toGenerate = 'v' or 'f'; Motion type
-motion_type: sinusoidal #URM, linear, parabolic, sinusoidal, mix
+motion_type: linear #URM, linear, parabolic, sinusoidal, mix
 
 # If toGenerate = 'f'; Height, width, object
 height: 80
 width: 120
 object: point # point, circle
 obj_color: 255 # For b/w: 255; For color: [0, 255, 0]
-dof: var_2 # fix, var, (var_1, (var_2))
+dof: var # fix, var, (var_1, (var_2))
 
 circle_parameters:
   radius: 5
