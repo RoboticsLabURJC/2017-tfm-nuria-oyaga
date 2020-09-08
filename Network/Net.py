@@ -10,7 +10,7 @@ from Utils import utils, vect_utils, frame_utils, test_utils
 
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout, Conv1D, MaxPooling1D, Conv2D, MaxPooling2D, Flatten, LSTM, ConvLSTM2D, \
-    TimeDistributed
+    TimeDistributed, MaxPooling3D, BatchNormalization
 from keras.utils import vis_utils
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 
@@ -344,8 +344,7 @@ class ConvolutionLstm(Net):
         self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation), input_shape=self.input_shape))
         self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation)))
         self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
-        self.model.add(ConvLSTM2D(filters=5, kernel_size=(3, 3),
-                   padding='same'))
+        self.model.add(ConvLSTM2D(filters=5, kernel_size=(3, 3), padding='same'))
         self.model.add(Flatten())
 
         if self.dropout:
@@ -356,13 +355,13 @@ class ConvolutionLstm(Net):
 
     def create_complex_conv_lstm_model(self):
         print("Creating complex convLSTM model")
-        self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation), input_shape=self.input_shape))
-        self.model.add(TimeDistributed(Conv2D(32, (3, 3), activation=self.activation)))
+        self.model.add(TimeDistributed(Conv2D(32, (5, 5), activation=self.activation), input_shape=self.input_shape))
         self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
-        self.model.add(ConvLSTM2D(filters=5, kernel_size=(3, 3),
-                                  padding='same', return_sequences=True))
-        self.model.add(ConvLSTM2D(filters=5, kernel_size=(3, 3),
-                                  padding='same'))
+        self.model.add(ConvLSTM2D(filters=20, kernel_size=(5, 5), padding='same', return_sequences=True))
+        self.model.add(ConvLSTM2D(filters=15, kernel_size=(7, 7), padding='same', return_sequences=True))
+        self.model.add(ConvLSTM2D(filters=10, kernel_size=(7, 7), padding='same', return_sequences=True))
+        self.model.add(ConvLSTM2D(filters=5, kernel_size=(9, 9), padding='same', return_sequences=True))
+        self.model.add(ConvLSTM2D(filters=5, kernel_size=(9, 9), padding='same', return_sequences=False))
         self.model.add(Flatten())
 
         if self.dropout:
