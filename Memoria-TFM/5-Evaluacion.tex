@@ -1,0 +1,35 @@
+\chapter{Evaluación y métricas}\label{cap.evaluacion}
+
+En este capítulo se explican las distintas métricas que se calculan tras pasar el conjunto de \textit{test} por la red previamente entrenada, permitiendo obtener una medida objetiva de la bondad de dicha red. Además se hace un análisis en profundidad del código Python desarrollado para tal fin y se hace una interpretación sobre los gráficos y resultados que arroja dicho código al terminar la ejecución.
+
+\section{Métricas}
+
+Para poder evaluar la distin
+
+\section{Herramienta de evaluación}
+
+En la Figura~\ref{fig.flujo_test} se puede visualizar el flujo que sigue el código para la evaluación de una red en concreto con un conjunto de \textit{test} determinado.
+
+\vspace{10pt}
+\begin{figure}[H]
+    \begin{center}
+        \begin{tikzpicture}[node distance=2cm]
+            \node (ld) [treenodelong] {Lectura de datos};
+            \node (net) [treenodelong, below of=ld] {Carga de la red};
+            \node (pred) [treenodelong, below of=net] {Predicción};
+            \node (trans) [treenodelong, below of=pred] {Transformación de posiciones};    
+            \node (calc) [treenodelong, below of=trans] {Cálculo de métricas};
+            \node (pres) [treenodelong, below of=calc] {Presentación de resultados};
+            
+            \draw [arrow] (ld) -- (net);
+            \draw [arrow] (net) -- (pred);
+            \draw [arrow] (pred) -- (trans);
+            \draw [arrow] (trans) -- (calc);
+            \draw [arrow] (calc) -- (pres);
+        \end{tikzpicture}
+        \caption{Diagrama de flujo del evaluador.}
+	    \label{fig.flujo_test}
+	\end{center}
+\end{figure}
+
+\section{Interpretación de resultados}
