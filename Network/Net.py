@@ -357,10 +357,10 @@ class ConvolutionLstm(Net):
         print("Creating complex convLSTM model")
         self.model.add(TimeDistributed(Conv2D(32, (5, 5), activation=self.activation), input_shape=self.input_shape))
         self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
-        self.model.add(ConvLSTM2D(filters=20, kernel_size=(5, 5), padding='same', return_sequences=True))
+        self.model.add(ConvLSTM2D(filters=25, kernel_size=(5, 5), padding='same', return_sequences=True))
+        self.model.add(ConvLSTM2D(filters=20, kernel_size=(7, 7), padding='same', return_sequences=True))
         self.model.add(ConvLSTM2D(filters=15, kernel_size=(7, 7), padding='same', return_sequences=True))
-        self.model.add(ConvLSTM2D(filters=10, kernel_size=(7, 7), padding='same', return_sequences=True))
-        self.model.add(ConvLSTM2D(filters=5, kernel_size=(9, 9), padding='same', return_sequences=True))
+        self.model.add(ConvLSTM2D(filters=10, kernel_size=(9, 9), padding='same', return_sequences=True))
         self.model.add(ConvLSTM2D(filters=5, kernel_size=(9, 9), padding='same', return_sequences=False))
         self.model.add(Flatten())
 
