@@ -2,4 +2,4 @@
 data_path: /home/docker/data_far/Frames_dataset/mix_lin_par_sin_255_var_100000_80_120/mix_test/modeled_samples
 
 # Model path
-model_path: /home/docker/Models/REC/Frames_dataset/mix_lin_par_sin_255_var_100000_80_120_Modeled/complex/10_False_tanh_mean_squared_error_10.h5
+model_path: /home/docker/Models/REC/Frames_dataset/mix_lin_par_sin_255_var_gap30_100000_80_120_Modeled/complex/10_False_tanh_mean_squared_error_10.h5
