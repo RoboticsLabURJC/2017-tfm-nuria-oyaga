@@ -10,7 +10,7 @@ from Utils import utils
 
 if __name__ == '__main__':
     # General parameters
-    base_path = "/home/docker/data_far/Frames_dataset"
+    base_path = "/home/docker/data_far_50/Frames_dataset"
     to_mix = ["linear_point_255_var_100000_80_120",
               "parabolic_point_255_var_1_100000_80_120",
               "sinusoidal_point_255_var_2_100000_80_120"]

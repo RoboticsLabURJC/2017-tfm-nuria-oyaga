@@ -1,5 +1,5 @@
 # Root to save
-root: /home/docker/data/
+root: /home/docker/data_10/
 
 # Type of element to generate
 to_generate: f #frame('f'), vector('v') or number('n')
@@ -11,7 +11,7 @@ func_type: linear #linear, quadratic, sinusoidal, poly3, poly4
 vector_len: 320
 
 # If toGenerate = 'v' or 'f'; Motion type
-motion_type: linear #URM, linear, parabolic, sinusoidal, mix
+motion_type: linear #URM, linear, parabolic, sinusoidal
 
 # If toGenerate = 'f'; Height, width, object
 height: 80
@@ -24,7 +24,7 @@ circle_parameters:
   radius: 5
 
 # Number of samples
-n_samples: 5000
+n_samples: 100000
 
 # Number of know points (x values)
 n_points: 20
