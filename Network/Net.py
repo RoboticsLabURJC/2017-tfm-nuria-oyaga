@@ -46,7 +46,7 @@ class Net(object):
             self.input_shape = kwargs['input_shape']
             self.output_shape = kwargs['output_shape']
 
-    def train(self, n_epochs, batch_size, patience, root, data_train, data_val, batch_data, channels):
+    def train(self, n_epochs, batch_size, patience, root, data_train, data_val, batch_data, gauss_pixel, channels):
         utils.check_dirs(root)
 
         name = root + '/' + str(batch_size) + '_' + str(self.dropout) + '_' + self.activation + '_' + \
@@ -62,8 +62,10 @@ class Net(object):
             print("Batch data")
             steps_per_epoch = np.ceil(len(data_train) / batch_size)
             validation_steps = np.ceil(len(data_val) / batch_size)
-            training_batch_generator = frame_utils.batch_generator(data_train, batch_size, steps_per_epoch, channels)
-            validation_batch_generator = frame_utils.batch_generator(data_val, batch_size, validation_steps, channels)
+            training_batch_generator = frame_utils.batch_generator(data_train, batch_size, steps_per_epoch,
+                                                                   gauss_pixel, channels)
+            validation_batch_generator = frame_utils.batch_generator(data_val, batch_size, validation_steps,
+                                                                     gauss_pixel, channels)
             model_history = self.model.fit_generator(training_batch_generator,
                                                      epochs=n_epochs, steps_per_epoch=steps_per_epoch,
                                                      validation_data=validation_batch_generator,
@@ -357,10 +359,9 @@ class ConvolutionLstm(Net):
         print("Creating complex convLSTM model")
         self.model.add(TimeDistributed(Conv2D(32, (5, 5), activation=self.activation), input_shape=self.input_shape))
         self.model.add(TimeDistributed(MaxPooling2D(pool_size=(2, 2))))
-        self.model.add(ConvLSTM2D(filters=25, kernel_size=(5, 5), padding='same', return_sequences=True))
-        self.model.add(ConvLSTM2D(filters=20, kernel_size=(7, 7), padding='same', return_sequences=True))
+        self.model.add(ConvLSTM2D(filters=20, kernel_size=(5, 5), padding='same', return_sequences=True))
         self.model.add(ConvLSTM2D(filters=15, kernel_size=(7, 7), padding='same', return_sequences=True))
-        self.model.add(ConvLSTM2D(filters=10, kernel_size=(9, 9), padding='same', return_sequences=True))
+        self.model.add(ConvLSTM2D(filters=10, kernel_size=(7, 7), padding='same', return_sequences=True))
         self.model.add(ConvLSTM2D(filters=5, kernel_size=(9, 9), padding='same', return_sequences=False))
         self.model.add(Flatten())
 

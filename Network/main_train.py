@@ -32,7 +32,6 @@ if __name__ == '__main__':
 
     root = conf['root'] + net_type.upper() + '/' + data_type + '/' + func_type
     version = conf['version']
-    batch_data = conf['batch_data']
 
     print('Puting the data into the right shape...')
 
@@ -42,6 +41,7 @@ if __name__ == '__main__':
         # Load data
         channels = False
         batch_data = False
+        gauss_pixel = False
         parameters, train_set = func_utils.read_function_data(data_dir + 'train.txt')
         _, val_set = func_utils.read_function_data(data_dir + 'val.txt')
 
@@ -72,6 +72,7 @@ if __name__ == '__main__':
         # Load data
         channels = False
         batch_data = False
+        gauss_pixel = False
         _, train_set = vect_utils.read_vector_data(data_dir + 'train/samples')
         _, val_set = vect_utils.read_vector_data(data_dir + 'val/samples')
         filename = root
@@ -107,13 +108,18 @@ if __name__ == '__main__':
         # Load data
         channels = False
         if data_model == "raw":
+            batch_data = conf['batch_data']
             loss = conf['raw_frame_loss']
+            gauss_pixel = conf['gauss_pixel']
 
             print("Raw images")
             if net_type == "Rec":
                 channels = True
 
-            filename = root + "/" + complexity
+            if gauss_pixel:
+                filename = root + "_Gauss/" + complexity
+            else:
+                filename = root + "/" + complexity
 
             if batch_data:
                 train_data = utils.get_dirs(data_dir + 'train/raw_samples')
@@ -124,8 +130,9 @@ if __name__ == '__main__':
                 else:
                     in_dim = [images_per_sample, dim[0], dim[1]]
             else:
-                _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'raw_samples', channels)
-                _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'raw_samples', channels)
+                _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'raw_samples',
+                                                                gauss_pixel, channels)
+                _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'raw_samples', gauss_pixel, channels)
                 train_data = [trainX, trainY]
                 val_data = [valX, valY]
                 in_dim = trainX.shape[1:]
@@ -144,13 +151,15 @@ if __name__ == '__main__':
 
         else:
             print("Modeled images")
+            batch_data = False
             loss = conf['modeled_frame_loss']
+            gauss_pixel = False
             activation = conf['modeled_activation']
             dim = (int(samples_dir.split('_')[-2]), int(samples_dir.split('_')[-1]))
             filename = root + "_Modeled/" + complexity
 
-            _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'modeled_samples')
-            _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'modeled_samples')
+            _, trainX, trainY = frame_utils.read_frame_data(data_dir + 'train/', 'modeled_samples', gauss_pixel)
+            _, valX, valY = frame_utils.read_frame_data(data_dir + 'val/', 'modeled_samples', gauss_pixel)
             train_data = [trainX, trainY]
             val_data = [valX, valY]
 
@@ -167,4 +176,5 @@ if __name__ == '__main__':
                                         complexity=complexity, data_type="Frame", framework="keras")
 
     print('Training')
-    to_train_net.train(n_epochs, batch_size, patience, filename, train_data, val_data, batch_data, channels)
+    to_train_net.train(n_epochs, batch_size, patience, filename, train_data, val_data,
+                       batch_data, gauss_pixel, channels)
