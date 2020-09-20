@@ -5,7 +5,7 @@ import numpy as np
 import cv2
 
 
-def read_frame_data(f_path, sample_type, channels=False):
+def read_frame_data(f_path, sample_type, gauss_pixel, channels=False):
     if sample_type not in f_path:
         f_path += sample_type
 
@@ -13,7 +13,7 @@ def read_frame_data(f_path, sample_type, channels=False):
 
     if sample_type == "raw_samples":
         samples_paths = utils.get_dirs(f_path)
-        dataX, dataY = get_samples(samples_paths, channels)
+        dataX, dataY = get_samples(samples_paths, gauss_pixel, channels)
     else:
         samples_paths = utils.get_files(f_path)
         dataX, dataY = get_modeled_samples(samples_paths)
@@ -29,20 +29,17 @@ def get_images_per_sample(sample_dir):
     return len(images) - 1
 
 
-def read_batch_data(samples, idx, batch_size, channels):
-    sub_samples = samples[idx * batch_size: (idx * batch_size) + batch_size]
-    dataX, dataY = get_samples(sub_samples, channels)
-
-    return dataX, dataY
-
-
-def get_samples(samples_paths, channels):
+def get_samples(samples_paths, gauss_pixel, channels):
 
     dataX = []
     dataY = []
 
     for p in samples_paths:
-        dataX.append([cv2.imread(p + '/' + str(i) + '.png', 0) for i in range(20)])
+        sample = [cv2.imread(p + '/' + str(i) + '.png', 0) for i in range(20)]
+        if gauss_pixel:
+            dataX.append([gaussian_pixel(img) for img in sample])
+        else:
+            dataX.append(sample)
         y_image = np.array(cv2.imread(p + '/20.png', 0))
         dataY.append(y_image.reshape(y_image.size))
 
@@ -68,14 +65,21 @@ def get_modeled_samples(samples_paths):
     return np.array(dataX), np.array(dataY)
 
 
-def batch_generator(samples, batch_size, steps, channels):
+def batch_generator(samples, batch_size, steps, gauss_pixel, channels):
      idx = 1
      while True:
-        yield read_batch_data(samples, idx-1, batch_size, channels)
+        yield read_batch_data(samples, idx-1, batch_size, gauss_pixel, channels)
         if idx < steps:
             idx += 1
         else:
             idx = 1
+
+
+def read_batch_data(samples, idx, batch_size, gauss_pixel, channels):
+    sub_samples = samples[idx * batch_size: (idx * batch_size) + batch_size]
+    dataX, dataY = get_samples(sub_samples, gauss_pixel, channels)
+
+    return dataX, dataY
 
 
 def get_positions(predictions, real, dim, raw):
@@ -127,4 +131,12 @@ def draw_frame(fig, real_data, pred_data, dim):
     fig.imshow(color_image)
 
     return fig
+
+
+def gaussian_pixel(image):
+    gauss_image = cv2.GaussianBlur(image, (5, 5), 0)
+    peak = np.max(gauss_image)
+    gauss_image_scaled = ((gauss_image / peak) * 255).astype(np.uint8)
+
+    return gauss_image_scaled
 
