@@ -47,23 +47,28 @@ if __name__ == '__main__':
             to_test_net = Net.Lstm(model_file=conf['model_path'], framework="keras")
 
     else:  # data_type == "Frames_dataset
-        sample_type = conf['data_path'].split('/')[-1]
+        if "modeled" in conf['model_path'].lower():
+            data_path = conf['data_path'] + "/modeled_samples"
+        else:
+            data_path = conf['data_path'] + "/raw_samples"
+        print(data_path)
+        sample_type = data_path.split('/')[-1]
         data_type = data_type + "_" + sample_type
-        samples_dir = conf['data_path'].split('/')[5]
+        samples_dir = data_path.split('/')[5]
         dim = (int(samples_dir.split('_')[-2]), int(samples_dir.split('_')[-1]))
         if sample_type == "raw_samples":
-            gauss_pixel = "Gauss" in conf['model_path']
+            gauss_pixel = "gauss" in conf['model_path'].lower()
+            print("Gauss:", gauss_pixel)
             if net_type == "NOREC":
                 print('Puting the test data into the right shape...')
-                parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'], sample_type, gauss_pixel)
+                parameters, testX, testY = frame_utils.read_frame_data(data_path, sample_type, gauss_pixel)
                 to_test_net = Net.Convolution2D(model_file=conf['model_path'], framework="keras")
             else:
                 print('Puting the test data into the right shape...')
-                parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'],
-                                                                       sample_type, gauss_pixel, True)
+                parameters, testX, testY = frame_utils.read_frame_data(data_path, sample_type, gauss_pixel, True)
                 to_test_net = Net.ConvolutionLstm(model_file=conf['model_path'], framework="keras")
         else:
-            parameters, testX, testY = frame_utils.read_frame_data(conf['data_path'], sample_type)
+            parameters, testX, testY = frame_utils.read_frame_data(data_path, sample_type, False)
             if net_type == "NOREC":
                 print('Puting the test data into the right shape...')
                 to_test_net = Net.Mlp(model_file=conf['model_path'], framework="tensorflow")

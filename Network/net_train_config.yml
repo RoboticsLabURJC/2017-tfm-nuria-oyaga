@@ -36,7 +36,7 @@ batch_size: 10
 patience: 10
 
 # Data
-data_dir: /home/docker/data_far_17/Frames_dataset/mix_lin_par_sin_255_var_100000_80_120/mix_
+data_dir: /home/docker/data_far_30/Frames_dataset/mix_lin_par_sin_255_var_100000_80_120/mix_
 batch_data: False #True or False
 data_model: modeled #raw or modeled
 gauss_pixel: False
