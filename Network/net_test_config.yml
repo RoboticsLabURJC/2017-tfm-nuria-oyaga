@@ -1,5 +1,5 @@
 # Test dataset path
-data_path: /home/docker/data_far_50/Frames_dataset/mix_lin_par_sin_255_var_100000_80_120/mix_test
+data_path: /home/docker/data_10/Frames_dataset/sinusoidal_point_255_var_1_100000_80_120/sinusoidal_10_[None]_test
 
 # Model path
-model_path: /home/docker/Models/REC/Frames_dataset/mix_lin_par_sin_255_var_gap50_100000_80_120_Modeled/complex/10_False_tanh_mean_squared_error_10.h5
+model_path: /home/docker/Models/REC/Frames_dataset/sinusoidal_point_255_var_1_100000_80_120/complex_convLSTM/10_False_relu_categorical_crossentropy_10.h5

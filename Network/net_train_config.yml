@@ -2,7 +2,7 @@
 version: 1
 
 # Complexity: simple, complex, convLSTM, complex_convLSTM
-complexity: complex
+complexity: complex_convLSTM
 
 # Root to save the model
 root: /home/docker/Models/
@@ -36,7 +36,9 @@ batch_size: 10
 patience: 10
 
 # Data
-data_dir: /home/docker/data_far_30/Frames_dataset/mix_lin_par_sin_255_var_100000_80_120/mix_
-batch_data: False #True or False
-data_model: modeled #raw or modeled
+data_dir: /home/docker/data_10/Frames_dataset/sinusoidal_point_255_var_1_100000_80_120/sinusoidal_10_[None]_
+#data_dir: /home/docker/data_10/Frames_dataset/linear_point_255_fix_10000_80_120/linear_10_[None]_
+#data_dir: /home/docker/data_10/Frames_dataset/linear_point_255_fix_100000_80_120/linear_10_[None]_
+batch_data: True #True or False
+data_model: raw #raw or modeled
 gauss_pixel: False
