@@ -30,13 +30,14 @@ if __name__ == '__main__':
         noise_parameters = [None]
 
     to_generate = conf['to_generate']  # Type to generate
+    data_dir = conf['root'] + "_" + gap
 
     if to_generate == 'n':
 
         func_type = conf['func_type']  # Type of function
 
         # Create directory
-        data_dir = conf['root'] + "Functions_dataset/" + func_type + '_' + str(n_samples)
+        data_dir += "/Functions_dataset/" + func_type + '_' + str(n_samples)
         check_dirs(data_dir, True)
 
         for i in range(n_samples):
@@ -132,7 +133,7 @@ if __name__ == '__main__':
         vector_len = conf['vector_len']
         motion_type = conf['motion_type']  # Type of motion
 
-        data_dir = conf['root'] + "Vectors_dataset/" + motion_type + '_' + str(n_samples) + "_" + str(vector_len)
+        data_dir += "/Vectors_dataset/" + motion_type + '_' + str(n_samples) + "_" + str(vector_len)
         check_dirs(data_dir, True)
 
         for i in range(n_samples):
@@ -189,7 +190,7 @@ if __name__ == '__main__':
         obj_color = conf['obj_color']
         motion_type = conf['motion_type']
         dof = conf['dof']
-        data_dir = conf['root'] + "Frames_dataset/" + motion_type + '_' + obj_shape + '_' + str(obj_color) + '_' + dof \
+        data_dir += "/Frames_dataset/" + motion_type + '_' + obj_shape + '_' + str(obj_color) + '_' + dof \
                     + '_' + str(n_samples)
         if obj_shape == 'point':
             shape = Shapes.Point(obj_color)

@@ -1,5 +1,5 @@
 # Root to save
-root: /home/docker/data_10/
+root: /home/docker/data
 
 # Type of element to generate
 to_generate: f #frame('f'), vector('v') or number('n')
@@ -18,13 +18,13 @@ height: 80
 width: 120
 object: point # point, circle
 obj_color: 255 # For b/w: 255; For color: [0, 255, 0]
-dof: var # fix, var, (var_1, (var_2))
+dof: fix # fix, var, (var_1, (var_2))
 
 circle_parameters:
   radius: 5
 
 # Number of samples
-n_samples: 100000
+n_samples: 70000
 
 # Number of know points (x values)
 n_points: 20
