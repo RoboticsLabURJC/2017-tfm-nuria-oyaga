@@ -30,7 +30,7 @@ if __name__ == '__main__':
         noise_parameters = [None]
 
     to_generate = conf['to_generate']  # Type to generate
-    data_dir = conf['root'] + "_" + gap
+    data_dir = conf['root'] + "_" + str(gap)
 
     if to_generate == 'n':
 
