@@ -1,5 +1,5 @@
 # Test dataset path
-data_path: /home/docker/data_10/Frames_dataset/sinusoidal_point_255_var_1_100000_80_120/sinusoidal_10_[None]_test
+data_path: /home/docker/data_10/Frames_dataset/linear_point_255_fix_10000_80_120/linear_10_[None]_test
 
 # Model path
-model_path: /home/docker/Models/REC/Frames_dataset/sinusoidal_point_255_var_1_100000_80_120/complex_convLSTM/10_False_relu_categorical_crossentropy_10.h5
+model_path: /home/docker/Models/NOREC/Frames_dataset/linear_point_255_fix_500_80_120/simple/10_False_relu_categorical_crossentropy_10.h5

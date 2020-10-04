@@ -10,7 +10,7 @@ from Utils import utils, vect_utils, frame_utils, test_utils
 
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout, Conv1D, MaxPooling1D, Conv2D, MaxPooling2D, Flatten, LSTM, ConvLSTM2D, \
-    TimeDistributed, MaxPooling3D, BatchNormalization
+    TimeDistributed
 from keras.utils import vis_utils
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 
