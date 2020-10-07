@@ -1,0 +1,473 @@
+\chapter{Generación de secuencias de vídeo sintéticas}\label{cap.generacion}
+
+En este trabajo se va a evaluar el poder de predicción de distintas redes neuronales profundas. La exploración en este ámbito se realizará de forma progresiva: primero con píxeles que se mueven linealmente, posteriormente con otros que se mueven parabólicamente y finalmente otros que se mueven siguiendo una función sinusoidal. Es decir, se modifican las dinámicas de movimiento con una complejidad creciente. Para entrenar estas redes neuronales es necesario tener un conjunto grande de imágenes "etiquetas" con las que aprender a predecir. Se ha programado una aplicación que genera automáticamente esos conjuntos voluminosos siguiendo esas dinámicas con sus parámetros correspondientes, a la vez que divide el conjunto en los subconjuntos de entrenamiento, validación y \textit{test}. En la Figura~\ref{fig.gen_cajanegra} se presenta un diagrama ``caja negra'' del funcionamiento de dicha aplicación, en la que se parte de un fichero de configuración y se obtiene una base de datos con las muestras deseadas.
+
+\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{ figures/generador.png}
+			\caption{Diagrama ``caja negra'' del generador.}
+			\label{fig.gen_cajanegra}
+		\end{center}
+\end{figure}
+
+En este capítulo se explican los dos tipos de imágenes que se han considerado, modeladas y crudas, y se exponen las distintas dinámicas de movimiento entre fotogramas que se aplican dentro de un mismo subconjunto. Así mismo, se expondrá el código desarrollado para la generación de los conjuntos de datos que se utilizarán para entrenar las redes neuronales profundas de predicción y para validar experimentalmente la calidad sus predicciones, el nivel de acierto.
+
+
+\section{Propiedades del \textit{dataset}}
+
+Esta sección hace hincapié en las características de los \textit{datasets} generados con secuencias de vídeo. Se explica en profundidad la estructura que tiene el directorio que almacena los distintos conjuntos utilizados, los dos tipos de imágenes considerados, modeladas y crudas, y las tres dinámicas que han sido estudiadas, lineal, parabólica y sinusoidal.\\
+
+Un \textit{dataset} generado se corresponde con una base de datos en la que se almacenan \textit{n}\_\textit{samples} muestras, cada una de las cuales es una colección de \textit{n}\_\textit{points}$+1$ fotogramas. En la Figura~\ref{fig.dataset} se muestra un esquema general del aspecto que presenta un conjunto de datos utilizado en este trabajo.
+
+\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=0.85\textwidth]{ figures/dataset.png}
+			\caption{Vista general de un \textit{dataset}.}
+			\label{fig.dataset}
+		\end{center}
+\end{figure}
+
+\subsection{Estructura del \textit{dataset}} \label{ap.estructura}
+
+En la Figura~\ref{fig.estructura_dataset} se presenta un esquema de la estructura resultante con la ejecución del código explicado en la Sección~\ref{sec.generador} para diferentes parámetros~(de 1 a n). 
+\vspace{5pt}
+\begin{figure}[H]
+	\begin{center}
+	    \setlength{\fboxsep}{0.5cm}
+	    \fbox{
+        \begin{minipage}{6.7cm}
+          \dirtree{%
+          .1 Frames dataset.
+          .2 Specific parameters \textit{1}.
+          .3 Train.
+          .4 Modeled samples.
+          .5 \textit{sample0.txt}.
+          .5 \vdots.
+          .4 Raw samples.
+          .5 sample0.
+          .6 \textit{0.png}.
+          .6 \vdots.
+          .5 \vdots.
+          .4 \textit{parameters.txt}.
+          .3 Test.
+          .4 \vdots.
+          .3 Val.
+          .4 \vdots.
+          .2 \vdots.
+          .2 Specific parameters \textit{n}.
+          }
+        \end{minipage}
+        }
+	    \caption{Estructura creada para el almacenamiento del \textit{dataset}.}
+	    \label{fig.estructura_dataset}
+	\end{center}
+\end{figure}
+\vspace{-10pt}
+En el primer nivel de esta estructura, \textit{Frames dataset}, se distingue entre los distintos tipos de datos que se pueden generar. A pesar de que en este trabajo se ha centrado en las secuencias de imágenes, el generador fue diseñado para poder obtener otros dos tipos de datos: funciones y vectores, que tendrían su directorio homólogo en este mismo nivel.\\
+
+En el segundo nivel se hace una distinción en función de los parámetros concretos que se hayan establecido en el fichero de configuración, explicado en el Apartado~\ref{ap.fichero}. Estos valores son:
+
+\begin{itemize}
+    \setlength\itemsep{1pt}
+    \item Tipo de dinámica.
+    \item Forma y color del objeto.
+    \item Grados de libertad.
+    \item Número de muestras.
+    \item Tamaño de la imagen.
+\end{itemize}
+
+Dentro de cada uno de estos directorios se presenta siempre la misma estructura. La primera división existente es la de los subconjuntos de entrenamiento, \textit{test} y validación. Si no se hubiese indicado la realización de esta división, este nivel sería obviado y se pasaría directamente al siguiente. Todas estas carpetas presentan a su vez la misma estructura, sobre la que la herramienta de generación escribe directamente las distintas muestras: el fichero de parámetros, la carpeta con las muestras modeladas y la correspondiente a las muestras en crudo.
+
+\subsection{Tipos de imágenes} \label{ap.tip_img}
+
+Se han considerado dos tipos de imágenes para los distintos estudios sobre predicción visual que se han desarrollado en el trabajo. Ambos tipos de imágenes tienen una correspondencia entre sí, es decir, para una misma muestra se presenta la misma información en dos formatos distintos: valores numéricos e imágenes puras de píxeles.
+En cuanto al contenido, todas las imágenes constan de un fondo negro y un único punto de luz móvil blanco, un píxel iluminado, que se desplaza dentro del fotograma siguiendo cierta dinámica.
+
+\subsubsection{Imágenes modeladas}
+
+Las datos modelados son una forma simplificada de mostrar las distintas posiciones que adquiere el píxel móvil en cada instante de tiempo. Con este tipo de imágenes se consigue representar la misma información de una forma compacta, se utiliza un total de \textit{$2 * n\_points$}  valores de entrada a la red, y \textit{$2$} valores de salida de la misma, reduciendo considerablemente la complejidad de las distintas redes que se estudien. En la Tabla~\ref{tab.modelada} se presenta un ejemplo concreto de cómo se representan estas muestras.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{{l|c|c|}}
+		\hline
+		\multicolumn{1}{|l|}{\textbf{\textit{t}}} & \textbf{\textit{x}} & \textbf{\textit{y}}\\\hline 
+		\multicolumn{1}{|l|}{\textbf{0}} & 0 & 40\\ \hline
+		\multicolumn{1}{|l|}{\textbf{1}} & 3 & 38\\ \hline
+		\multicolumn{1}{|l|}{\textbf{2}} & 6 & 37\\ \hline
+		\multicolumn{1}{|l|}{\textbf{3}} & 9 & 36\\ \hline
+		\multicolumn{1}{|l|}{\textbf{\vdots}} & \vdots & \vdots\\ \hline
+		\multicolumn{1}{|l|}{\textbf{29}} & 87 & 4\\ \hline
+		
+	\end{tabular}
+	\caption{Ejemplo de imagen modelada.}
+	\label{tab.modelada}
+\end{table}
+
+Estos datos se almacenan en la carpeta \textit{modeled}\_\textit{samples} mediante un fichero \textit{"sample[n].txt}, donde \textit{n} hace referencia al número del ejemplo durante su creación. Este fichero presenta una cabecera y un número de filas que se corresponde al número de instantes conocidos más el instante que se quiere predecir. La información viene distribuida en dos columnas, correspondientes con los valores \textit{x} e \textit{y} del píxel en cada instante de tiempo, que no se representa de forma explícita sino que se asocia con el orden de las filas.
+
+\subsubsection{Imágenes crudas}
+
+Las imágenes crudas son las imágenes propiamente dichas. En la Figura~\ref{fig.cruda} se muestra una composición donde se superponen todas las imágenes que forman la secuencia agrupadas en una única imagen.
+
+\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{ figures/samples/linear_sample.png}
+			\caption{Ejemplo de muestra cruda.}
+			\label{fig.cruda}
+		\end{center}
+\end{figure}
+\vspace{-10pt}
+Cada uno de las fotogramas presentaría un único píxel activo que se corresponde con el objeto del que se simula el movimiento y se almacena con el nombre \textit{"[n].png"} en la carpeta \textit{"sample[m]"}, donde \textit{"n"} sería el orden del instante de tiempo y \textit{"m"} el de la muestra generada. Cada una de estas carpetas que identifica una muestra es almacenada en el directorio \textit{raw}\_\textit{samples} que confluye todos los ejemplos del mismo tipo.\\
+
+En este caso, a pesar de que la información es la misma, la cantidad de valores que se utilizan para representarla es mucho mayor. Se utiliza un total de \textit{$h * w * n\_points$}  valores de entrada a la red, y \textit{$h * w$} valores de salida de la misma, complicando las redes a estudiar.
+
+\subsection{Tipos de dinámicas} \label{ap.dinamicas}
+
+El movimiento del píxel en el vídeo viene determinado por tres dinámicas distintas, que van aumentando el grado de complejidad del mismo y ponen a prueba la capacidad de predicción de las redes. Además de las tres dinámicas que se han considerado: lineal, parabólica y  sinusoidal, dentro de cada una de ellas se aumenta de forma escalonada la dificultad incrementando el número de variables que adquieren un valor aleatorio, es decir, los \acrfull{dof} de las mismas.\\
+
+Estas dinámicas afectan únicamente a la posición \textit{y} del píxel, y se utilizan los valores de \textit{x} obtenidos mediante la aplicación de un \acrfull{urm} al instante de tiempo con una velocidad aleatoria.
+
+\subsubsection{Dinámica lineal}
+
+La primera dinámica, y la más sencilla de todas, simula el movimiento del objeto en una línea recta a distintas velocidades y con distintas pendientes. Este movimiento se puede asimilar con el movimiento de un vehículo con una velocidad constante, sin tener en cuenta los efectos del rozamiento por la superficie ni la perspectiva. Para ello, utiliza la ecuación de la recta:
+$$y = m*x + y0$$
+que se materializa en el código de la siguiente forma:
+\vspace{10pt}
+\begin{lstlisting}[frame=single]
+  self.g = lambda x, y0, m: (m * x) + y0
+\end{lstlisting}
+
+En la Figura~\ref{fig.lineal} se presenta un ejemplo de esta dinámica con todas las imágenes que lo conforman superpuestas en una sola.
+
+\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{ figures/samples/linear2_sample.png}
+			\caption{Ejemplo de dinámica lineal.}
+			\label{fig.lineal}
+		\end{center}
+\end{figure}
+\vspace{-10pt}
+Por la propia naturaleza de la ecuación, es posible ir modificando la complejidad del movimiento a medida que incrementamos la cantidad de parámetros que se asignan de forma aleatoria, es decir, los \acrshort{dof}. A continuación, se exponen los distintos casos que se dan en la dinámica actual.
+
+\begin{description}
+\item[Pendiente nula] \hfill 
+\vspace{10pt}
+\\
+El movimiento más sencillo que se puede encontrar es un caso especial de la dinámica lineal. Ocurre cuando se fija la pendiente de la recta (\textit{m}) en un valor nulo, igualando el valor de la posición a una altura inicial. De esta forma se obtiene la ecuación simplificada:
+$$y = y0$$
+que se presenta en el código de la siguiente manera:
+\vspace{10pt}
+\begin{lstlisting}[frame=single]
+  self.g = lambda x, y0: y0
+\end{lstlisting}
+La altura inicial se puede asignar de dos maneras distintas::
+\vspace{10pt}
+\begin{lstlisting}[frame=single]
+  y0 = int(self.h / 2) #1
+  y0 = random.randint(1, self.h - 1) #2
+\end{lstlisting}
+La primera línea asigna la altura a la mitad de la imagen (\textit{h/2}), mientras que con la segunda se establece un valor aleatorio entre los límites de la imagen, que introduce un nuevo \acrshort{dof}.
+
+En la Figura~\ref{fig.urm} se muestra un ejemplo de este caso especial de la dinámica lineal.
+\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{ figures/samples/URM_sample.png}
+			\caption{Ejemplo del caso con pendiente nula.}
+			\label{fig.urm}
+		\end{center}
+\end{figure}
+
+\item[\textbf{1 \acrshort{dof}}] \hfill 
+\vspace{10pt}
+\\
+El primer parámetro de la ecuación que toma un valor aleatorio en cada muestra es la pendiente de la recta, dejando fija la altura inicial del punto. El código que se utiliza en cada iteración para la definición de los parámetros es el siguiente:
+\vspace{10pt}
+\begin{lstlisting}[frame=single]
+  m = np.round(random.uniform(-self.h/10, self.h/10), 2)
+  y0 = int(self.h / 2)
+\end{lstlisting}
+Los límites que se establecen para obtener el valor aleatorio son orientativos. Pretenden reducir al máximo el intervalo que asegure la presencia del punto en todas las imágenes pero esta presencia no llega a asegurarse en su totalidad. Es por esto que, posteriormente, se realiza una comprobación de las posiciones obtenidas.
+\vspace{90pt}
+	
+\item[\textbf{2 \acrshort{dof}}] \hfill 
+\vspace{10pt}
+\\
+Se deja que todos los parámetros de la ecuación tomen un valor aleatorio distinto en cada muestra, tanto la pendiente como la altura inicial. Para esta asignación se implementa el siguiente código:
+\vspace{10pt}
+\begin{lstlisting}[frame=single]
+  m = np.round(random.uniform(-self.h/10, self.h/10), 2)
+  y0 = random.randint(1, self.h - 1)
+\end{lstlisting}
+Al igual que en el caso anterior, los límites establecidos son orientativos para cumplir con las limitaciones del \textit{dataset}.
+\vspace{10pt}
+
+\end{description}
+
+\subsubsection{Dinámica parabólica}
+
+La dinámica parabólica, que aumenta el grado de complejidad mediante el incremento del número de parámetros necesarios para su definición, utiliza la ecuación de la parábola para obtener las posiciones \textit{y}:
+$$y = a*t^2 + b*t + c$$
+que se implementa en el código de mediante las siguiente línea:
+\vspace{10pt}
+\begin{lstlisting}[frame=single]
+  self.g = lambda x, a, b, c: a * (x ** 2) + b * x + c
+\end{lstlisting}
+
+En la Figura~\ref{fig.parab} se puede ver un ejemplo, con el mismo formato que el de la dinámica anterior, de este tipo de movimiento.
+
+\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{ figures/samples/parabolic_sample.png}
+			\caption{Ejemplo de dinámica parabólica.}
+			\label{fig.parab}
+		\end{center}
+\end{figure}
+\vspace{-10pt}
+
+Al igual que en el caso lineal, se va incrementando la complejidad de la dinámica  aumentando el número de \acrshort{dof}, explicados a continuación.
+
+\begin{description}
+\item[\textbf{1 \acrshort{dof}}] \hfill 
+\vspace{10pt}
+\\
+El parámetro que se modifica en este primer caso es el que acompaña al término cuadrático (\textit{a}), de tal forma que la definición de los parámetros queda de la siguiente manera: 
+\vspace{10pt}
+\begin{lstlisting}[frame=single]
+  a = round(random.uniform(-0.75, 0.75), 3)
+  b = 1.5
+  c = int(self.h / 2)
+\end{lstlisting}
+El valor otorgado a \textit{b} deriva de una serie de pruebas para obtener aquel que mejor se ajustase a lo que se buscaba mientras que la altura inicial (\textit{c}) se establece en la mitad de la imagen. Por otro lado, al igual que ocurre en la dinámica lineal, los límites escogidos de la muestra son orientativos para cumplir con la presencia del píxel en todas las imágenes, pero en ningún caso la asegura. 
+\vspace{10pt}
+\item[\textbf{2 \acrshort{dof}}] \hfill 
+\vspace{10pt}
+\\
+El siguiente parámetro a modificar es la altura inicial, que en este caso se establece con el parámetro \textit{c}. Siguiendo la definición del caso lineal,los parámetros de este caso quedan definidos de la siguiente manera:
+\vspace{10pt}
+\begin{lstlisting}[frame=single]
+  a = round(random.uniform(-0.75, 0.75), 3)
+  b = 1.5
+  c = random.randint(1, self.h - 1)
+\end{lstlisting}
+\vspace{10pt}
+
+\item[\textbf{3 \acrshort{dof}}] \hfill 
+\vspace{10pt}
+\\
+En el último caso se definen todos los parámetros de la ecuación mediante un valor aleatorio. Con esta premisa, la definición de los parámetros presenta la siguiente forma:
+\vspace{40pt}
+\begin{lstlisting}[frame=single]
+  a = round(random.uniform(-0.75, 0.75), 3)
+  b = round(random.uniform(-2, 2), 3)
+  c = random.randint(1, self.h - 1)
+\end{lstlisting}
+\vspace{10pt}
+
+\end{description}
+
+\subsubsection{Dinámica sinusoidal}
+La dinámica más compleja considerada en este trabajo, la sinusoidal, hace uso de la función trigonométrica del seno para el cálculo de posiciones en el eje vertical. Su expresión es la siguiente:
+$$y = a*sin(2*\pi*f*x + b) + c$$
+y se traduce en el código en la línea:
+\vspace{10pt}
+\begin{lstlisting}[frame=single]
+  self.g = lambda x, a, b, c, f: 
+    a * math.sin(2 * math.pi * f * math.radians(x) + b) + c
+\end{lstlisting}
+
+En la Figura~\ref{fig.sin} se muestra un ejemplo de la dinámica mediante la superposición de las imágenes en una sola.
+
+\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{ figures/samples/sinusoidal_sample.png}
+			\caption{Ejemplo de dinámica sinusoidal.}
+			\label{fig.sin}
+		\end{center}
+\end{figure}
+\vspace{-10pt}
+De la misma forma que sucede con las otras dos dinámicas, se aumenta la dificultad del movimiento mediante el aumento  de los \acrshort{dof}, que se exponen a continuación.
+\vspace{150pt}
+\begin{description}
+\item[\textbf{1 \acrshort{dof}}] \hfill 
+\vspace{10pt}
+\\
+El primer parámetro que se establece de forma aleatoria es la frecuencia (\textit{f}) del seno. La definición de los parámetros para este caso queda de la siguiente manera:
+\vspace{10pt}
+\begin{lstlisting}[frame=single]
+  a = 25
+  f = round(random.uniform(0.5, 5), 2)
+  b = 0
+  c = int(self.h / 2)
+\end{lstlisting}
+
+Como ocurre en el caso parabólico, los valores de los parámetros fijados se han obtenido mediante distintas pruebas con el objetivo de que sean lo más adecuados para los estudios realizados. De igual forma, los límites establecidos son orientativos para cumplir con las limitaciones del \textit{dataset}.
+\vspace{10pt}
+	
+\item[\textbf{2 \acrshort{dof}}] \hfill
+\vspace{10pt}
+\\
+El segundo parámetro que se deja libre es, de nuevo, la altura inicial de la imagen en la que comienza el movimiento, dando lugar a la siguiente definición de parámetros:
+\begin{lstlisting}[frame=single]
+  a = 25
+  f = round(random.uniform(0.5, 5), 2)
+  b = 0
+  c = random.randint(1, self.h - 1)
+\end{lstlisting}
+
+\item[\textbf{3 \acrshort{dof}}] \hfill 
+\vspace{10pt}
+\\
+El tercer parámetro que obtiene valores aleatorios en esta dinámica es la amplitud del seno, y se definen los parámetros de este caso con el siguiente código:
+\vspace{10pt}
+\begin{lstlisting}[frame=single]
+  a = random.randint(15, 40)
+  f = round(random.uniform(0.5, 5), 2)
+  b = 0
+  c = random.randint(1, self.h - 1)
+\end{lstlisting}
+\vspace{50pt}
+\item[\textbf{4 \acrshort{dof}}] \hfill 
+\vspace{10pt}
+\\
+Por último se permite que todos los parámetros tomen valores aleatorios, dando lugar al caso más complejo de este movimiento. Para ello se usa el siguiente código:
+\vspace{10pt}
+\begin{lstlisting}[frame=single]
+  a = random.randint(15, 40)
+  f = round(random.uniform(0.5, 5), 2)
+  b = round(random.uniform(0, 2 * math.pi), 3)
+  c = random.randint(1, self.h - 1)
+\end{lstlisting}
+\vspace{10pt}
+\end{description}
+\section{Herramienta de generación} \label{sec.generador}
+
+Para la elaboración propia de los distintos conjuntos de datos,  se ha desarrollado un código\footnote{\url{https://github.com/RoboticsLabURJC/2017-tfm-nuria-oyaga/tree/master/Generator}} en Python que, a través de la fijación de varios parámetros en un fichero de configuración, elabora un conjunto de muestras que se adapta al estudio concreto en el que se vaya a aplicar. En esta sección se explican las dos partes fundamentales de este código: la especificación de los parámetros y la propia generación y almacenamiento de las muestras.
+
+\subsection{Fichero de configuración} \label{ap.fichero}
+
+A través de este fichero se establecen los parámetros principales que definen las características del \textit{dataset} a generar. A continuación se explican los distintos valores a definir y lo que supone modificar cada uno de ellos. 
+
+\begin{basedescript}{\desclabelstyle{\pushlabel}\desclabelwidth{2.75cm}}
+\item[\textit{root}] Define la ruta en la que se almacenará la estructura de carpetas y archivos que se genera en la ejecución del código.
+\item[\textit{to\_generate}] Indica el tipo de dato que va a ser generado. A pesar de que este proyecto se centra en el estudio con imágenes, el generador se desarrolló con la posibilidad de generar datos de tres tipos: funciones, vectores unidimensionales e imágenes.
+\item[\textit{motion\_type}] Especifica el tipo de movimiento, la dinámica que sigue el objeto entre cada \textit{frame}, explicadas en el apartado~\ref{ap.dinamicas}.
+\item[\textit{height}]  Número entero que indica la altura de la imagen, su dimensión \textit{y}. En este trabajo se utiliza una altura de 80 píxeles.
+\item[\textit{width}]  Número entero que indica el ancho de la imagen, su dimensión \textit{x}. En este trabajo se utiliza un ancho de 120 píxeles.
+\item[\textit{object}]  Define el tipo de objeto que se mueve en la imagen. En este trabajo únicamente se utiliza el objeto píxel, de tal forma que toda la imagen será negra a excepción de un punto activo que será considerado el objeto.
+\item[\textit{obj\_color}]  Permite definir el color del objeto. Se utiliza un único nivel de intensidad en el caso del píxel y una terna RGB para otros objetos.
+\item[\textit{dof}] Establece los grados de libertad de la dinámica de movimiento, es decir, el número de variables que se generan de forma aleatoria en la ecuación que la define.
+\item[\textit{n\_samples}]  Número entero que indica el número de muestras totales que se generarán en el conjunto.
+\item[\textit{n\_points}] Número entero que indica la cantidad de instantes de tiempo que serán utilizados para predecir.
+\item[\textit{gap}] Número entero que define la separación temporal, instantes de tiempo, entre la última muestra conocida y la muestra a predecir.
+\item[\textit{noise}] Permite añadir ruido de un determinado tipo a las muestras para un estudio más avanzado.
+\item[\textit{split}] Indica si se dividirá el conjunto en los tres subconjuntos (\textit{train}, \textit{validation}, \textit{test}) y la proporción en la que lo hará si así de define.
+\end{basedescript}
+
+De esta manera, se permite un ajuste más sencillo del \textit{dataset} a generar al tipo de problema que se quiera estudiar, dejando al gusto del usuario las características del mismo.
+    
+\subsection{Generación del \textit{dataset}} \label{ap.generacion}
+
+En la Figura~\ref{fig.flujo_gen} se expone el diagrama del flujo que sigue el programa encargado de la generación del \textit{dataset}, centrándose en el tipo de dato que es de interés en este trabajo: los fotogramas.\\
+\vspace{10pt}
+\begin{figure}[H]
+    \begin{center}
+        \begin{tikzpicture}[node distance=2.5cm]
+            \node (cd) [treenode] {Creación de \\ directorios};
+            \node (def) [treenode, below of=cd] {Definición de muestra};
+            \node (obt) [treenode, below of=def] {Obtención de muestra};
+            \node (val) [decision, below of=obt, yshift=-0.25cm] {¿Es válida?};
+            \node (gen) [treenode, below of=val, yshift=-0.25cm] {Generación de imágenes};
+            \node (div) [decision, below of=gen, yshift=-0.25cm] {¿División?};
+            \node (asig) [treenode, below of=div, yshift=-0.25cm] {Asignación de subconjunto};
+            \node (sav) [treenode, right of=div, xshift=3cm] {Almacenamiento de muestras};
+            
+            \draw [arrow] (cd) -- (def);
+            \draw [arrow] (def) -- (obt);
+            \draw [arrow] (obt) -- (val);
+            \draw [arrow] (val) -- node[anchor=east, yshift=0.3cm] {Sí} (gen);
+            \draw [arrow] (val) --  node[anchor=south, xshift=-0.35cm] {No} ++ (3cm,0cm) |-(obt);
+            \draw [arrow] (gen) -- (div);
+            \draw [arrow] (div) -- node[anchor=east, yshift=0.3cm] {Sí} (asig);
+            \draw [arrow] (div) --  node[anchor=south, xshift=-0.6cm] {No} (sav);
+            \draw [arrow] (asig) -- ++ (5.5cm,0cm) |- (sav.south);
+            \draw [arrow] (sav) |- node[align=center, anchor=west, yshift=-5cm, xshift=0.2cm] {\textit{for n in}\\ \textit{n}\_\textit{samples}} (def);
+        \end{tikzpicture}
+        \caption{Diagrama de flujo del generador.}
+	    \label{fig.flujo_gen}
+	\end{center}
+\end{figure}
+\vspace{-10pt}
+En primer lugar se comprueban y se crean, en caso de ser necesario, los directorios que son necesarios para el almacenamiento del conjunto según la ruta que ha sido indicada en el fichero de configuración. La estructura de ficheros que se crea con el fin de almacenar todas las muestras del conjunto es explicada en el apartado~\ref{ap.estructura}.\\
+
+Tras la creación de la estructura necesaria se entra en un bucle, que se itera el número de muestras que haya sido definido, en el que se define, obtiene, valida, genera y almacena cada uno de los ejemplos que conforman el \textit{dataset}.\\
+
+Para la definición de la muestra se utiliza la clase correspondiente al tipo de movimiento que se vaya a implementar, la cual tiene definida de forma interna la ecuación que se corresponde con la dinámica. Este tipo de dinámica a implementar viene indicada en el fichero de configuración y todas las clases y ecuaciones que son utilizadas se explican en profundidad en el Apartado~\ref{ap.dinamicas}.\\
+
+Tras definir la muestra se llama a la función encargada de generarla. A grandes rasgos, esta función obtiene las posiciones \textit{(x,y)} del píxel en cada uno de los fotogramas y comprueba que esta posición obtenida no se salga de los límites de la imagen, evitando así oclusiones y desapariciones. Para obtener esas posiciones se realizan varios pasos que, aunque pueden variar en número en función de la dinámica y de los grados de libertad, siguen siempre la misma estructura. Esta estructura queda encapsulada en un bucle \textit{while}, que será detenido una vez se obtenga un conjunto de posiciones válidas, con las siguientes operaciones:
+
+\begin{enumerate}
+  \item Se define el movimiento que sigue el píxel en el eje \textit{x}, identificado con el instante temporal \textit{t} y, por tanto, con la velocidad a la que se mueve el píxel. Éste es el mismo independientemente de la dinámica con la que se esté trabajando, se corresponde con un \acrshort{urm} y viene definido de la siguiente forma:
+  \vspace{10pt}
+  \begin{lstlisting}[frame=single]
+  self.f = lambda t, x0, u_x: x0 + u_x * t
+  \end{lstlisting}
+  Para poder definir el movimiento \acrshort{urm} en los conjuntos desarrollados se fija el punto de inicio (\textit{x0}) en el instante 0 y se asigna una velocidad aleatoria para cada una de las muestras. Esta asignación se realiza mediante el siguiente código:
+  \vspace{10pt}
+  \begin{lstlisting}[frame=single]
+  limit = int(self.w / (self.n_points + self.gap))
+  u_x = random.randint(1, limit)
+  \end{lstlisting}
+  Así se establece un límite en la velocidad, en función del número de instantes de tiempo conocidos y la separación entre el instante a predecir y el último conocido, que asegura la aparición del píxel en todas las imágenes de la muestra.
+  
+  \item Se obtienen los valores concretos de la posición \textit{x} en cada instante de tiempo de la siguiente forma:
+  \vspace{10pt}
+  \begin{lstlisting}[frame=single]
+  numbers_x = [self.f(x, x0, u_x) for x in range(self.n_points)]
+  numbers_x.append(self.f(self.n_points + self.gap - 1, x0, u_x))
+  \end{lstlisting}
+  Primero se calculan todos los valores de los instantes de tiempo conocidos (\textit{n}\_\textit{points}) y, posteriormente, se añade el valor correspondiente con el instante a predecir (\textit{n}\_\textit{points+gap}).
+  
+  \item Se define el valor de todas las variables que son necesarias para aplicar la ecuación de la dinámica y obtener las posiciones en el eje \textit{y}. La forma de definir estas variables, explicadas en el Apartado~\ref{ap.dinamicas}, dependen del grado de libertad que se haya indicado en el fichero de configuración. A medida que aumenta la complejidad aumenta el número de variables que se generan de forma aleatoria. 
+  
+  \item Se calculan las posiciones en el eje \textit{y}, en función de la dinámica que se haya establecido, mediante la siguiente línea:
+  \vspace{10pt}
+  \begin{lstlisting}[frame=single]
+  numbers_y = [self.g(n_x, *args) for n_x in numbers_x]
+  \end{lstlisting}
+  Los argumentos que se pasan a la función de la dinámica serán las variables que previamente han sido definidas.
+  
+  \item Se comprueba que todas las posiciones se encuentren dentro de la imagen y, en caso positivo, se detiene el bucle y se continúa con el flujo del programa de generación. Si es negativo se repetirá el proceso hasta alcanzar un conjunto de posiciones válido.
+\end{enumerate}
+
+Una vez se han obtenido las posiciones del píxel válidas se procede a la generación de la propia secuencia de imágenes. Para ello se recorren todas las posiciones que han sido generadas (\textit{n}\_\textit{points} + 1) y se crea una imagen por cada una de ellas. La imagen se inicia con todos los píxeles nulos, completamente negra, y posteriormente se activa el píxel que se corresponde con la posición \textit{(y,x)} con el valor indicado en el fichero de configuración, para este proyecto fijado en 255. Se debe trasponer el vector de posición por la forma en la que Numpy establece el acceso a las posiciones en las imágenes\footnote{\url{https://scikit-image.org/docs/dev/user\_guide/numpy_images.html}}, primero las filas (\textit{y}) y luego a las columnas (\textit{x}).\\
+
+Antes de almacenar la muestra, si se ha establecido la división del \textit{dataset} en los subconjuntos de entrenamiento, validación y \textit{test}, se asignará la misma al conjunto al que pertenece. Para esta asignación se utiliza un criterio de orden de la siguiente forma:
+
+\begin{itemize}
+    \setlength\itemsep{3pt}
+    \item $n\_sample < n\_train \Rightarrow$ Conjunto de entrenamiento
+    \item $n\_train \leqslant n\_sample < n\_train + n\_test\Rightarrow$ Conjunto de \textit{test}
+    \item $n\_train + n\_test \leqslant n\_sample < n\_train + n\_test\ + n\_val \Rightarrow$ Conjunto de validación
+\end{itemize}
+
+Los valores que definen el número de muestras que tiene cada conjunto vienen dados por los distintos parámetros de división establecidos en el fichero de configuración. El código empleado para calcular estos valores es el siguiente:
+\vspace{10pt}
+\begin{lstlisting}[frame=single]
+  n_test = int(n_samples * float(conf['split']['fraction_test']))
+  n_val = int(n_samples * float(conf['split']['fraction_validation']))
+  n_train = n_samples - n_val - n_test
+\end{lstlisting}
+
+En los conjuntos desarrollados para este trabajo, el \textit{flag} que indica la división estará siempre activado, pues se hace se hace uso de los tres subconjuntos diferenciados en las distintas fases de la investigación. Por lo tanto, el flujo del generador siempre será el mismo independientemente del tipo de dato que se esté generando, pasando la muestra por el proceso de asignación correspondiente.\\
+
+Para el almacenamiento de la muestra en la carpeta correspondiente, la del subconjunto si se ha hecho división o la general en caso contrario, se realizan tres operaciones que permiten obtener información de la misma en distintos formatos.
+
+\begin{itemize}
+    \setlength\itemsep{3pt}
+    \item \textbf{\textit{parameters.txt}}: Se escriben las distintas variables utilizadas para la generación de cada muestra. Cada fila de este fichero se corresponde con un ejemplo generado.
+    \item \textbf{\textit{modeled}\_\textit{samples}}: Se guarda un fichero para cada muestra con las posiciones de la misma.
+    \item \textbf{\textit{raw}\_\textit{samples}}: Se almacena una carpeta por muestra con las imágenes que la conforman.
+\end{itemize}
+
+Con todo esto se obtiene un directorio, cuya estructura se ha explicado más a fondo en el apartado~\ref{ap.estructura}, que contiene todo lo necesario para entrenar y evaluar las distintas redes que se estudian en el desarrollo de este proyecto.

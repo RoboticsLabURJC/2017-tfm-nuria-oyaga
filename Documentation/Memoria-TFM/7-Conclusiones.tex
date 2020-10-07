@@ -1,0 +1,62 @@
+\chapter{Conclusiones}\label{cap.conclusiones}
+En este capítulo se exponen las conclusiones alcanzadas con el desarrollo del proyecto, las aportaciones principales y posibles líneas para continuar con este trabajo.
+
+\section{Conclusiones}
+El desarrollo de este trabajo ha permitido llegar una serie de conclusiones referentes a la tarea de predicción en secuencias de vídeo mediante el uso de redes neuronales profundas. A continuación se exponen las más importantes, desglosadas según los subobjetivos definidos en la Sección~\ref{sec.obj}.
+
+\begin{description}
+	\item[Desarrollo \textit{software} para ejecución y evaluación de redes] 
+	\hfill 
+	\vspace{5pt}
+	\\
+	Para realizar  el  diseño y análisis de una estructura neuronal concreta con un conjunto de imágenes determinado, se han desarrollado dos herramientas \textit{software} en Python. Una de ellas permite la ejecución de las distintas redes neuronales y la otra obtiene las figuras de mérito para  comparar las prestaciones de las redes.
+	\item[Creación de las bases de datos] 
+	\hfill 
+	\vspace{5pt}
+	\\
+	Con la generación de una secuencia a partir de un único píxel activo cuya posición puede cambiar en fotogramas consecutivos conforme a una dinámica determinada, se han creado los 
+	conjuntos necesarios para entrenar y evaluar las distintas redes neuronales. Estos conjuntos constan de dos tipos de imágenes, modeladas y crudas, y rigen el movimiento del píxel con tres dinámicas: lineal, parabólica y sinusoidal. Además, se considera una cuarta dinámica combinada que mezcla, en un mismo conjunto de muestras, ejemplos de cada una de las dinámicas. Para obtener las bases de datos necesarias se ha programado también un generador en Python que crea un determinado conjunto que está gobernado por unos parámetros concretos.  
+	\item[Estudio de la predicción con imágenes modeladas] \hfill 
+	\vspace{5pt}
+	\\
+	Las imágenes modeladas son fotogramas simplificados, resumidos a las coordenadas del píxel activo en cada instante. El análisis de las distintas redes neuronales para la predicción de la posición del píxel en conjuntos que siguen diferentes dinámicas de movimiento ha dado lugar a las siguientes conclusiones:
+	\begin{itemize}
+	    \item Las redes neuronales LSTM-4 predicen satisfactoriamente en todas las dinámicas, incluyendo las más complejas.
+	    \item El número de muestras utilizadas en el entrenamiento repercute en los resultados obtenidos. En dinámicas más complejas, se obtienen mejores resultados  cuando se utiliza un número de muestras mayor. Sin embargo, un aumento excesivo puede ser contraproducente.
+	    \item La elección del tipo de red tiene un efecto directo en la capacidad de predicción. La estructura \acrshort{mlp} establece su límite de predicción en la dinámica sinusoidal de 1~\acrshort{dof}, mientras que la red LSTM-1 es capaz de predecir razonablemente bien hasta con  3~\acrshort{dof} de dicha dinámica. La estructura LSTM-4, por el contrario, es capaz de predecir satisfactoriamente en todas las dinámicas.
+	    \item La recurrencia aporta una mejora a los resultados, pues es capaz de captar las correlaciones temporales que una red no recurrente no puede procesar.
+	    \item El aumento del número de neuronas en la capa \acrshort{lstm} no proporciona una mejora significativa en la capacidad predictiva de la red.
+	    \item El aumento del número de capas \acrshort{lstm} en la estructura hace mejorar los resultados. Sin embargo, se establece un límite en este número a partir del cual crece la complejidad disminuyendo las prestaciones 
+	    \item El incremento del horizonte temporal a predecir complica la tarea, siendo  más complicado para la red establecer una correlación temporal entre la última muestra conocida y la que se quiere estimar. A pesar de esto, se logra una predicción razonable cuando se establece un \textit{gap} elevado~(50 instantes temporales).
+	\end{itemize}
+	\item[Estudio de la predicción con imágenes crudas] 
+	\hfill 
+	\vspace{5pt}
+	\\
+    El análisis de distintas estructuras neuronales como predictores visuales con imágenes crudas, matrices 2D, da lugar a las conclusiones expuestas a continuación. Algunas de ellas coinciden con las extraídas para imágenes modeladas.
+	\begin{itemize}
+	    \item Se consigue predecir con buenos resultados en un gran número de dinámicas. En las dinámicas más complejas se obtienen resultados mejorables que limitan la capacidad de predicción con imágenes crudas.
+	    \item El número de muestras utilizadas en el entrenamiento repercute en los resultados obtenidos, de la misma forma que en el caso de imágenes modeladas.
+	    \item El análisis separado de las correlaciones espaciales y temporales, concatenando una red convolucional con una \acrshort{lstm}, no proporciona buenos resultados.
+	    \item El uso de redes que con capaces de analizar las correlaciones espacio-temporales de forma simultánea (\textit{ConvLSTM}) eleva su calidad como predictores visuales.
+	    \item La expansión gaussiana del píxel para facilitar la obtención de correlaciones espaciales en el fotograma, mejora ligeramente las prestaciones. Sin embargo, esta mejora no es suficiente como para que la estructura que procesa independiente de las correlaciones espaciales y temporales~(\acrshort{cnn}+\acrshort{lstm}) sea considerada una buena estrategia.
+	    \item El aumento del número de capas \textit{ConvLSTM} en la estructura hace mejorar los resultados de la misma forma que ocurría en las \acrshort{lstm} con las imágenes modeladas.
+    \end{itemize}
+\end{description}
+
+Finalmente, en cuanto a la comparación entre la predicción usando imágenes modeladas y crudas, ha sido posible encontrar una red (LSTM-4) que predice satisfactoriamente en todas las casuísticas modeladas. En contraposición, para las imágenes crudas, la mejor red obtenida (ConvLSTM-4) presenta ciertas dificultades de predicción. Este hecho demuestra que para la red es más complicado establecer relaciones entre matrices 2D, formadas por píxeles, que entre un par de valores (\textit{x}, \textit{y}), pues la complejidad de los datos es mayor en el primer caso.\\
+
+En resumen,  los objetivos planteados al comienzo de este Trabajo Fin de Máster se han alcanzado satisfactoriamente.
+
+\section{Líneas futuras}
+Para continuar con la investigación abordada en este trabajo se pueden seguir varias vías que permitan obtener más resultados interesantes en el ámbito de la predicción con secuencias de vídeo.
+\begin{itemize}
+    \item En cuanto a la generación de muestras, es posible realizar un estudio más amplio sobre los valores que se otorgan a los parámetros que permanecen fijos, como la amplitud en la dinámica sinusoidal de 1~\acrshort{dof}. Además, se puede ampliar el rango en el que se generan los valores aleatorios, como la pendiente de la recta en la dinámica lineal de 1~\acrshort{dof}, incrementando las distintas posibilidades en la dinámica.
+	\item En las imágenes modeladas, se puede realizar un análisis más profundo sobre el efecto de modificar la estructura de red aumentando simultáneamente tanto el número de capas como el de neuronas. De esta forma, se podrían mejorar los resultados obtenidos en la dinámicas más complejas que, a pesar de ser satisfactorios, permiten dicha mejora.
+	\item Respecto a las imágenes crudas, hay aún un amplio campo de exploración en cuanto a la obtención de una estructura neuronal que sea capaz de predecir satisfactoriamente con todas las dinámicas.
+	\item Referente a la expansión del píxel con valores decrecientes de luminancia, dado que sí se obtuvo una mejora, se puede aumentar el campo de exploración modificando el área de expansión y la función que rige la pérdida de intensidad. De esta forma se analiza su efecto en el entrenamiento de las redes y en sus prestaciones finales, y se comprobará si una expansión adecuada puede lograr una predicción satisfactoria.
+	\item Una de las limitaciones de este trabajo es la sencillez de las imágenes en cuanto a tamaño y contenido, pues aparece un único píxel activo. En este aspecto, sería interesante investigar el efecto de aumentar el tamaño de la imagen a predecir, así como la modificación del tamaño y forma del objeto móvil.
+	\item Otra limitación se encuentra en que las dinámicas que rigen el movimiento del píxel no sufren ningún tipo de distorsión o ruido. Este hecho permite profundizar en la investigación de secuencias de movimiento que no sean tan limpias, asemejándose más a un movimiento real.
+	\item La última limitación del trabajo es que el muestreo se realiza de forma regular, con una velocidad constante y sin eliminación de muestras. En este sentido, queda abierta la exploración a secuencias cuyo muestreo se realice de forma no regular, con pérdida de datos en algunas posiciones o introduciendo una aceleración.
+	\item Finalmente, es posible trasladar el estudio a una aplicación en el mundo real, que proporcione ayuda en la solución de problemas que se presentan en el día a día. A modo de ejemplo, se podría estimar la posición de una persona en movimiento, con el objetivo de agilizar su seguimiento si en algún momento se pierde su detección.
+\end{itemize}
