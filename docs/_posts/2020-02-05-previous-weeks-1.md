@@ -1,6 +1,6 @@
 ---
-title: "Previous weeks - New linear movement"
-excerpt: "A new degree of freedom is added to the linear movement."
+title: "Previous weeks - New linear motion"
+excerpt: "A new degree of freedom is added to the linear motion."
 
 sidebar:
   nav: "docs"
